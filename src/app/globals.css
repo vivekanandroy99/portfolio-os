@@ -590,14 +590,6 @@ footer{background:radial-gradient(70% 90% at 50% 0%,rgba(255,255,255,.7),transpa
 .eye-a{--ex:.27em}
 .hero h1 .eye-name{letter-spacing:-.02em}
 
-/* theme accent: cobalt instead of orange */
-:root{--pop:#3d5cff}
-.cur.big{background:rgba(61,92,255,.28)}
-.chip.c0{--dot:#3d5cff}
 .eye-a{--ex:.278em;--ey:.632em;--es:.145em}
 .eye-a .eye i{width:58%;height:58%;left:21%;top:21%}
 
-/* theme accent: forest green (matches the os mode desk) */
-:root{--pop:#2c6e57}
-.cur.big{background:rgba(44,110,87,.25)}
-.chip.c0{--dot:#2c6e57}.chip.c2{--dot:#5aa9ff}

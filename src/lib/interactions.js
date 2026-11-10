@@ -389,12 +389,12 @@ export function init() {
       // glowing intersections near the cursor
       for (const p of pts) {
         if (p.e < 0.04) continue;
-        g.fillStyle = `rgba(44,110,87,${Math.min(0.9, p.e * 1.4)})`;
+        g.fillStyle = `rgba(255,122,61,${Math.min(0.9, p.e * 1.4)})`;
         g.beginPath(); g.arc(p.x, p.y, 1.5 + p.e * 3, 0, Math.PI * 2); g.fill();
       }
       if (mx > -999) {
         const glow = g.createRadialGradient(mx, my, 0, mx, my, R * 1.2);
-        glow.addColorStop(0, "rgba(160,220,190,.25)"); glow.addColorStop(1, "rgba(160,220,190,0)");
+        glow.addColorStop(0, "rgba(255,200,150,.22)"); glow.addColorStop(1, "rgba(255,200,150,0)");
         g.fillStyle = glow; g.fillRect(mx - R * 1.2, my - R * 1.2, R * 2.4, R * 2.4);
       }
     });
