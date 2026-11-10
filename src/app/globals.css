@@ -665,3 +665,4 @@ a,img,svg,canvas{-webkit-user-drag:none}
 ::selection{background:rgba(255,122,61,.22);color:inherit}
 .reel{transition:transform .35s cubic-bezier(.2,.9,.3,1),box-shadow .35s}
 .reel:hover{box-shadow:0 0 0 .5px rgba(0,0,0,.14),0 18px 40px -10px rgba(20,25,30,.22),0 50px 90px -20px rgba(20,25,30,.28),0 60px 120px -40px rgba(120,90,200,.35)}
+.reel{transform:none}
