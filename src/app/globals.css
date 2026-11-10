@@ -601,3 +601,12 @@ footer{background:radial-gradient(70% 90% at 50% 0%,rgba(255,255,255,.7),transpa
 .eye-a .eye{box-shadow:none}
 .eye-a .eye i{width:56%;height:56%;left:22%;top:22%}
 .eye-a{--ey:.564em}
+
+/* name in Poppins: round single-storey "a", oval eye fills the bowl */
+:root{--f-name:"Poppins","Futura","Avenir Next",sans-serif}
+.hero h1 .eye-name{font-family:var(--f-name);font-weight:700;letter-spacing:-.04em}
+.eye-a{--ex:.3225em;--es:.24em}
+.eye-a .eye{height:.2725em}
+body.on-bubble .cur{width:46px;height:46px;margin:-23px 0 0 -23px;background:rgba(255,255,255,.4);border:1.5px solid var(--ink)}
+.eye-a{--ey:.5066em}
+.hero h1 .eye-name{font-size:1.02em}
