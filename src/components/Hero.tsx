@@ -9,7 +9,7 @@ function NameWithEyes({ name }: { name: string }) {
       {name.split("").map((ch, i) =>
         ch === "a" ? (
           <span className="eye-a" key={i}>
-            <span className="eye"><i /></span>
+            a<span className="eye"><i /></span>
           </span>
         ) : (
           <span key={i}>{ch}</span>
