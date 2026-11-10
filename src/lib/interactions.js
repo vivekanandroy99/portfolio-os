@@ -354,6 +354,7 @@ export function init() {
       ["#9b84ff", "#9b84ff"],
       ["#ff5fa2", "#ff5fa2"],
       ["#2fb67c", "#2fb67c"],
+      ["#ff5fa2", "#f2b600", "#2fb67c", "#3aa0ff", "#9b84ff"], // disco: recoloured every frame
     ];
     const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
     const rgba = (h, a) => { const [r, gg, b] = hex(h); return `rgba(${r},${gg},${b},${a})`; };
@@ -365,7 +366,14 @@ export function init() {
     try { pops = parseInt(localStorage.getItem("pops") || "0", 10) || 0; } catch {}
     if (counter) counter.textContent = String(pops);
     const rnd = (a, b) => a + Math.random() * (b - a);
-    const newBubble = (fromBottom) => ({ x: rnd(40, W - 40), y: fromBottom ? H + rnd(20, 160) : rnd(60, H - 60), r: rnd(14, 34), s: 1 + Math.floor(Math.random() * (schemes.length - 1)), ph: rnd(0, 6.28), sp: rnd(0.22, 0.5), pop: 0 });
+    const DISCO = schemes.length - 1;
+    let plain = 0; // empty clicks since the last pop; a few of them wash the mat back to brown
+    const newBubble = (fromBottom) => {
+      // now and then one disco bubble joins the float (never more than one at a time)
+      const disco = !bubbles.some((b) => b.s === DISCO && !b.pop) && Math.random() < 0.2;
+      return { x: rnd(40, W - 40), y: fromBottom ? H + rnd(20, 160) : rnd(60, H - 60), r: disco ? rnd(30, 38) : rnd(14, 34), s: disco ? DISCO : 1 + Math.floor(Math.random() * (DISCO - 1)), ph: rnd(0, 6.28), sp: rnd(0.22, 0.5), pop: 0 };
+    };
+    const discoHues = (t, a, n = 5) => Array.from({ length: n }, (_, k) => `hsla(${(t * 90 + k * 72) % 360},95%,60%,${a})`);
     const size = () => {
       dpr = Math.min(2, window.devicePixelRatio || 1);
       W = host.clientWidth; H = host.clientHeight;
@@ -405,7 +413,7 @@ export function init() {
       for (let j = 1; j * STEP < H; j++) if (j % 5 === 0) d.fillText(String(j), 18, j * STEP);
       d.fillStyle = ink + ".5)"; d.textBaseline = "bottom";
       for (const deg of [30, 45, 60]) { const a = (deg * Math.PI) / 180; d.fillText(deg + "°", Math.cos(a) * STEP * 12.6, by - Math.sin(a) * STEP * 12.6); }
-      if (!bubbles.length) bubbles = Array.from({ length: 8 }, () => newBubble(false));
+      if (!bubbles.length) for (let k = 0; k < 8; k++) bubbles.push(newBubble(false));
     };
     size();
     host.classList.add("mat-live");
@@ -421,12 +429,15 @@ export function init() {
       if (blocked(e)) return;
       const [x, y] = local(e);
       ripples.push({ x, y, r: 0, k: 1 });
+      const isHit = bubbles.some((b) => !b.pop && Math.hypot(b.x - x, b.y - y) < b.r + 8);
+      if (!isHit && cur !== 0 && ++plain >= 4) { cur = 0; plain = 0; wash = { x, y, r: 0, s: 0 }; }
       const hit = bubbles.find((b) => !b.pop && Math.hypot(b.x - x, b.y - y) < b.r + 8);
       if (!hit) return;
-      hit.pop = 1; cur = hit.s;
+      hit.pop = 1; cur = hit.s; plain = 0;
       wash = { x: hit.x, y: hit.y, r: 0, s: hit.s };
       ripples[ripples.length - 1].k = 1.6;
-      const sc = schemes[hit.s];
+      const sc = hit.s === DISCO ? ["#ff5fa2", "#f2b600", "#2fb67c", "#3aa0ff", "#9b84ff", "#ff7a3d"] : schemes[hit.s];
+      if (hit.s === DISCO) { ripples[ripples.length - 1].k = 2.4; for (let k = 0; k < 30; k++) { const a = Math.random() * Math.PI * 2, v = rnd(3, 9); bits.push({ x: hit.x, y: hit.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1.3, c: sc[k % sc.length] }); } }
       for (let k = 0; k < 20; k++) { const a = (k / 20) * Math.PI * 2 + rnd(-0.2, 0.2), v = rnd(2, 6); bits.push({ x: hit.x, y: hit.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1, c: sc[k % sc.length] }); }
       pops++;
       try { localStorage.setItem("pops", String(pops)); } catch {}
@@ -489,6 +500,9 @@ export function init() {
       }
       g.setTransform(dpr, 0, 0, dpr, 0, 0);
       g.clearRect(0, 0, W, H);
+      // disco: the rainbow slides across the mat every frame
+      const mk = (a) => { const lg = g.createLinearGradient(0, 0, W, H); discoHues(t, a).forEach((c, k, arr) => lg.addColorStop(k / (arr.length - 1), c)); return lg; };
+      fx.minor[DISCO] = mk(0.22); fx.major[DISCO] = mk(0.45); fx.half[DISCO] = mk(0.14); fx.dot[DISCO] = mk(0.5); fx.guide[DISCO] = mk(0.22);
       g.drawImage(deco, 0, 0, W, H);
       g.lineWidth = 1; g.setLineDash([3, 4]);
       for (let k = 0; k < half.length; k++) { g.strokeStyle = fx.half[k]; g.stroke(half[k]); }
@@ -509,15 +523,24 @@ export function init() {
         const near = Math.hypot(b.x - mx, b.y - my);
         if (near < b.r + 50 && near > 0) { b.x += ((b.x - mx) / near) * 0.6; b.y += ((b.y - my) / near) * 0.6; }
         if (b.y < -b.r * 2) bubbles[k] = newBubble(true);
-        const rr = b.r * (1 + Math.sin(t * 2 + b.ph) * 0.04), sc = schemes[b.s], ang = t * 0.6 + b.ph;
+        const disco = b.s === DISCO, rr = b.r * (1 + Math.sin(t * (disco ? 5 : 2) + b.ph) * (disco ? 0.07 : 0.04)), ang = t * (disco ? 2.4 : 0.6) + b.ph;
+        const sc = disco ? discoHues(t, 1, 6) : schemes[b.s];
         const lg = g.createLinearGradient(b.x + Math.cos(ang) * rr, b.y + Math.sin(ang) * rr, b.x - Math.cos(ang) * rr, b.y - Math.sin(ang) * rr);
-        sc.forEach((c, i) => lg.addColorStop(i / (sc.length - 1), rgba(c, 0.28)));
+        sc.forEach((c, i) => lg.addColorStop(i / (sc.length - 1), disco ? c.replace(/,1\)$/, ",.55)") : rgba(c, 0.28)));
         g.fillStyle = lg; g.beginPath(); g.arc(b.x, b.y, rr, 0, Math.PI * 2); g.fill();
         const rim = g.createRadialGradient(b.x, b.y, rr * 0.6, b.x, b.y, rr);
-        rim.addColorStop(0, "rgba(255,255,255,0)"); rim.addColorStop(1, rgba(sc[0], 0.35));
+        rim.addColorStop(0, "rgba(255,255,255,0)"); rim.addColorStop(1, disco ? "rgba(255,255,255,.55)" : rgba(sc[0], 0.35));
         g.fillStyle = rim; g.fill();
         g.strokeStyle = "rgba(255,255,255,.7)"; g.lineWidth = 1; g.stroke();
         g.fillStyle = "rgba(255,255,255,.75)"; g.beginPath(); g.ellipse(b.x - rr * 0.38, b.y - rr * 0.42, rr * 0.22, rr * 0.12, -0.6, 0, Math.PI * 2); g.fill();
+        if (disco) {
+          // twinkling sparkles orbiting the disco bubble
+          for (let q = 0; q < 4; q++) {
+            const sa = t * 1.5 + q * 1.57 + b.ph, sx = b.x + Math.cos(sa) * rr * 1.35, sy = b.y + Math.sin(sa) * rr * 1.35, sz = 3 + Math.sin(t * 6 + q) * 1.6;
+            g.fillStyle = `hsla(${(t * 120 + q * 90) % 360},95%,62%,.9)`;
+            g.beginPath(); g.moveTo(sx, sy - sz * 1.6); g.lineTo(sx + sz * 0.4, sy - sz * 0.4); g.lineTo(sx + sz * 1.6, sy); g.lineTo(sx + sz * 0.4, sy + sz * 0.4); g.lineTo(sx, sy + sz * 1.6); g.lineTo(sx - sz * 0.4, sy + sz * 0.4); g.lineTo(sx - sz * 1.6, sy); g.lineTo(sx - sz * 0.4, sy - sz * 0.4); g.closePath(); g.fill();
+          }
+        }
       }
       bits = bits.filter((d) => (d.life -= 0.03) > 0);
       for (const d of bits) {
