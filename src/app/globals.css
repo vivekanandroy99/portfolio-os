@@ -656,3 +656,10 @@ body.on-bubble .cur{width:46px;height:46px;margin:-23px 0 0 -23px;background:rgb
   .filters button{font-size:15px;font-weight:600;padding:11px 20px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
 }
 @media (min-width:1600px){.filters button{font-size:16px;padding:12px 22px}}
+
+/* no accidental text selection on the playful parts (clicks, drags, ripples, bubble pops) */
+.hero,.menubar,.marquee,.os,.sticker,.floaty,.win .bar,.chip,.chips,.btn,.filters,.media,.wcard,.pk,.dock,.acc,.clip-modal{
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+a,img,svg,canvas{-webkit-user-drag:none}
+*{-webkit-tap-highlight-color:transparent}
+::selection{background:rgba(255,122,61,.22);color:inherit}
