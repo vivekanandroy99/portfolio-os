@@ -88,6 +88,14 @@ export function Hero() {
           <kbd>O</kbd>
         </div>
 
+        <div className="sticker s-counter" style={{ left: "3%", top: "33%" }} data-label="drag me">
+          <span className="pc-bubble" aria-hidden="true" />
+          <span className="pc-text">
+            <b data-pop-count>0</b>
+            <small>bubbles popped</small>
+          </span>
+        </div>
+
         <HeroFloaties />
 
       </div>

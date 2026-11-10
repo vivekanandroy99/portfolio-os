@@ -49,7 +49,7 @@ export function Clip({ name, src, style, tint, size = "m" }: { name: string; src
 export function HeroFloaties() {
   return (
     <>
-      <FileIcon label="resume.pdf" ext="PDF" href={site.links.resume} external style={{ left: "3%", top: "23%", rotate: "-7deg" }} />
+      <FileIcon label="resume.pdf" ext="PDF" href={site.links.resume} external style={{ left: "4%", top: "19%", rotate: "-7deg" }} />
       <FolderIcon label="work" href="/work" color="#c9b8ff" style={{ right: "9%", top: "46%", rotate: "8deg" }} />
       <Clip name="xros.mp4" tint="t4" size="m" style={{ left: "1%", top: "77%", rotate: "-3deg" }} />
       <Clip name="altbot.mov" tint="t1" size="s" style={{ right: "0%", top: "59%", rotate: "5deg" }} />

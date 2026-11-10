@@ -335,16 +335,17 @@ export function init() {
     }
   }
 
-  // dot-grid mat: a straight grid with a dot on every node. It sits still until you
-  // click, then a wave rolls out from the click and the lines bend with the nodes, like dots.sim.
-  // Floating bubbles (some plain, some gradient) can be popped to wash the grid in their colours.
+  // cutting mat: beige with dark brown print. 1-cell grid, bold every 5, dashed half lines,
+  // angle guides and arcs from both bottom corners, ruler edges. It sits still until you click:
+  // a wave rolls out and every printed line (grid, half lines, angle guides) bends with it.
+  // Floating bubbles (plain or gradient) can be popped to wash the print in their colours.
   const gc = $("#mat");
   if (gc && fine() && !calm) {
     const host = gc.parentElement;
     const g = gc.getContext("2d");
-    const STEP = 44, R = 120;
+    const STEP = 40, R = 120;
     const schemes = [
-      ["#2f5747", "#2f5747"],
+      ["#4a3424", "#4a3424"],
       ["#9b84ff", "#ff5fa2", "#3aa0ff"],
       ["#2fb67c", "#3aa0ff", "#9b84ff"],
       ["#f2b600", "#ff7a3d", "#ff5fa2"],
@@ -356,8 +357,13 @@ export function init() {
     ];
     const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
     const rgba = (h, a) => { const [r, gg, b] = hex(h); return `rgba(${r},${gg},${b},${a})`; };
-    let W = 0, H = 0, dpr = 1, cols = 0, rows = 0, nodes = [], lineFx = [], majorFx = [], dotFx = [], deco = null;
+    let W = 0, H = 0, dpr = 1, cols = 0, rows = 0, nodes = [], fx = {}, deco = null, guides = [];
     let mx = -9999, my = -9999, inView = true, cur = 0, ripples = [], wash = null, bubbles = [], bits = [];
+    // bubble counter widget
+    const counter = $("[data-pop-count]");
+    let pops = 0;
+    try { pops = parseInt(localStorage.getItem("pops") || "0", 10) || 0; } catch {}
+    if (counter) counter.textContent = String(pops);
     const rnd = (a, b) => a + Math.random() * (b - a);
     const newBubble = (fromBottom) => ({ x: rnd(40, W - 40), y: fromBottom ? H + rnd(20, 160) : rnd(60, H - 60), r: rnd(14, 34), s: 1 + Math.floor(Math.random() * (schemes.length - 1)), ph: rnd(0, 6.28), sp: rnd(0.22, 0.5), pop: 0 });
     const size = () => {
@@ -368,28 +374,37 @@ export function init() {
       nodes = [];
       for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) nodes.push({ hx: i * STEP, hy: j * STEP, x: i * STEP, y: j * STEP, vx: 0, vy: 0, c: cur });
       const grad = (a) => schemes.map((sc) => { const lg = g.createLinearGradient(0, 0, W, H); sc.forEach((c, k) => lg.addColorStop(k / (sc.length - 1), rgba(c, a))); return lg; });
-      lineFx = grad(0.1); majorFx = grad(0.24); dotFx = grad(0.26);
-      // cutting-mat print: ruler ticks + numbers on the top and left edges, angle guides and a protractor arc
+      fx = { minor: grad(0.16), major: grad(0.36), half: grad(0.1), dot: grad(0.32), guide: grad(0.16) };
+      // angle guides + arcs as point lists, so the ripple can bend them
+      guides = [];
+      const by = Math.floor(H / STEP) * STEP, L = Math.hypot(W, H);
+      for (const [ox, dir] of [[0, 1], [Math.floor(W / STEP) * STEP, -1]]) {
+        for (const deg of [15, 30, 45, 60, 75]) {
+          const a = (deg * Math.PI) / 180, pts = [];
+          for (let s = 0; s < L; s += 12) pts.push([ox + dir * Math.cos(a) * s, by - Math.sin(a) * s]);
+          guides.push({ pts, dash: deg % 45 !== 0 });
+        }
+        for (const rr of [4, 8, 12]) {
+          const pts = [];
+          for (let a = 0; a <= 90; a += 2) { const t = (a * Math.PI) / 180; pts.push([ox + dir * Math.cos(t) * rr * STEP, by - Math.sin(t) * rr * STEP]); }
+          guides.push({ pts, dash: false });
+        }
+      }
+      // static print: ruler ticks + numbers on top and left edges, angle labels
       deco = document.createElement("canvas"); deco.width = W * dpr; deco.height = H * dpr;
       const d = deco.getContext("2d"); d.scale(dpr, dpr);
-      const ink = "rgba(47,87,71,", half = STEP / 2;
-      d.strokeStyle = ink + ".35)"; d.lineWidth = 1; d.beginPath();
-      for (let x = 0; x < W; x += STEP / 4) { const k = Math.round(x / (STEP / 4)), len = k % 20 === 0 ? 14 : k % 4 === 0 ? 9 : k % 2 === 0 ? 6 : 3; d.moveTo(x + 0.5, 0); d.lineTo(x + 0.5, len); }
-      for (let y = 0; y < H; y += STEP / 4) { const k = Math.round(y / (STEP / 4)), len = k % 20 === 0 ? 14 : k % 4 === 0 ? 9 : k % 2 === 0 ? 6 : 3; d.moveTo(0, y + 0.5); d.lineTo(len, y + 0.5); }
+      const ink = "rgba(74,52,36,", q = STEP / 4;
+      d.strokeStyle = ink + ".5)"; d.lineWidth = 1; d.beginPath();
+      for (let k = 0; k * q < W; k++) { const len = k % 20 === 0 ? 16 : k % 4 === 0 ? 10 : k % 2 === 0 ? 6 : 3; d.moveTo(k * q + 0.5, 0); d.lineTo(k * q + 0.5, len); }
+      for (let k = 0; k * q < H; k++) { const len = k % 20 === 0 ? 16 : k % 4 === 0 ? 10 : k % 2 === 0 ? 6 : 3; d.moveTo(0, k * q + 0.5); d.lineTo(len, k * q + 0.5); }
       d.stroke();
-      d.fillStyle = ink + ".45)"; d.font = '600 9px "Inter Tight", Arial, sans-serif';
+      d.fillStyle = ink + ".6)"; d.font = '600 10px "Inter Tight", Arial, sans-serif';
       d.textBaseline = "top"; d.textAlign = "center";
-      for (let i = 1; i * STEP < W; i++) if (i % 5 === 0) d.fillText(String(i), i * STEP, 16);
+      for (let i = 1; i * STEP < W; i++) if (i % 5 === 0) d.fillText(String(i), i * STEP, 18);
       d.textAlign = "left"; d.textBaseline = "middle";
-      for (let j = 1; j * STEP < H; j++) if (j % 5 === 0) d.fillText(String(j), 16, j * STEP);
-      const ox = 0, oy = Math.floor(H / STEP) * STEP;
-      d.setLineDash([6, 6]); d.strokeStyle = ink + ".14)";
-      for (const deg of [30, 45, 60]) { const a = (-deg * Math.PI) / 180, L = Math.hypot(W, H); d.beginPath(); d.moveTo(ox, oy); d.lineTo(ox + Math.cos(a) * L, oy + Math.sin(a) * L); d.stroke(); }
-      d.setLineDash([]); d.strokeStyle = ink + ".16)";
-      for (const rr of [STEP * 4, STEP * 8]) { d.beginPath(); d.arc(ox, oy, rr, -Math.PI / 2, 0); d.stroke(); }
-      d.fillStyle = ink + ".4)"; d.textAlign = "left"; d.textBaseline = "bottom";
-      for (const deg of [30, 45, 60]) { const a = (-deg * Math.PI) / 180; d.fillText(deg + "°", ox + Math.cos(a) * STEP * 8.4, oy + Math.sin(a) * STEP * 8.4); }
-      void half;
+      for (let j = 1; j * STEP < H; j++) if (j % 5 === 0) d.fillText(String(j), 18, j * STEP);
+      d.fillStyle = ink + ".5)"; d.textBaseline = "bottom";
+      for (const deg of [30, 45, 60]) { const a = (deg * Math.PI) / 180; d.fillText(deg + "°", Math.cos(a) * STEP * 12.6, by - Math.sin(a) * STEP * 12.6); }
       if (!bubbles.length) bubbles = Array.from({ length: 8 }, () => newBubble(false));
     };
     size();
@@ -413,11 +428,35 @@ export function init() {
       ripples[ripples.length - 1].k = 1.6;
       const sc = schemes[hit.s];
       for (let k = 0; k < 20; k++) { const a = (k / 20) * Math.PI * 2 + rnd(-0.2, 0.2), v = rnd(2, 6); bits.push({ x: hit.x, y: hit.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1, c: sc[k % sc.length] }); }
+      pops++;
+      try { localStorage.setItem("pops", String(pops)); } catch {}
+      if (counter) {
+        counter.textContent = String(pops);
+        const w = counter.closest(".s-counter");
+        if (w) { w.style.setProperty("--pc", sc[0]); w.classList.remove("bump"); void w.offsetWidth; w.classList.add("bump"); }
+      }
       document.body.classList.remove("on-bubble");
     });
     const io = new IntersectionObserver(([en]) => (inView = en.isIntersecting));
     io.observe(host);
     signal.addEventListener("abort", () => { io.disconnect(); host.classList.remove("mat-live"); document.body.classList.remove("on-bubble"); });
+
+    // displacement of the mesh at any point: bilinear blend of the four surrounding nodes
+    const at = (i, j) => nodes[j * cols + i];
+    const warp = (x, y) => {
+      const fi = Math.max(0, Math.min(cols - 1.001, x / STEP)), fj = Math.max(0, Math.min(rows - 1.001, y / STEP));
+      const i = Math.floor(fi), j = Math.floor(fj), u = fi - i, v = fj - j;
+      const a = at(i, j), b = at(i + 1, j), c = at(i, j + 1), d = at(i + 1, j + 1);
+      const dx = (a.x - a.hx) * (1 - u) * (1 - v) + (b.x - b.hx) * u * (1 - v) + (c.x - c.hx) * (1 - u) * v + (d.x - d.hx) * u * v;
+      const dy = (a.y - a.hy) * (1 - u) * (1 - v) + (b.y - b.hy) * u * (1 - v) + (c.y - c.hy) * (1 - u) * v + (d.y - d.hy) * u * v;
+      return [x + dx, y + dy];
+    };
+    const curve = (get, n, p) => {
+      const a0 = get(0); p.moveTo(a0.x, a0.y);
+      for (let k = 1; k < n - 1; k++) { const a = get(k), b = get(k + 1); p.quadraticCurveTo(a.x, a.y, (a.x + b.x) / 2, (a.y + b.y) / 2); }
+      const z = get(n - 1); p.lineTo(z.x, z.y);
+    };
+    const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
 
     loop((now) => {
       if (!inView) return;
@@ -425,10 +464,8 @@ export function init() {
       ripples = ripples.filter((r) => (r.r += 9) < Math.hypot(W, H));
       if (wash) { wash.r += 14; if (wash.r > Math.hypot(W, H) + 100) wash = null; }
       for (const n of nodes) {
-        // cursor: a soft push, like dots.sim
         const dx = n.x - mx, dy = n.y - my, d = Math.hypot(dx, dy);
         if (d < R && d > 0) { const f = ((R - d) / R) * 1.1; n.vx += (dx / d) * f; n.vy += (dy / d) * f; }
-        // click ripples: a ring that shoves nodes outward as it passes, fading with distance
         for (const r of ripples) {
           const rx = n.hx - r.x, ry = n.hy - r.y, rd = Math.hypot(rx, ry) || 1, band = rd - r.r;
           if (Math.abs(band) < 26) { const f = Math.cos((band / 26) * Math.PI * 0.5) * 2.2 * r.k * Math.max(0, 1 - r.r / 1400); n.vx += (rx / rd) * f; n.vy += (ry / rd) * f; }
@@ -436,29 +473,35 @@ export function init() {
         n.vx += (n.hx - n.x) * 0.05; n.vy += (n.hy - n.y) * 0.05; n.vx *= 0.88; n.vy *= 0.88; n.x += n.vx; n.y += n.vy;
         if (wash && n.c !== wash.s && Math.hypot(n.hx - wash.x, n.hy - wash.y) < wash.r) n.c = wash.s;
       }
-      const at = (i, j) => nodes[j * cols + i];
-      const lines = schemes.map(() => new Path2D()), majors = schemes.map(() => new Path2D());
-      // lines run as smooth curves through the nodes: dead straight at rest, wavy when nodes move
-      const curve = (get, n, p) => {
-        const a0 = get(0); p.moveTo(a0.x, a0.y);
-        for (let k = 1; k < n - 1; k++) { const a = get(k), b = get(k + 1); p.quadraticCurveTo(a.x, a.y, (a.x + b.x) / 2, (a.y + b.y) / 2); }
-        const z = get(n - 1); p.lineTo(z.x, z.y);
-      };
-      for (let j = 0; j < rows; j++) { let start = 0; for (let i = 1; i <= cols; i++) { if (i === cols || at(i, j).c !== at(start, j).c) { const s0 = start, len = i - start + (i < cols ? 1 : 0); if (len > 1) curve((k) => at(s0 + k, j), len, (j % 5 === 0 ? majors : lines)[at(s0, j).c]); start = i; } } }
-      for (let i = 0; i < cols; i++) { let start = 0; for (let j = 1; j <= rows; j++) { if (j === rows || at(i, j).c !== at(i, start).c) { const s0 = start, len = j - start + (j < rows ? 1 : 0); if (len > 1) curve((k) => at(i, s0 + k), len, (i % 5 === 0 ? majors : lines)[at(i, s0).c]); start = j; } } }
+      const P = () => schemes.map(() => new Path2D());
+      const minor = P(), major = P(), half = P(), guide = P();
+      // grid lines are drawn in runs of one colour, so a colour wash can sweep across them
+      for (let j = 0; j < rows; j++) { let st = 0; for (let i = 1; i <= cols; i++) { if (i === cols || at(i, j).c !== at(st, j).c) { const s0 = st, len = i - st + (i < cols ? 1 : 0); if (len > 1) curve((k) => at(s0 + k, j), len, (j % 5 === 0 ? major : minor)[at(s0, j).c]); st = i; } } }
+      for (let i = 0; i < cols; i++) { let st = 0; for (let j = 1; j <= rows; j++) { if (j === rows || at(i, j).c !== at(i, st).c) { const s0 = st, len = j - st + (j < rows ? 1 : 0); if (len > 1) curve((k) => at(i, s0 + k), len, (i % 5 === 0 ? major : minor)[at(i, s0).c]); st = j; } } }
+      // dashed half-cell lines run through the midpoints between nodes
+      for (let j = 0; j < rows - 1; j++) curve((k) => mid(at(k, j), at(k, j + 1)), cols, half[at(0, j).c]);
+      for (let i = 0; i < cols - 1; i++) curve((k) => mid(at(i, k), at(i + 1, k)), rows, half[at(i, 0).c]);
+      // angle guides and arcs follow the mesh
+      for (const gd of guides) {
+        const p = guide[cur === 0 ? 0 : at(0, rows - 1).c];
+        let first = true;
+        for (const [x, y] of gd.pts) { if (x < -20 || y < -20 || x > W + 20 || y > H + 20) { first = true; continue; } const [wx, wy] = warp(x, y); first ? p.moveTo(wx, wy) : p.lineTo(wx, wy); first = false; }
+      }
       g.setTransform(dpr, 0, 0, dpr, 0, 0);
       g.clearRect(0, 0, W, H);
       g.drawImage(deco, 0, 0, W, H);
+      g.lineWidth = 1; g.setLineDash([3, 4]);
+      for (let k = 0; k < half.length; k++) { g.strokeStyle = fx.half[k]; g.stroke(half[k]); }
+      g.setLineDash([]);
+      for (let k = 0; k < minor.length; k++) { g.strokeStyle = fx.minor[k]; g.stroke(minor[k]); }
+      g.lineWidth = 1.5;
+      for (let k = 0; k < major.length; k++) { g.strokeStyle = fx.major[k]; g.stroke(major[k]); }
       g.lineWidth = 1;
-      for (let k = 0; k < lines.length; k++) { g.strokeStyle = lineFx[k]; g.stroke(lines[k]); }
-      g.lineWidth = 1.4;
-      for (let k = 0; k < majors.length; k++) { g.strokeStyle = majorFx[k]; g.stroke(majors[k]); }
-      // dots on every node, swelling with speed
+      for (let k = 0; k < guide.length; k++) { g.strokeStyle = fx.guide[k]; g.stroke(guide[k]); }
       const dots = schemes.map(() => new Path2D());
-      for (const n of nodes) { const sp = Math.min(1, Math.hypot(n.vx, n.vy) / 4); const rr = 1.6 + sp * 2.6; dots[n.c].moveTo(n.x + rr, n.y); dots[n.c].arc(n.x, n.y, rr, 0, Math.PI * 2); }
-      for (let k = 0; k < dots.length; k++) { g.fillStyle = dotFx[k]; g.fill(dots[k]); }
+      for (const n of nodes) { const sp = Math.min(1, Math.hypot(n.vx, n.vy) / 4); const rr = 1.4 + sp * 2.6; dots[n.c].moveTo(n.x + rr, n.y); dots[n.c].arc(n.x, n.y, rr, 0, Math.PI * 2); }
+      for (let k = 0; k < dots.length; k++) { g.fillStyle = fx.dot[k]; g.fill(dots[k]); }
 
-      // bubbles: soft and see-through; plain ones are one colour, the rest a turning gradient
       for (let k = 0; k < bubbles.length; k++) {
         const b = bubbles[k];
         if (b.pop) { b.pop += 0.08; if (b.pop > 1.6) bubbles[k] = newBubble(true); continue; }

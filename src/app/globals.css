@@ -628,3 +628,31 @@ body.on-bubble .cur{width:46px;height:46px;margin:-23px 0 0 -23px;background:rgb
   background-image:linear-gradient(rgba(47,87,71,.16) 1.4px,transparent 1.4px),linear-gradient(90deg,rgba(47,87,71,.16) 1.4px,transparent 1.4px),linear-gradient(rgba(47,87,71,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(47,87,71,.07) 1px,transparent 1px);
   background-size:220px 220px,220px 220px,44px 44px,44px 44px}
 .hero.mat-live{background-image:none}
+
+/* beige cutting mat with dark brown print */
+.hero,.hero.mat-live{background-color:#eadfc8;
+  background-image:linear-gradient(rgba(74,52,36,.3) 1.5px,transparent 1.5px),linear-gradient(90deg,rgba(74,52,36,.3) 1.5px,transparent 1.5px),linear-gradient(rgba(74,52,36,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(74,52,36,.14) 1px,transparent 1px);
+  background-size:200px 200px,200px 200px,40px 40px,40px 40px}
+.hero.mat-live{background-image:none}
+.hero .lede{color:#4a3f35}
+
+/* bubble counter widget */
+.s-counter{display:flex;align-items:center;gap:10px;padding:10px 16px 10px 12px;border-radius:16px;background:rgba(255,255,255,.62);
+  backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 0 0 .5px rgba(74,52,36,.18),0 10px 24px -10px rgba(74,52,36,.35);font-family:var(--f-body);font-weight:400;transform:rotate(-3deg)}
+.s-counter .pc-bubble{width:28px;height:28px;border-radius:50%;flex:none;
+  background:radial-gradient(circle at 32% 30%,#fff 0 14%,transparent 15%),linear-gradient(135deg,color-mix(in srgb,var(--pc,#9b84ff) 55%,transparent),color-mix(in srgb,#ff5fa2 45%,transparent));box-shadow:inset 0 0 0 1px rgba(255,255,255,.8)}
+.s-counter .pc-text{display:flex;flex-direction:column;line-height:1.05}
+.s-counter b{font-family:var(--f-name);font-weight:700;font-size:24px;letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums}
+.s-counter small{font-family:var(--f-mono);font-weight:600;font-size:11px;color:#6b5a4a;letter-spacing:.01em}
+.s-counter.bump .pc-bubble{animation:pcbump .45s cubic-bezier(.2,.9,.3,1.5)}
+.s-counter.bump b{animation:pcnum .45s ease}
+@keyframes pcbump{40%{transform:scale(1.35)}}
+@keyframes pcnum{30%{transform:translateY(-4px);color:var(--pc,#ff7a3d)}}
+
+/* work page filters: bigger on large screens */
+@media (min-width:861px){
+  .filters{gap:10px;margin-bottom:44px}
+  .filters button{font-size:15px;font-weight:600;padding:11px 20px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+}
+@media (min-width:1600px){.filters button{font-size:16px;padding:12px 22px}}
