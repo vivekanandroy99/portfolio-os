@@ -92,6 +92,8 @@ export function init() {
       if (!fine() || calm) return;
       const r = c.getBoundingClientRect();
       const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+      // data-tilt="lift": stays level, just floats up and leans its shadow toward the cursor
+      if (c.dataset.tilt === "lift") { c.style.transform = "translateY(-6px) scale(1.01)"; c.style.setProperty("--lx", `${-x * 24}px`); c.style.setProperty("--ly", `${-y * 12}px`); return; }
       c.style.transform = `perspective(900px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg) translateY(-4px)`;
     });
     on(c, "pointerleave", () => (c.style.transform = ""));

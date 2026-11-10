@@ -50,7 +50,7 @@ export function Hero() {
               </a>
             </div>
           </div>
-          <div className="win reel" data-label="watch" data-tilt>
+          <div className="win reel" data-label="watch" data-tilt="lift">
             <Bar title="showreel.mov" />
             <canvas id="reel" width={960} height={540} aria-label="animated showreel placeholder" />
             <div className="cap">
