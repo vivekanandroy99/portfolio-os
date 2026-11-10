@@ -622,3 +622,9 @@ body.on-bubble .cur{width:46px;height:46px;margin:-23px 0 0 -23px;background:rgb
 @keyframes clipzoom{from{transform:scale(.55);opacity:0}to{transform:none;opacity:1}}
 @keyframes fadein{from{opacity:0}}
 .f-clip{cursor:zoom-in}
+
+/* hero = a light cutting mat: soft sage, no colour glows. css grid is the fallback when the canvas is off */
+.hero,.hero.mat-live{background-color:#e8ece4;
+  background-image:linear-gradient(rgba(47,87,71,.16) 1.4px,transparent 1.4px),linear-gradient(90deg,rgba(47,87,71,.16) 1.4px,transparent 1.4px),linear-gradient(rgba(47,87,71,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(47,87,71,.07) 1px,transparent 1px);
+  background-size:220px 220px,220px 220px,44px 44px,44px 44px}
+.hero.mat-live{background-image:none}

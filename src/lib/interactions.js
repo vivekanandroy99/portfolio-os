@@ -344,7 +344,7 @@ export function init() {
     const g = gc.getContext("2d");
     const STEP = 44, R = 120;
     const schemes = [
-      ["#ff7a3d", "#ff7a3d"],
+      ["#2f5747", "#2f5747"],
       ["#9b84ff", "#ff5fa2", "#3aa0ff"],
       ["#2fb67c", "#3aa0ff", "#9b84ff"],
       ["#f2b600", "#ff7a3d", "#ff5fa2"],
@@ -356,7 +356,7 @@ export function init() {
     ];
     const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
     const rgba = (h, a) => { const [r, gg, b] = hex(h); return `rgba(${r},${gg},${b},${a})`; };
-    let W = 0, H = 0, dpr = 1, cols = 0, rows = 0, nodes = [], lineFx = [], dotFx = [];
+    let W = 0, H = 0, dpr = 1, cols = 0, rows = 0, nodes = [], lineFx = [], majorFx = [], dotFx = [], deco = null;
     let mx = -9999, my = -9999, inView = true, cur = 0, ripples = [], wash = null, bubbles = [], bits = [];
     const rnd = (a, b) => a + Math.random() * (b - a);
     const newBubble = (fromBottom) => ({ x: rnd(40, W - 40), y: fromBottom ? H + rnd(20, 160) : rnd(60, H - 60), r: rnd(14, 34), s: 1 + Math.floor(Math.random() * (schemes.length - 1)), ph: rnd(0, 6.28), sp: rnd(0.22, 0.5), pop: 0 });
@@ -368,7 +368,28 @@ export function init() {
       nodes = [];
       for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) nodes.push({ hx: i * STEP, hy: j * STEP, x: i * STEP, y: j * STEP, vx: 0, vy: 0, c: cur });
       const grad = (a) => schemes.map((sc) => { const lg = g.createLinearGradient(0, 0, W, H); sc.forEach((c, k) => lg.addColorStop(k / (sc.length - 1), rgba(c, a))); return lg; });
-      lineFx = grad(0.13); dotFx = grad(0.32);
+      lineFx = grad(0.1); majorFx = grad(0.24); dotFx = grad(0.26);
+      // cutting-mat print: ruler ticks + numbers on the top and left edges, angle guides and a protractor arc
+      deco = document.createElement("canvas"); deco.width = W * dpr; deco.height = H * dpr;
+      const d = deco.getContext("2d"); d.scale(dpr, dpr);
+      const ink = "rgba(47,87,71,", half = STEP / 2;
+      d.strokeStyle = ink + ".35)"; d.lineWidth = 1; d.beginPath();
+      for (let x = 0; x < W; x += STEP / 4) { const k = Math.round(x / (STEP / 4)), len = k % 20 === 0 ? 14 : k % 4 === 0 ? 9 : k % 2 === 0 ? 6 : 3; d.moveTo(x + 0.5, 0); d.lineTo(x + 0.5, len); }
+      for (let y = 0; y < H; y += STEP / 4) { const k = Math.round(y / (STEP / 4)), len = k % 20 === 0 ? 14 : k % 4 === 0 ? 9 : k % 2 === 0 ? 6 : 3; d.moveTo(0, y + 0.5); d.lineTo(len, y + 0.5); }
+      d.stroke();
+      d.fillStyle = ink + ".45)"; d.font = '600 9px "Inter Tight", Arial, sans-serif';
+      d.textBaseline = "top"; d.textAlign = "center";
+      for (let i = 1; i * STEP < W; i++) if (i % 5 === 0) d.fillText(String(i), i * STEP, 16);
+      d.textAlign = "left"; d.textBaseline = "middle";
+      for (let j = 1; j * STEP < H; j++) if (j % 5 === 0) d.fillText(String(j), 16, j * STEP);
+      const ox = 0, oy = Math.floor(H / STEP) * STEP;
+      d.setLineDash([6, 6]); d.strokeStyle = ink + ".14)";
+      for (const deg of [30, 45, 60]) { const a = (-deg * Math.PI) / 180, L = Math.hypot(W, H); d.beginPath(); d.moveTo(ox, oy); d.lineTo(ox + Math.cos(a) * L, oy + Math.sin(a) * L); d.stroke(); }
+      d.setLineDash([]); d.strokeStyle = ink + ".16)";
+      for (const rr of [STEP * 4, STEP * 8]) { d.beginPath(); d.arc(ox, oy, rr, -Math.PI / 2, 0); d.stroke(); }
+      d.fillStyle = ink + ".4)"; d.textAlign = "left"; d.textBaseline = "bottom";
+      for (const deg of [30, 45, 60]) { const a = (-deg * Math.PI) / 180; d.fillText(deg + "°", ox + Math.cos(a) * STEP * 8.4, oy + Math.sin(a) * STEP * 8.4); }
+      void half;
       if (!bubbles.length) bubbles = Array.from({ length: 8 }, () => newBubble(false));
     };
     size();
@@ -416,19 +437,22 @@ export function init() {
         if (wash && n.c !== wash.s && Math.hypot(n.hx - wash.x, n.hy - wash.y) < wash.r) n.c = wash.s;
       }
       const at = (i, j) => nodes[j * cols + i];
-      const lines = schemes.map(() => new Path2D());
+      const lines = schemes.map(() => new Path2D()), majors = schemes.map(() => new Path2D());
       // lines run as smooth curves through the nodes: dead straight at rest, wavy when nodes move
       const curve = (get, n, p) => {
         const a0 = get(0); p.moveTo(a0.x, a0.y);
         for (let k = 1; k < n - 1; k++) { const a = get(k), b = get(k + 1); p.quadraticCurveTo(a.x, a.y, (a.x + b.x) / 2, (a.y + b.y) / 2); }
         const z = get(n - 1); p.lineTo(z.x, z.y);
       };
-      for (let j = 0; j < rows; j++) { let start = 0; for (let i = 1; i <= cols; i++) { if (i === cols || at(i, j).c !== at(start, j).c) { const s0 = start, len = i - start + (i < cols ? 1 : 0); if (len > 1) curve((k) => at(s0 + k, j), len, lines[at(s0, j).c]); start = i; } } }
-      for (let i = 0; i < cols; i++) { let start = 0; for (let j = 1; j <= rows; j++) { if (j === rows || at(i, j).c !== at(i, start).c) { const s0 = start, len = j - start + (j < rows ? 1 : 0); if (len > 1) curve((k) => at(i, s0 + k), len, lines[at(i, s0).c]); start = j; } } }
+      for (let j = 0; j < rows; j++) { let start = 0; for (let i = 1; i <= cols; i++) { if (i === cols || at(i, j).c !== at(start, j).c) { const s0 = start, len = i - start + (i < cols ? 1 : 0); if (len > 1) curve((k) => at(s0 + k, j), len, (j % 5 === 0 ? majors : lines)[at(s0, j).c]); start = i; } } }
+      for (let i = 0; i < cols; i++) { let start = 0; for (let j = 1; j <= rows; j++) { if (j === rows || at(i, j).c !== at(i, start).c) { const s0 = start, len = j - start + (j < rows ? 1 : 0); if (len > 1) curve((k) => at(i, s0 + k), len, (i % 5 === 0 ? majors : lines)[at(i, s0).c]); start = j; } } }
       g.setTransform(dpr, 0, 0, dpr, 0, 0);
       g.clearRect(0, 0, W, H);
+      g.drawImage(deco, 0, 0, W, H);
       g.lineWidth = 1;
       for (let k = 0; k < lines.length; k++) { g.strokeStyle = lineFx[k]; g.stroke(lines[k]); }
+      g.lineWidth = 1.4;
+      for (let k = 0; k < majors.length; k++) { g.strokeStyle = majorFx[k]; g.stroke(majors[k]); }
       // dots on every node, swelling with speed
       const dots = schemes.map(() => new Path2D());
       for (const n of nodes) { const sp = Math.min(1, Math.hypot(n.vx, n.vy) / 4); const rr = 1.6 + sp * 2.6; dots[n.c].moveTo(n.x + rr, n.y); dots[n.c].arc(n.x, n.y, rr, 0, Math.PI * 2); }
