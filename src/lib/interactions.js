@@ -335,6 +335,71 @@ export function init() {
     }
   }
 
+  // reactive cutting mat: the hero grid bends away from the cursor and glows, like dots.sim
+  const gc = $("#mat");
+  if (gc && fine() && !calm) {
+    const host = gc.parentElement;
+    const g = gc.getContext("2d");
+    const STEP = 40, R = 170;
+    let W = 0, H = 0, dpr = 1, cols = 0, rows = 0, pts = [];
+    let mx = -9999, my = -9999, tx = -9999, ty = -9999, ripples = [], inView = true;
+    const size = () => {
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      W = host.clientWidth; H = host.clientHeight;
+      gc.width = W * dpr; gc.height = H * dpr;
+      cols = Math.ceil(W / STEP) + 2; rows = Math.ceil(H / STEP) + 2;
+      pts = [];
+      for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) pts.push({ hx: i * STEP, hy: j * STEP, x: i * STEP, y: j * STEP, vx: 0, vy: 0, e: 0 });
+    };
+    size();
+    host.classList.add("mat-live");
+    on(window, "resize", size);
+    on(host, "pointermove", (e) => { const r = host.getBoundingClientRect(); tx = e.clientX - r.left; ty = e.clientY - r.top; if (mx < -999) { mx = tx; my = ty; } });
+    on(host, "pointerleave", () => { tx = ty = mx = my = -9999; });
+    on(host, "pointerdown", (e) => { if (e.target.closest("a,button,.sticker,.win")) return; const r = host.getBoundingClientRect(); ripples.push({ x: e.clientX - r.left, y: e.clientY - r.top, r: 0 }); });
+    const io = new IntersectionObserver(([en]) => (inView = en.isIntersecting));
+    io.observe(host);
+    signal.addEventListener("abort", () => { io.disconnect(); host.classList.remove("mat-live"); });
+    loop(() => {
+      if (!inView) return;
+      mx += (tx - mx) * 0.18; my += (ty - my) * 0.18;
+      if (tx < -999) mx = my = -9999;
+      ripples = ripples.filter((r) => (r.r += 12) < Math.max(W, H));
+      for (const p of pts) {
+        const dx = p.x - mx, dy = p.y - my, d = Math.hypot(dx, dy);
+        let push = 0;
+        if (d < R && d > 0) { push = (1 - d / R) ** 2; p.vx += (dx / d) * push * 2.2; p.vy += (dy / d) * push * 2.2; }
+        for (const r of ripples) { const rx = p.x - r.x, ry = p.y - r.y, rd = Math.hypot(rx, ry); if (Math.abs(rd - r.r) < 20 && rd > 0) { p.vx += (rx / rd) * 1.8; p.vy += (ry / rd) * 1.8; push = Math.max(push, 0.7); } }
+        p.vx += (p.hx - p.x) * 0.08; p.vy += (p.hy - p.y) * 0.08; p.vx *= 0.8; p.vy *= 0.8; p.x += p.vx; p.y += p.vy;
+        p.e += (push - p.e) * 0.2;
+      }
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      g.clearRect(0, 0, W, H);
+      const at = (i, j) => pts[j * cols + i];
+      // fine sub-grid stays still and faint
+      g.strokeStyle = "rgba(22,24,26,.025)"; g.lineWidth = 1; g.beginPath();
+      for (let x = 0.5; x < W; x += STEP / 2) { g.moveTo(x, 0); g.lineTo(x, H); }
+      for (let y = 0.5; y < H; y += STEP / 2) { g.moveTo(0, y); g.lineTo(W, y); }
+      g.stroke();
+      // main grid bends
+      g.strokeStyle = "rgba(22,24,26,.075)"; g.beginPath();
+      for (let j = 0; j < rows; j++) { for (let i = 0; i < cols; i++) { const p = at(i, j); i ? g.lineTo(p.x, p.y) : g.moveTo(p.x, p.y); } }
+      for (let i = 0; i < cols; i++) { for (let j = 0; j < rows; j++) { const p = at(i, j); j ? g.lineTo(p.x, p.y) : g.moveTo(p.x, p.y); } }
+      g.stroke();
+      // glowing intersections near the cursor
+      for (const p of pts) {
+        if (p.e < 0.04) continue;
+        g.fillStyle = `rgba(255,122,61,${Math.min(0.9, p.e * 1.4)})`;
+        g.beginPath(); g.arc(p.x, p.y, 1.5 + p.e * 3, 0, Math.PI * 2); g.fill();
+      }
+      if (mx > -999) {
+        const glow = g.createRadialGradient(mx, my, 0, mx, my, R * 1.2);
+        glow.addColorStop(0, "rgba(255,200,150,.22)"); glow.addColorStop(1, "rgba(255,200,150,0)");
+        g.fillStyle = glow; g.fillRect(mx - R * 1.2, my - R * 1.2, R * 2.4, R * 2.4);
+      }
+    });
+  }
+
   // showreel placeholder
   const rc = $("#reel");
   if (rc) {

@@ -22,6 +22,7 @@ function NameWithEyes({ name }: { name: string }) {
 export function Hero() {
   return (
     <div className="hero">
+      <canvas id="mat" className="mat-cv" aria-hidden="true" />
       <div className="wrap">
         <div className="hero-grid">
           <div className="hero-copy">
@@ -33,8 +34,11 @@ export function Hero() {
             </h1>
             <p className="lede">{site.lede}</p>
             <div className="chips">
-              {site.chips.map((c) => (
-                <span className="chip" key={c}>{c}</span>
+              {site.chips.map((c, i) => (
+                <span className={`chip c${i % 4}`} key={c}>
+                  <i aria-hidden="true" />
+                  {c}
+                </span>
               ))}
             </div>
             <div className="ctas">
@@ -70,16 +74,16 @@ export function Hero() {
         <div className="sticker s-star" style={{ right: "10%", top: "4%" }} data-label="drag me">
           <span>wow!</span>
         </div>
-        <div className="sticker s-cursor" style={{ left: "13%", top: "70%" }} data-label="drag me">
+        <div className="sticker s-cursor" style={{ left: "12%", top: "64%" }} data-label="drag me">
           <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
             <path d="M4 2l15 11-6.5 1.2L16 21l-3 1.4-3.4-6.9L4 19z" fill="#16181a" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round" />
           </svg>
           <span>click stuff</span>
         </div>
-        <div className="sticker s-tape" style={{ right: "6%", top: "62%" }} data-label="drag me">
+        <div className="sticker s-tape" style={{ right: "3%", top: "70%" }} data-label="drag me">
           new site, who dis?
         </div>
-        <div className="sticker s-keycap" style={{ right: "15%", top: "80%" }} data-label="try it" data-os-open>
+        <div className="sticker s-keycap" style={{ left: "5%", top: "94%" }} data-label="try it" data-os-open>
           <kbd>⌘</kbd>
           <kbd>O</kbd>
         </div>

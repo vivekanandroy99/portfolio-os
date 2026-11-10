@@ -33,21 +33,14 @@ export function FolderIcon({ label, href, style, color }: { label: string; href:
   );
 }
 
-export function Clip({ name, src, style, tint }: { name: string; src?: string; style: Pos; tint: string }) {
+export function Clip({ name, src, style, tint, size = "m" }: { name: string; src?: string; style: Pos; tint: string; size?: "s" | "m" | "l" }) {
   return (
-    <div className="sticker floaty f-clip" style={style} data-label="drag me">
+    <div className={`sticker floaty f-clip clip-${size}`} style={style} data-label="drag me">
       <div className="bar">
         <div className="lights"><i /><i /><i /></div>
         <div className="title">{name}</div>
       </div>
-      {src ? (
-        <video src={src} autoPlay muted loop playsInline />
-      ) : (
-        <div className={`clip-ph ${tint}`}>
-          <span className="play-dot" />
-          <span className="clip-tc">00:{String(name.length * 3).padStart(2, "0")}</span>
-        </div>
-      )}
+      {src ? <video src={src} autoPlay muted loop playsInline /> : <div className={`clip-ph ${tint}`} />}
     </div>
   );
 }
@@ -58,7 +51,9 @@ export function HeroFloaties() {
     <>
       <FileIcon label="resume.pdf" ext="PDF" href={site.links.resume} external style={{ left: "6%", top: "22%" }} />
       <FolderIcon label="work" href="/work" color="#c9b8ff" style={{ right: "5%", top: "40%" }} />
-      <Clip name="xros.mp4" tint="t4" style={{ left: "2%", top: "84%" }} />
+      <Clip name="xros.mp4" tint="t4" size="m" style={{ left: "0%", top: "80%" }} />
+      <Clip name="altbot.mov" tint="t1" size="s" style={{ right: "3%", top: "54%" }} />
+      <Clip name="paint.mp4" tint="t3" size="m" style={{ right: "-1%", top: "84%" }} />
     </>
   );
 }
@@ -67,8 +62,10 @@ export function WorkFloaties() {
   return (
     <>
       <FolderIcon label="photos" href={site.links.paintings} color="#ffb59a" style={{ left: "3%", top: "38%" }} />
-      <Clip name="game.mp4" tint="t2" style={{ right: "2%", top: "34%" }} />
-      <Clip name="kiosk.mp4" tint="t3" style={{ left: "1%", top: "62%" }} />
+      <Clip name="game.mp4" tint="t2" size="m" style={{ right: "0.5%", top: "30%" }} />
+      <Clip name="kiosk.mp4" tint="t3" size="m" style={{ left: "1%", top: "60%" }} />
+      <Clip name="stewart.mp4" tint="t1" size="s" style={{ left: "4%", top: "16%" }} />
+      <Clip name="clay.mov" tint="t4" size="s" style={{ right: "6%", top: "56%" }} />
       <FileIcon label="moodboard.png" ext="PNG" href="/work" style={{ right: "4%", top: "74%" }} />
     </>
   );
