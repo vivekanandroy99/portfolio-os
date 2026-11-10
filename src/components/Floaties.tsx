@@ -49,11 +49,11 @@ export function Clip({ name, src, style, tint, size = "m" }: { name: string; src
 export function HeroFloaties() {
   return (
     <>
-      <FileIcon label="resume.pdf" ext="PDF" href={site.links.resume} external style={{ left: "6%", top: "22%" }} />
-      <FolderIcon label="work" href="/work" color="#c9b8ff" style={{ right: "5%", top: "40%" }} />
-      <Clip name="xros.mp4" tint="t4" size="m" style={{ left: "0%", top: "80%" }} />
-      <Clip name="altbot.mov" tint="t1" size="s" style={{ right: "3%", top: "54%" }} />
-      <Clip name="paint.mp4" tint="t3" size="m" style={{ right: "-1%", top: "84%" }} />
+      <FileIcon label="resume.pdf" ext="PDF" href={site.links.resume} external style={{ left: "3%", top: "23%", rotate: "-7deg" }} />
+      <FolderIcon label="work" href="/work" color="#c9b8ff" style={{ right: "9%", top: "46%", rotate: "8deg" }} />
+      <Clip name="xros.mp4" tint="t4" size="m" style={{ left: "1%", top: "77%", rotate: "-3deg" }} />
+      <Clip name="altbot.mov" tint="t1" size="s" style={{ right: "0%", top: "59%", rotate: "5deg" }} />
+      <Clip name="paint.mp4" tint="t3" size="m" style={{ right: "2%", top: "86%", rotate: "-2deg" }} />
     </>
   );
 }
@@ -61,12 +61,12 @@ export function HeroFloaties() {
 export function WorkFloaties() {
   return (
     <>
-      <FolderIcon label="photos" href={site.links.paintings} color="#ffb59a" style={{ left: "3%", top: "38%" }} />
-      <Clip name="game.mp4" tint="t2" size="m" style={{ right: "0.5%", top: "30%" }} />
-      <Clip name="kiosk.mp4" tint="t3" size="m" style={{ left: "1%", top: "60%" }} />
-      <Clip name="stewart.mp4" tint="t1" size="s" style={{ left: "4%", top: "16%" }} />
-      <Clip name="clay.mov" tint="t4" size="s" style={{ right: "6%", top: "56%" }} />
-      <FileIcon label="moodboard.png" ext="PNG" href="/work" style={{ right: "4%", top: "74%" }} />
+      <FolderIcon label="photos" href={site.links.paintings} color="#ffb59a" style={{ left: "7%", top: "37%", rotate: "6deg" }} />
+      <Clip name="game.mp4" tint="t2" size="m" style={{ right: "1%", top: "25%", rotate: "-4deg" }} />
+      <Clip name="kiosk.mp4" tint="t3" size="m" style={{ left: "0%", top: "58%", rotate: "3deg" }} />
+      <Clip name="stewart.mp4" tint="t1" size="s" style={{ left: "2%", top: "12%", rotate: "-5deg" }} />
+      <Clip name="clay.mov" tint="t4" size="s" style={{ right: "8%", top: "51%", rotate: "6deg" }} />
+      <FileIcon label="moodboard.png" ext="PNG" href="/work" style={{ right: "2%", top: "73%", rotate: "-6deg" }} />
     </>
   );
 }

@@ -335,126 +335,123 @@ export function init() {
     }
   }
 
-  // flowing mat: the hero grid rolls like water, bends around the cursor,
-  // and floating colour bubbles can be popped to wash the waves in a new colour
+  // wavy mat: the grid stays a grid, but every line ripples like a plucked string,
+  // harder near the cursor. Floating gradient bubbles can be popped to wash the grid in their colours.
   const gc = $("#mat");
   if (gc && fine() && !calm) {
     const host = gc.parentElement;
     const g = gc.getContext("2d");
-    const STEP = 44, R = 170;
-    const palette = ["#ff7a3d", "#9b84ff", "#2fb67c", "#f2b600", "#ff5fa2", "#3aa0ff"];
-    const rgb = palette.map((h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)));
-    let W = 0, H = 0, dpr = 1, cols = 0, rows = 0, pts = [];
+    const STEP = 46, R = 180, SAMPLE = 8;
+    const schemes = [
+      ["#ff7a3d", "#ffb59a", "#ff7a3d"],
+      ["#9b84ff", "#ff5fa2", "#3aa0ff"],
+      ["#2fb67c", "#3aa0ff", "#9b84ff"],
+      ["#f2b600", "#ff7a3d", "#ff5fa2"],
+      ["#2fb67c", "#f2b600", "#ff5fa2"],
+      ["#3aa0ff", "#2fb67c", "#ff7a3d"],
+    ];
+    const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+    const rgba = (h, a) => { const [r, gg, b] = hex(h); return `rgba(${r},${gg},${b},${a})`; };
+    let W = 0, H = 0, dpr = 1, cols = 0, rows = 0, nodes = [], strokes = [];
     let mx = -9999, my = -9999, tx = -9999, ty = -9999, inView = true;
-    let wash = null; // { x, y, r, c } colour front spreading from a popped bubble
-    let cur = 0; // current wave colour index
-    let bubbles = [], bits = [];
+    let wash = null, cur = 0, bubbles = [], bits = [];
     const rnd = (a, b) => a + Math.random() * (b - a);
-    const newBubble = (fromBottom) => {
-      const c = Math.floor(Math.random() * palette.length);
-      return { x: rnd(40, W - 40), y: fromBottom ? H + rnd(20, 120) : rnd(60, H - 60), r: rnd(16, 30), c, ph: rnd(0, 6.28), sp: rnd(0.25, 0.6), pop: 0 };
-    };
+    const newBubble = (fromBottom) => ({ x: rnd(40, W - 40), y: fromBottom ? H + rnd(20, 140) : rnd(60, H - 60), r: rnd(16, 32), s: 1 + Math.floor(Math.random() * (schemes.length - 1)), ph: rnd(0, 6.28), sp: rnd(0.25, 0.55), pop: 0 });
     const size = () => {
       dpr = Math.min(2, window.devicePixelRatio || 1);
       W = host.clientWidth; H = host.clientHeight;
       gc.width = W * dpr; gc.height = H * dpr;
-      cols = Math.ceil(W / STEP) + 3; rows = Math.ceil(H / STEP) + 3;
-      pts = [];
-      for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) pts.push({ hx: (i - 1) * STEP, hy: (j - 1) * STEP, x: 0, y: 0, ox: 0, oy: 0, vx: 0, vy: 0, c: cur, e: 0 });
+      cols = Math.ceil(W / STEP) + 2; rows = Math.ceil(H / STEP) + 2;
+      nodes = [];
+      for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) nodes.push({ hx: i * STEP, hy: j * STEP, ox: 0, oy: 0, vx: 0, vy: 0, c: cur });
+      // one stroke style per colour scheme: a soft diagonal gradient across the hero
+      strokes = schemes.map((sc) => { const lg = g.createLinearGradient(0, 0, W, H); sc.forEach((c, k) => lg.addColorStop(k / (sc.length - 1), rgba(c, 0.16))); return lg; });
       if (!bubbles.length) bubbles = Array.from({ length: 7 }, () => newBubble(false));
     };
     size();
     host.classList.add("mat-live");
     on(window, "resize", size);
     const local = (e) => { const r = host.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+    const blocked = (e) => e.target.closest("a,button,.sticker,.win,.chip");
     on(host, "pointermove", (e) => {
       [tx, ty] = local(e);
       if (mx < -999) { mx = tx; my = ty; }
-      const over = !e.target.closest("a,button,.sticker,.win,.chip") && bubbles.some((b) => Math.hypot(b.x - tx, b.y - ty) < b.r + 6);
-      document.body.classList.toggle("on-bubble", over);
+      document.body.classList.toggle("on-bubble", !blocked(e) && bubbles.some((b) => !b.pop && Math.hypot(b.x - tx, b.y - ty) < b.r + 6));
     });
     on(host, "pointerleave", () => { tx = ty = mx = my = -9999; document.body.classList.remove("on-bubble"); });
     on(host, "pointerdown", (e) => {
-      if (e.target.closest("a,button,.sticker,.win,.chip")) return;
+      if (blocked(e)) return;
       const [x, y] = local(e);
       const hit = bubbles.find((b) => !b.pop && Math.hypot(b.x - x, b.y - y) < b.r + 8);
       if (!hit) return;
-      hit.pop = 1;
-      cur = hit.c;
-      wash = { x: hit.x, y: hit.y, r: 0, c: hit.c };
-      for (let k = 0; k < 18; k++) { const a = (k / 18) * Math.PI * 2 + rnd(-0.2, 0.2), s = rnd(2, 6); bits.push({ x: hit.x, y: hit.y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 1, c: hit.c }); }
-      for (const p of pts) { const dx = p.x - hit.x, dy = p.y - hit.y, d = Math.hypot(dx, dy) || 1; if (d < 220) { const f = (1 - d / 220) * 9; p.vx += (dx / d) * f; p.vy += (dy / d) * f; } }
+      hit.pop = 1; cur = hit.s;
+      wash = { x: hit.x, y: hit.y, r: 0, s: hit.s };
+      const sc = schemes[hit.s];
+      for (let k = 0; k < 20; k++) { const a = (k / 20) * Math.PI * 2 + rnd(-0.2, 0.2), v = rnd(2, 6); bits.push({ x: hit.x, y: hit.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1, c: sc[k % sc.length] }); }
+      for (const n of nodes) { const dx = n.hx - hit.x, dy = n.hy - hit.y, d = Math.hypot(dx, dy) || 1; if (d < 220) { const f = (1 - d / 220) * 8; n.vx += (dx / d) * f; n.vy += (dy / d) * f; } }
       document.body.classList.remove("on-bubble");
     });
     const io = new IntersectionObserver(([en]) => (inView = en.isIntersecting));
     io.observe(host);
     signal.addEventListener("abort", () => { io.disconnect(); host.classList.remove("mat-live"); document.body.classList.remove("on-bubble"); });
 
-    const seg = palette.map(() => new Path2D());
     loop((now) => {
       if (!inView) return;
       const t = now / 1000;
       mx += (tx - mx) * 0.15; my += (ty - my) * 0.15;
       if (tx < -999) mx = my = -9999;
       if (wash) { wash.r += 14; if (wash.r > Math.hypot(W, H) + 100) wash = null; }
-
-      for (const p of pts) {
-        // rolling swell: two crossing sine waves give a slow, watery drift
-        const wy = Math.sin(p.hx * 0.012 + t * 1.1) * 9 + Math.sin((p.hx + p.hy) * 0.007 - t * 0.7) * 7;
-        const wx = Math.cos(p.hy * 0.011 + t * 0.9) * 6 + Math.sin((p.hx - p.hy) * 0.006 + t * 0.5) * 4;
-        const bx = p.hx + wx, by = p.hy + wy;
-        const dx = bx + p.ox - mx, dy = by + p.oy - my, d = Math.hypot(dx, dy);
-        let push = 0;
-        if (d < R && d > 0) { push = (1 - d / R) ** 2; p.vx += (dx / d) * push * 2.4; p.vy += (dy / d) * push * 2.4; }
-        p.vx += -p.ox * 0.06; p.vy += -p.oy * 0.06; p.vx *= 0.86; p.vy *= 0.86; p.ox += p.vx; p.oy += p.vy;
-        p.x = bx + p.ox; p.y = by + p.oy;
-        p.e += (push - p.e) * 0.2;
-        if (wash && wash.c !== p.c && Math.hypot(p.hx - wash.x, p.hy - wash.y) < wash.r) p.c = wash.c;
+      // nodes stay on the grid; they only get nudged by the cursor and spring back
+      for (const n of nodes) {
+        const dx = n.hx + n.ox - mx, dy = n.hy + n.oy - my, d = Math.hypot(dx, dy);
+        if (d < R && d > 0) { const f = (1 - d / R) ** 2 * 1.6; n.vx += (dx / d) * f; n.vy += (dy / d) * f; }
+        n.vx += -n.ox * 0.07; n.vy += -n.oy * 0.07; n.vx *= 0.85; n.vy *= 0.85; n.ox += n.vx; n.oy += n.vy;
+        if (wash && n.c !== wash.s && Math.hypot(n.hx - wash.x, n.hy - wash.y) < wash.r) n.c = wash.s;
       }
-
+      const at = (i, j) => nodes[j * cols + i];
+      // ripple amplitude: a gentle base, swelling near the cursor
+      const amp = (x, y) => { const d2 = (x - mx) ** 2 + (y - my) ** 2; return 2.2 + 7 * Math.exp(-d2 / (R * R * 0.6)); };
+      const paths = schemes.map(() => new Path2D());
+      // horizontal lines: travelling sine along x, offset in y
+      for (let j = 0; j < rows; j++) {
+        for (let i = 0; i < cols - 1; i++) {
+          const a = at(i, j), b = at(i + 1, j), p = paths[a.c];
+          for (let s = 0; s <= STEP; s += SAMPLE) {
+            const u = s / STEP, x = a.hx + a.ox + (b.hx + b.ox - a.hx - a.ox) * u, yb = a.hy + a.oy + (b.hy + b.oy - a.hy - a.oy) * u;
+            const y = yb + Math.sin(x * 0.045 - t * 2.2 + j * 0.9) * amp(x, yb);
+            s === 0 ? p.moveTo(x, y) : p.lineTo(x, y);
+          }
+        }
+      }
+      // vertical lines: same idea along y
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows - 1; j++) {
+          const a = at(i, j), b = at(i, j + 1), p = paths[a.c];
+          for (let s = 0; s <= STEP; s += SAMPLE) {
+            const u = s / STEP, y = a.hy + a.oy + (b.hy + b.oy - a.hy - a.oy) * u, xb = a.hx + a.ox + (b.hx + b.ox - a.hx - a.ox) * u;
+            const x = xb + Math.sin(y * 0.045 - t * 1.8 + i * 0.7) * amp(xb, y);
+            s === 0 ? p.moveTo(x, y) : p.lineTo(x, y);
+          }
+        }
+      }
       g.setTransform(dpr, 0, 0, dpr, 0, 0);
       g.clearRect(0, 0, W, H);
-      const at = (i, j) => pts[j * cols + i];
-      for (let k = 0; k < seg.length; k++) seg[k] = new Path2D();
-      // smooth curves through the moving points: each line is drawn through segment midpoints
-      for (let j = 0; j < rows; j++) for (let i = 0; i < cols - 1; i++) {
-        const a = at(i, j), b = at(i + 1, j), n = at(Math.min(i + 2, cols - 1), j);
-        const s = seg[a.c];
-        const m1x = (a.x + b.x) / 2, m1y = (a.y + b.y) / 2, m2x = (b.x + n.x) / 2, m2y = (b.y + n.y) / 2;
-        if (i === 0) { s.moveTo(a.x, a.y); s.lineTo(m1x, m1y); }
-        s.moveTo(m1x, m1y); s.quadraticCurveTo(b.x, b.y, i === cols - 2 ? b.x : m2x, i === cols - 2 ? b.y : m2y);
-      }
-      for (let i = 0; i < cols; i++) for (let j = 0; j < rows - 1; j++) {
-        const a = at(i, j), b = at(i, j + 1), n = at(i, Math.min(j + 2, rows - 1));
-        const s = seg[a.c];
-        const m1x = (a.x + b.x) / 2, m1y = (a.y + b.y) / 2, m2x = (b.x + n.x) / 2, m2y = (b.y + n.y) / 2;
-        if (j === 0) { s.moveTo(a.x, a.y); s.lineTo(m1x, m1y); }
-        s.moveTo(m1x, m1y); s.quadraticCurveTo(b.x, b.y, j === rows - 2 ? b.x : m2x, j === rows - 2 ? b.y : m2y);
-      }
       g.lineWidth = 1.2;
-      for (let k = 0; k < seg.length; k++) { const [r, gg, bb] = rgb[k]; g.strokeStyle = `rgba(${r},${gg},${bb},.24)`; g.stroke(seg[k]); }
+      for (let k = 0; k < paths.length; k++) { g.strokeStyle = strokes[k]; g.stroke(paths[k]); }
 
-      // the colour front as a soft ring while it spreads
       if (wash) {
-        const [r, gg, bb] = rgb[wash.c];
-        g.strokeStyle = `rgba(${r},${gg},${bb},${Math.max(0, 0.35 - wash.r / 3000)})`; g.lineWidth = 3;
-        g.beginPath(); g.arc(wash.x, wash.y, wash.r, 0, Math.PI * 2); g.stroke();
-      }
-      // glowing knots near the cursor
-      for (const p of pts) {
-        if (p.e < 0.04) continue;
-        const [r, gg, bb] = rgb[p.c];
-        g.fillStyle = `rgba(${r},${gg},${bb},${Math.min(0.9, p.e * 1.5)})`;
-        g.beginPath(); g.arc(p.x, p.y, 1.5 + p.e * 3, 0, Math.PI * 2); g.fill();
+        const ring = g.createLinearGradient(wash.x - wash.r, wash.y, wash.x + wash.r, wash.y);
+        const sc = schemes[wash.s], a = Math.max(0, 0.3 - wash.r / 3200);
+        sc.forEach((c, k) => ring.addColorStop(k / (sc.length - 1), rgba(c, a)));
+        g.strokeStyle = ring; g.lineWidth = 3; g.beginPath(); g.arc(wash.x, wash.y, wash.r, 0, Math.PI * 2); g.stroke();
       }
       if (mx > -999) {
-        const [r, gg, bb] = rgb[cur];
         const glow = g.createRadialGradient(mx, my, 0, mx, my, R * 1.2);
-        glow.addColorStop(0, `rgba(${r},${gg},${bb},.16)`); glow.addColorStop(1, `rgba(${r},${gg},${bb},0)`);
+        glow.addColorStop(0, rgba(schemes[cur][0], 0.14)); glow.addColorStop(1, rgba(schemes[cur][0], 0));
         g.fillStyle = glow; g.fillRect(mx - R * 1.2, my - R * 1.2, R * 2.4, R * 2.4);
       }
 
-      // bubbles drift up with a wobble; popped ones respawn from below
+      // gradient bubbles: iridescent fill that slowly turns, drifting up with a wobble
       for (let k = 0; k < bubbles.length; k++) {
         const b = bubbles[k];
         if (b.pop) { b.pop += 0.08; if (b.pop > 1.6) bubbles[k] = newBubble(true); continue; }
@@ -462,22 +459,20 @@ export function init() {
         const near = Math.hypot(b.x - mx, b.y - my);
         if (near < b.r + 50 && near > 0) { b.x += ((b.x - mx) / near) * 0.6; b.y += ((b.y - my) / near) * 0.6; }
         if (b.y < -b.r * 2) bubbles[k] = newBubble(true);
-        const [r, gg, bb] = rgb[b.c];
-        const rr = b.r * (1 + Math.sin(t * 2 + b.ph) * 0.04);
-        const body = g.createRadialGradient(b.x - rr * 0.35, b.y - rr * 0.4, rr * 0.1, b.x, b.y, rr);
-        body.addColorStop(0, "rgba(255,255,255,.95)");
-        body.addColorStop(0.35, `rgba(${r},${gg},${bb},.35)`);
-        body.addColorStop(1, `rgba(${r},${gg},${bb},.75)`);
-        g.fillStyle = body; g.beginPath(); g.arc(b.x, b.y, rr, 0, Math.PI * 2); g.fill();
-        g.strokeStyle = "rgba(255,255,255,.8)"; g.lineWidth = 1.2; g.stroke();
+        const rr = b.r * (1 + Math.sin(t * 2 + b.ph) * 0.04), sc = schemes[b.s], ang = t * 0.6 + b.ph;
+        const lg = g.createLinearGradient(b.x + Math.cos(ang) * rr, b.y + Math.sin(ang) * rr, b.x - Math.cos(ang) * rr, b.y - Math.sin(ang) * rr);
+        sc.forEach((c, i) => lg.addColorStop(i / (sc.length - 1), rgba(c, 0.85)));
+        g.fillStyle = lg; g.beginPath(); g.arc(b.x, b.y, rr, 0, Math.PI * 2); g.fill();
+        const shine = g.createRadialGradient(b.x - rr * 0.35, b.y - rr * 0.4, 0, b.x - rr * 0.2, b.y - rr * 0.2, rr * 1.05);
+        shine.addColorStop(0, "rgba(255,255,255,.85)"); shine.addColorStop(0.35, "rgba(255,255,255,.15)"); shine.addColorStop(1, "rgba(255,255,255,0)");
+        g.fillStyle = shine; g.fill();
+        g.strokeStyle = "rgba(255,255,255,.75)"; g.lineWidth = 1.2; g.stroke();
         g.fillStyle = "rgba(255,255,255,.9)"; g.beginPath(); g.ellipse(b.x - rr * 0.38, b.y - rr * 0.42, rr * 0.22, rr * 0.12, -0.6, 0, Math.PI * 2); g.fill();
       }
-      // pop droplets
       bits = bits.filter((d) => (d.life -= 0.03) > 0);
       for (const d of bits) {
         d.x += d.vx; d.y += d.vy; d.vy += 0.12; d.vx *= 0.97;
-        const [r, gg, bb] = rgb[d.c];
-        g.fillStyle = `rgba(${r},${gg},${bb},${d.life})`; g.beginPath(); g.arc(d.x, d.y, 2.5 * d.life + 1, 0, Math.PI * 2); g.fill();
+        g.fillStyle = rgba(d.c, d.life); g.beginPath(); g.arc(d.x, d.y, 2.5 * d.life + 1, 0, Math.PI * 2); g.fill();
       }
     });
   }
