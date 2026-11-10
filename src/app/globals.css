@@ -593,3 +593,11 @@ footer{background:radial-gradient(70% 90% at 50% 0%,rgba(255,255,255,.7),transpa
 .eye-a{--ex:.278em;--ey:.632em;--es:.145em}
 .eye-a .eye i{width:58%;height:58%;left:21%;top:21%}
 
+
+/* name in Outfit: round single-storey "a", the googly eye fills its bowl exactly */
+:root{--f-name:"Outfit","Futura","Avenir Next",sans-serif}
+.hero h1 .eye-name{font-family:var(--f-name);font-weight:700;letter-spacing:-.035em}
+.eye-a{--ex:.2875em;--ey:.5em;--es:.228em}
+.eye-a .eye{box-shadow:none}
+.eye-a .eye i{width:56%;height:56%;left:22%;top:22%}
+.eye-a{--ey:.564em}

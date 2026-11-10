@@ -71,7 +71,7 @@ export function Hero() {
         <div className="sticker s-face" style={{ left: "9%", top: "6%" }} data-label="drag me">
           ( ˘ ᵕ ˘ )
         </div>
-        <div className="sticker s-star" style={{ right: "10%", top: "4%" }} data-label="drag me">
+        <div className="sticker s-star" style={{ right: "5%", top: "3%" }} data-label="drag me">
           <span>wow!</span>
         </div>
         <div className="sticker s-cursor" style={{ left: "12%", top: "64%" }} data-label="drag me">
