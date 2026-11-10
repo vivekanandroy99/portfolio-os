@@ -610,3 +610,15 @@ footer{background:radial-gradient(70% 90% at 50% 0%,rgba(255,255,255,.7),transpa
 body.on-bubble .cur{width:46px;height:46px;margin:-23px 0 0 -23px;background:rgba(255,255,255,.4);border:1.5px solid var(--ink)}
 .eye-a{--ey:.5066em}
 .hero h1 .eye-name{font-size:1.02em}
+
+/* enlarged clip window */
+.clip-modal{position:fixed;inset:0;z-index:4800;display:grid;place-items:center;background:rgba(246,245,241,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:fadein .2s ease}
+.clip-modal.out{opacity:0;transition:opacity .2s}
+.f-clip.clip-big{position:relative;width:min(760px,86vw);border-radius:14px;box-shadow:var(--shadow-win);animation:clipzoom .32s cubic-bezier(.2,.9,.3,1.15)}
+.f-clip.clip-big .bar{height:32px;padding:0 12px;cursor:default}
+.f-clip.clip-big .lights i{width:12px;height:12px}
+.f-clip.clip-big .lights i[data-close]{cursor:pointer}
+.f-clip.clip-big .title{font-size:13px}
+@keyframes clipzoom{from{transform:scale(.55);opacity:0}to{transform:none;opacity:1}}
+@keyframes fadein{from{opacity:0}}
+.f-clip{cursor:zoom-in}

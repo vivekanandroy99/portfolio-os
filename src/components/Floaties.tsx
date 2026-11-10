@@ -35,7 +35,7 @@ export function FolderIcon({ label, href, style, color }: { label: string; href:
 
 export function Clip({ name, src, style, tint, size = "m" }: { name: string; src?: string; style: Pos; tint: string; size?: "s" | "m" | "l" }) {
   return (
-    <div className={`sticker floaty f-clip clip-${size}`} style={style} data-label="drag me">
+    <div className={`sticker floaty f-clip clip-${size}`} style={style} data-label="watch">
       <div className="bar">
         <div className="lights"><i /><i /><i /></div>
         <div className="title">{name}</div>

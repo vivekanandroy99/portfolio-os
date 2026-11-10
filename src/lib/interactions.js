@@ -335,60 +335,63 @@ export function init() {
     }
   }
 
-  // wavy mat: the grid stays a grid, but every line ripples like a plucked string,
-  // harder near the cursor. Floating gradient bubbles can be popped to wash the grid in their colours.
+  // dot-grid mat: a straight grid with a dot on every node. It sits still until you
+  // click, then a wave rolls out from the click and the lines bend with the nodes, like dots.sim.
+  // Floating bubbles (some plain, some gradient) can be popped to wash the grid in their colours.
   const gc = $("#mat");
   if (gc && fine() && !calm) {
     const host = gc.parentElement;
     const g = gc.getContext("2d");
-    const STEP = 46, R = 180, SAMPLE = 8;
+    const STEP = 44, R = 120;
     const schemes = [
-      ["#ff7a3d", "#ffb59a", "#ff7a3d"],
+      ["#ff7a3d", "#ff7a3d"],
       ["#9b84ff", "#ff5fa2", "#3aa0ff"],
       ["#2fb67c", "#3aa0ff", "#9b84ff"],
       ["#f2b600", "#ff7a3d", "#ff5fa2"],
       ["#2fb67c", "#f2b600", "#ff5fa2"],
-      ["#3aa0ff", "#2fb67c", "#ff7a3d"],
+      ["#3aa0ff", "#3aa0ff"],
+      ["#9b84ff", "#9b84ff"],
+      ["#ff5fa2", "#ff5fa2"],
+      ["#2fb67c", "#2fb67c"],
     ];
     const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
     const rgba = (h, a) => { const [r, gg, b] = hex(h); return `rgba(${r},${gg},${b},${a})`; };
-    let W = 0, H = 0, dpr = 1, cols = 0, rows = 0, nodes = [], strokes = [];
-    let mx = -9999, my = -9999, tx = -9999, ty = -9999, inView = true;
-    let wash = null, cur = 0, bubbles = [], bits = [];
+    let W = 0, H = 0, dpr = 1, cols = 0, rows = 0, nodes = [], lineFx = [], dotFx = [];
+    let mx = -9999, my = -9999, inView = true, cur = 0, ripples = [], wash = null, bubbles = [], bits = [];
     const rnd = (a, b) => a + Math.random() * (b - a);
-    const newBubble = (fromBottom) => ({ x: rnd(40, W - 40), y: fromBottom ? H + rnd(20, 140) : rnd(60, H - 60), r: rnd(16, 32), s: 1 + Math.floor(Math.random() * (schemes.length - 1)), ph: rnd(0, 6.28), sp: rnd(0.25, 0.55), pop: 0 });
+    const newBubble = (fromBottom) => ({ x: rnd(40, W - 40), y: fromBottom ? H + rnd(20, 160) : rnd(60, H - 60), r: rnd(14, 34), s: 1 + Math.floor(Math.random() * (schemes.length - 1)), ph: rnd(0, 6.28), sp: rnd(0.22, 0.5), pop: 0 });
     const size = () => {
       dpr = Math.min(2, window.devicePixelRatio || 1);
       W = host.clientWidth; H = host.clientHeight;
       gc.width = W * dpr; gc.height = H * dpr;
       cols = Math.ceil(W / STEP) + 2; rows = Math.ceil(H / STEP) + 2;
       nodes = [];
-      for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) nodes.push({ hx: i * STEP, hy: j * STEP, ox: 0, oy: 0, vx: 0, vy: 0, c: cur });
-      // one stroke style per colour scheme: a soft diagonal gradient across the hero
-      strokes = schemes.map((sc) => { const lg = g.createLinearGradient(0, 0, W, H); sc.forEach((c, k) => lg.addColorStop(k / (sc.length - 1), rgba(c, 0.16))); return lg; });
-      if (!bubbles.length) bubbles = Array.from({ length: 7 }, () => newBubble(false));
+      for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) nodes.push({ hx: i * STEP, hy: j * STEP, x: i * STEP, y: j * STEP, vx: 0, vy: 0, c: cur });
+      const grad = (a) => schemes.map((sc) => { const lg = g.createLinearGradient(0, 0, W, H); sc.forEach((c, k) => lg.addColorStop(k / (sc.length - 1), rgba(c, a))); return lg; });
+      lineFx = grad(0.13); dotFx = grad(0.32);
+      if (!bubbles.length) bubbles = Array.from({ length: 8 }, () => newBubble(false));
     };
     size();
     host.classList.add("mat-live");
     on(window, "resize", size);
     const local = (e) => { const r = host.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
-    const blocked = (e) => e.target.closest("a,button,.sticker,.win,.chip");
+    const blocked = (e) => e.target.closest("a,button,.sticker,.win,.chip,h1,p");
     on(host, "pointermove", (e) => {
-      [tx, ty] = local(e);
-      if (mx < -999) { mx = tx; my = ty; }
-      document.body.classList.toggle("on-bubble", !blocked(e) && bubbles.some((b) => !b.pop && Math.hypot(b.x - tx, b.y - ty) < b.r + 6));
+      [mx, my] = local(e);
+      document.body.classList.toggle("on-bubble", !blocked(e) && bubbles.some((b) => !b.pop && Math.hypot(b.x - mx, b.y - my) < b.r + 6));
     });
-    on(host, "pointerleave", () => { tx = ty = mx = my = -9999; document.body.classList.remove("on-bubble"); });
+    on(host, "pointerleave", () => { mx = my = -9999; document.body.classList.remove("on-bubble"); });
     on(host, "pointerdown", (e) => {
       if (blocked(e)) return;
       const [x, y] = local(e);
+      ripples.push({ x, y, r: 0, k: 1 });
       const hit = bubbles.find((b) => !b.pop && Math.hypot(b.x - x, b.y - y) < b.r + 8);
       if (!hit) return;
       hit.pop = 1; cur = hit.s;
       wash = { x: hit.x, y: hit.y, r: 0, s: hit.s };
+      ripples[ripples.length - 1].k = 1.6;
       const sc = schemes[hit.s];
       for (let k = 0; k < 20; k++) { const a = (k / 20) * Math.PI * 2 + rnd(-0.2, 0.2), v = rnd(2, 6); bits.push({ x: hit.x, y: hit.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1, c: sc[k % sc.length] }); }
-      for (const n of nodes) { const dx = n.hx - hit.x, dy = n.hy - hit.y, d = Math.hypot(dx, dy) || 1; if (d < 220) { const f = (1 - d / 220) * 8; n.vx += (dx / d) * f; n.vy += (dy / d) * f; } }
       document.body.classList.remove("on-bubble");
     });
     const io = new IntersectionObserver(([en]) => (inView = en.isIntersecting));
@@ -398,60 +401,40 @@ export function init() {
     loop((now) => {
       if (!inView) return;
       const t = now / 1000;
-      mx += (tx - mx) * 0.15; my += (ty - my) * 0.15;
-      if (tx < -999) mx = my = -9999;
+      ripples = ripples.filter((r) => (r.r += 9) < Math.hypot(W, H));
       if (wash) { wash.r += 14; if (wash.r > Math.hypot(W, H) + 100) wash = null; }
-      // nodes stay on the grid; they only get nudged by the cursor and spring back
       for (const n of nodes) {
-        const dx = n.hx + n.ox - mx, dy = n.hy + n.oy - my, d = Math.hypot(dx, dy);
-        if (d < R && d > 0) { const f = (1 - d / R) ** 2 * 1.6; n.vx += (dx / d) * f; n.vy += (dy / d) * f; }
-        n.vx += -n.ox * 0.07; n.vy += -n.oy * 0.07; n.vx *= 0.85; n.vy *= 0.85; n.ox += n.vx; n.oy += n.vy;
+        // cursor: a soft push, like dots.sim
+        const dx = n.x - mx, dy = n.y - my, d = Math.hypot(dx, dy);
+        if (d < R && d > 0) { const f = ((R - d) / R) * 1.1; n.vx += (dx / d) * f; n.vy += (dy / d) * f; }
+        // click ripples: a ring that shoves nodes outward as it passes, fading with distance
+        for (const r of ripples) {
+          const rx = n.hx - r.x, ry = n.hy - r.y, rd = Math.hypot(rx, ry) || 1, band = rd - r.r;
+          if (Math.abs(band) < 26) { const f = Math.cos((band / 26) * Math.PI * 0.5) * 2.2 * r.k * Math.max(0, 1 - r.r / 1400); n.vx += (rx / rd) * f; n.vy += (ry / rd) * f; }
+        }
+        n.vx += (n.hx - n.x) * 0.05; n.vy += (n.hy - n.y) * 0.05; n.vx *= 0.88; n.vy *= 0.88; n.x += n.vx; n.y += n.vy;
         if (wash && n.c !== wash.s && Math.hypot(n.hx - wash.x, n.hy - wash.y) < wash.r) n.c = wash.s;
       }
       const at = (i, j) => nodes[j * cols + i];
-      // ripple amplitude: a gentle base, swelling near the cursor
-      const amp = (x, y) => { const d2 = (x - mx) ** 2 + (y - my) ** 2; return 2.2 + 7 * Math.exp(-d2 / (R * R * 0.6)); };
-      const paths = schemes.map(() => new Path2D());
-      // horizontal lines: travelling sine along x, offset in y
-      for (let j = 0; j < rows; j++) {
-        for (let i = 0; i < cols - 1; i++) {
-          const a = at(i, j), b = at(i + 1, j), p = paths[a.c];
-          for (let s = 0; s <= STEP; s += SAMPLE) {
-            const u = s / STEP, x = a.hx + a.ox + (b.hx + b.ox - a.hx - a.ox) * u, yb = a.hy + a.oy + (b.hy + b.oy - a.hy - a.oy) * u;
-            const y = yb + Math.sin(x * 0.045 - t * 2.2 + j * 0.9) * amp(x, yb);
-            s === 0 ? p.moveTo(x, y) : p.lineTo(x, y);
-          }
-        }
-      }
-      // vertical lines: same idea along y
-      for (let i = 0; i < cols; i++) {
-        for (let j = 0; j < rows - 1; j++) {
-          const a = at(i, j), b = at(i, j + 1), p = paths[a.c];
-          for (let s = 0; s <= STEP; s += SAMPLE) {
-            const u = s / STEP, y = a.hy + a.oy + (b.hy + b.oy - a.hy - a.oy) * u, xb = a.hx + a.ox + (b.hx + b.ox - a.hx - a.ox) * u;
-            const x = xb + Math.sin(y * 0.045 - t * 1.8 + i * 0.7) * amp(xb, y);
-            s === 0 ? p.moveTo(x, y) : p.lineTo(x, y);
-          }
-        }
-      }
+      const lines = schemes.map(() => new Path2D());
+      // lines run as smooth curves through the nodes: dead straight at rest, wavy when nodes move
+      const curve = (get, n, p) => {
+        const a0 = get(0); p.moveTo(a0.x, a0.y);
+        for (let k = 1; k < n - 1; k++) { const a = get(k), b = get(k + 1); p.quadraticCurveTo(a.x, a.y, (a.x + b.x) / 2, (a.y + b.y) / 2); }
+        const z = get(n - 1); p.lineTo(z.x, z.y);
+      };
+      for (let j = 0; j < rows; j++) { let start = 0; for (let i = 1; i <= cols; i++) { if (i === cols || at(i, j).c !== at(start, j).c) { const s0 = start, len = i - start + (i < cols ? 1 : 0); if (len > 1) curve((k) => at(s0 + k, j), len, lines[at(s0, j).c]); start = i; } } }
+      for (let i = 0; i < cols; i++) { let start = 0; for (let j = 1; j <= rows; j++) { if (j === rows || at(i, j).c !== at(i, start).c) { const s0 = start, len = j - start + (j < rows ? 1 : 0); if (len > 1) curve((k) => at(i, s0 + k), len, lines[at(i, s0).c]); start = j; } } }
       g.setTransform(dpr, 0, 0, dpr, 0, 0);
       g.clearRect(0, 0, W, H);
-      g.lineWidth = 1.2;
-      for (let k = 0; k < paths.length; k++) { g.strokeStyle = strokes[k]; g.stroke(paths[k]); }
+      g.lineWidth = 1;
+      for (let k = 0; k < lines.length; k++) { g.strokeStyle = lineFx[k]; g.stroke(lines[k]); }
+      // dots on every node, swelling with speed
+      const dots = schemes.map(() => new Path2D());
+      for (const n of nodes) { const sp = Math.min(1, Math.hypot(n.vx, n.vy) / 4); const rr = 1.6 + sp * 2.6; dots[n.c].moveTo(n.x + rr, n.y); dots[n.c].arc(n.x, n.y, rr, 0, Math.PI * 2); }
+      for (let k = 0; k < dots.length; k++) { g.fillStyle = dotFx[k]; g.fill(dots[k]); }
 
-      if (wash) {
-        const ring = g.createLinearGradient(wash.x - wash.r, wash.y, wash.x + wash.r, wash.y);
-        const sc = schemes[wash.s], a = Math.max(0, 0.3 - wash.r / 3200);
-        sc.forEach((c, k) => ring.addColorStop(k / (sc.length - 1), rgba(c, a)));
-        g.strokeStyle = ring; g.lineWidth = 3; g.beginPath(); g.arc(wash.x, wash.y, wash.r, 0, Math.PI * 2); g.stroke();
-      }
-      if (mx > -999) {
-        const glow = g.createRadialGradient(mx, my, 0, mx, my, R * 1.2);
-        glow.addColorStop(0, rgba(schemes[cur][0], 0.14)); glow.addColorStop(1, rgba(schemes[cur][0], 0));
-        g.fillStyle = glow; g.fillRect(mx - R * 1.2, my - R * 1.2, R * 2.4, R * 2.4);
-      }
-
-      // gradient bubbles: iridescent fill that slowly turns, drifting up with a wobble
+      // bubbles: soft and see-through; plain ones are one colour, the rest a turning gradient
       for (let k = 0; k < bubbles.length; k++) {
         const b = bubbles[k];
         if (b.pop) { b.pop += 0.08; if (b.pop > 1.6) bubbles[k] = newBubble(true); continue; }
@@ -461,21 +444,40 @@ export function init() {
         if (b.y < -b.r * 2) bubbles[k] = newBubble(true);
         const rr = b.r * (1 + Math.sin(t * 2 + b.ph) * 0.04), sc = schemes[b.s], ang = t * 0.6 + b.ph;
         const lg = g.createLinearGradient(b.x + Math.cos(ang) * rr, b.y + Math.sin(ang) * rr, b.x - Math.cos(ang) * rr, b.y - Math.sin(ang) * rr);
-        sc.forEach((c, i) => lg.addColorStop(i / (sc.length - 1), rgba(c, 0.85)));
+        sc.forEach((c, i) => lg.addColorStop(i / (sc.length - 1), rgba(c, 0.28)));
         g.fillStyle = lg; g.beginPath(); g.arc(b.x, b.y, rr, 0, Math.PI * 2); g.fill();
-        const shine = g.createRadialGradient(b.x - rr * 0.35, b.y - rr * 0.4, 0, b.x - rr * 0.2, b.y - rr * 0.2, rr * 1.05);
-        shine.addColorStop(0, "rgba(255,255,255,.85)"); shine.addColorStop(0.35, "rgba(255,255,255,.15)"); shine.addColorStop(1, "rgba(255,255,255,0)");
-        g.fillStyle = shine; g.fill();
-        g.strokeStyle = "rgba(255,255,255,.75)"; g.lineWidth = 1.2; g.stroke();
-        g.fillStyle = "rgba(255,255,255,.9)"; g.beginPath(); g.ellipse(b.x - rr * 0.38, b.y - rr * 0.42, rr * 0.22, rr * 0.12, -0.6, 0, Math.PI * 2); g.fill();
+        const rim = g.createRadialGradient(b.x, b.y, rr * 0.6, b.x, b.y, rr);
+        rim.addColorStop(0, "rgba(255,255,255,0)"); rim.addColorStop(1, rgba(sc[0], 0.35));
+        g.fillStyle = rim; g.fill();
+        g.strokeStyle = "rgba(255,255,255,.7)"; g.lineWidth = 1; g.stroke();
+        g.fillStyle = "rgba(255,255,255,.75)"; g.beginPath(); g.ellipse(b.x - rr * 0.38, b.y - rr * 0.42, rr * 0.22, rr * 0.12, -0.6, 0, Math.PI * 2); g.fill();
       }
       bits = bits.filter((d) => (d.life -= 0.03) > 0);
       for (const d of bits) {
         d.x += d.vx; d.y += d.vy; d.vy += 0.12; d.vx *= 0.97;
-        g.fillStyle = rgba(d.c, d.life); g.beginPath(); g.arc(d.x, d.y, 2.5 * d.life + 1, 0, Math.PI * 2); g.fill();
+        g.fillStyle = rgba(d.c, d.life * 0.8); g.beginPath(); g.arc(d.x, d.y, 2.5 * d.life + 1, 0, Math.PI * 2); g.fill();
       }
     });
   }
+
+  // clip windows: a click (not a drag) opens a bigger copy in the middle of the screen
+  $$(".f-clip").forEach((clip) => on(clip, "click", () => {
+    if (!fine()) return;
+    const back = document.createElement("div");
+    back.className = "clip-modal";
+    const big = clip.cloneNode(true);
+    big.className = "f-clip clip-big";
+    big.removeAttribute("style");
+    big.querySelector(".lights i")?.setAttribute("data-close", "");
+    back.appendChild(big);
+    document.body.appendChild(back);
+    big.querySelector("video")?.play?.();
+    const close = () => { back.classList.add("out"); setTimeout(() => back.remove(), 220); document.removeEventListener("keydown", esc); };
+    const esc = (e) => e.key === "Escape" && close();
+    back.addEventListener("click", (e) => { if (e.target === back || e.target.closest("[data-close]")) close(); });
+    document.addEventListener("keydown", esc);
+    signal.addEventListener("abort", () => back.remove());
+  }));
 
   // showreel placeholder
   const rc = $("#reel");
