@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Menubar, Footer, Overlays } from "@/components/Chrome";
 import { OsMode } from "@/components/OsMode";
 import { Interactions } from "@/components/Interactions";
+import { Dock } from "@/components/Dock";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -26,13 +27,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=DM+Mono:wght@400;500&family=Gochi+Hand&family=Inter:wght@400;500;600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Jost:wght@600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=DM+Mono:wght@400;500&family=Gochi+Hand&family=Inter:wght@400;500;600&display=swap"
         />
       </head>
       <body>
         <Menubar />
         {children}
         <Footer />
+        <Dock />
         <OsMode />
         <Overlays />
         <Interactions />

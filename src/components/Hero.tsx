@@ -25,13 +25,10 @@ export function Hero() {
       <div className="wrap">
         <div className="hero-grid">
           <div className="hero-copy">
-            <span className="hello-tag">
-              <i className="dot" />
-              open to projects · based in india
-            </span>
             <h1 aria-label={`hi, i'm ${site.firstName}`}>
               <span aria-hidden="true">
-                hi, i&apos;m <NameWithEyes name={site.firstName} />
+                <span className="h1-hi">hi, i&apos;m</span>
+                <NameWithEyes name={site.firstName} />
               </span>
             </h1>
             <p className="lede">{site.lede}</p>
@@ -89,10 +86,6 @@ export function Hero() {
 
         <HeroFloaties />
 
-        <div className="hero-foot">
-          <span>scroll ↓</span>
-          <span>self-healing cutting mat · grid 10mm</span>
-        </div>
       </div>
     </div>
   );

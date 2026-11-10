@@ -4,7 +4,7 @@ export const site = {
   email: "hello@yourdomain.com", // TODO: swap for the real address
   lede:
     "adventure-loving generalist, experience designer and creative technologist. i design and build things that make people say wow: interfaces, xr, games, exhibitions and the odd vibe-coded experiment.",
-  chips: ["ui / ux", "games", "exhibitions", "design engineering", "creative code"],
+  chips: ["ui / ux", "game design", "exhibitions", "xr / mr", "creative code", "design engineering"],
   marquee: [
     "experience design",
     "ui / ux",

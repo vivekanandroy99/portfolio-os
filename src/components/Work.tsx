@@ -46,7 +46,6 @@ export function WorkSection() {
       <div className="wrap">
         <div className="sec-head">
           <div>
-            <span className="eyebrow">01 · selected work</span>
             <h2>things i&apos;ve <em>made</em></h2>
           </div>
           <p>xr, ai, games and physical things. scroll through, whatever&apos;s in front of you comes into focus.</p>

@@ -6,7 +6,6 @@ export function OsTeaser() {
       <div className="wrap">
         <div className="sec-head">
           <div>
-            <span className="eyebrow">02 · os mode</span>
             <h2>prefer to <em>click around?</em></h2>
           </div>
           <p>switch this site into a little desktop. drag windows, paint, squash bugs and poke at toys.</p>
@@ -32,7 +31,6 @@ export function Notes() {
       <div className="wrap">
         <div className="sec-head">
           <div>
-            <span className="eyebrow">03 · notes</span>
             <h2>a little <em>letter</em></h2>
           </div>
         </div>
@@ -97,7 +95,6 @@ export function Ways() {
       <div className="wrap">
         <div className="sec-head">
           <div>
-            <span className="eyebrow">04 · work with me</span>
             <h2>vivekanand, <em>your way</em></h2>
           </div>
           <p>three ways we can team up. no forms, just say hi.</p>
@@ -138,7 +135,6 @@ export function Words() {
       <div className="wrap">
         <div className="sec-head">
           <div>
-            <span className="eyebrow">05 · kind words</span>
             <h2>people <em>said</em> stuff</h2>
           </div>
           <p>placeholder quotes. swap in real ones from clients, teammates and collaborators.</p>

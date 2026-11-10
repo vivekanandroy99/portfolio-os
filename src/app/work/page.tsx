@@ -12,7 +12,6 @@ export default function WorkPage() {
         <div className="wrap">
           <div className="sec-head">
             <div>
-              <span className="eyebrow">work · {projects.length} projects</span>
               <h2>everything i&apos;ve <em>made</em></h2>
             </div>
             <p>xr, ai, games, physical builds and art. filter it, or scroll it all.</p>
