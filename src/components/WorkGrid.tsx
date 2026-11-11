@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { categoryLabels, projects, type Category } from "@/data/projects";
 import { Bar } from "./Win";
+import { Thumb } from "./Thumb";
 
 export function WorkGrid() {
   const [filter, setFilter] = useState<Category | "all">("all");
@@ -28,10 +29,7 @@ export function WorkGrid() {
             data-label={p.url ? "open ↗" : "soon"}
           >
             <Bar title={p.file} />
-            <div className={`thumb ${p.tint}`}>
-              <b>{p.word}</b>
-              {p.isNew && <span className="ph">new</span>}
-            </div>
+            <Thumb p={p}>{p.isNew && <span className="ph">new</span>}</Thumb>
             <div className="wmeta">
               <h3>{p.name}</h3>
               <p>{p.short}</p>

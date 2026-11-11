@@ -161,7 +161,6 @@ export function init() {
       : near(".sticker,.floaty,.os .win .bar") ? "grab"
       : near(".media,.wcard,.pk") ? "peek"
       : near("a,button,summary,[data-os-open],.chip,#sim,label,input,select") ? "point"
-      : near(".hero") && !near("h1,p,.win") ? "knife"
       : "arrow";
     if (cur.dataset.mode !== mode) cur.dataset.mode = mode;
   });
@@ -584,6 +583,14 @@ export function init() {
     document.addEventListener("keydown", esc);
     signal.addEventListener("abort", () => back.remove());
   }));
+
+  // project videos: play only while on screen, pause when scrolled away (saves battery and data)
+  const vids = $$("video[data-inview-play]");
+  if (vids.length) {
+    const vio = new IntersectionObserver((ens) => ens.forEach((en) => { const v = en.target; if (en.isIntersecting && !calm) v.play().catch(() => {}); else v.pause(); }), { threshold: 0.25 });
+    vids.forEach((v) => vio.observe(v));
+    signal.addEventListener("abort", () => vio.disconnect());
+  }
 
   // showreel placeholder
   const rc = $("#reel");

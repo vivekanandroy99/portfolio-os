@@ -698,3 +698,14 @@ a,img,svg,canvas{-webkit-user-drag:none}
 .cur.down .c-play,.cur.down .c-peek{transform:scale(.88)}
 .cur-label{transform:translate(22px,20px)}
 .cur[data-mode="play"] ~ .cur-label,.cur[data-mode="peek"] ~ .cur-label{transform:translate(32px,24px)}
+
+/* only the custom cursor shows: no native cursor anywhere when it's on (fixes doubled cursors in os mode) */
+html.no-cursor,html.no-cursor *{cursor:none!important}
+/* vintage pixel arrow: tip is the top-left pixel */
+.c-arrow{margin:0;filter:drop-shadow(1px 1px 0 rgba(0,0,0,.18))}
+.cur.down .c-arrow{transform:translate(1px,1px)}
+
+/* project thumbnails with real media */
+.thumb .thumb-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.9,.3,1)}
+.media:hover .thumb-media,.wcard:hover .thumb-media,.pk:hover .thumb-media{transform:scale(1.04)}
+.thumb.has-media .ph{z-index:2}

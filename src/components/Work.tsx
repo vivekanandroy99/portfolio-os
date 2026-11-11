@@ -2,6 +2,7 @@ import Link from "next/link";
 import { featured, notFeatured, projects, type Project } from "@/data/projects";
 import { Bar } from "./Win";
 import { WorkFloaties } from "./Floaties";
+import { Thumb } from "./Thumb";
 
 function linkProps(p: Project) {
   return p.url
@@ -60,10 +61,9 @@ export function WorkSection() {
             <article className={`row${i % 2 ? " flip" : ""}`} key={p.slug}>
               <a className="media win" {...linkProps(p)} data-label={p.cursorLabel} data-tilt>
                 <Bar title={p.file} />
-                <div className={`thumb ${p.tint}`}>
-                  <span className="ph">{p.url ? "add video" : "new · add media"}</span>
-                  <b>{p.word}</b>
-                </div>
+                <Thumb p={p}>
+                  {!p.media && <span className="ph">{p.url ? "add video" : "new · add media"}</span>}
+                </Thumb>
               </a>
               <div className="side">
                 <Accent p={p} />
@@ -86,7 +86,7 @@ export function WorkSection() {
           {peek.map((p) => (
             <Link className="pk win" href="/work" data-label="see all" key={p.slug}>
               <Bar title={p.file} />
-              <div className={`thumb ${p.tint}`}><b>{p.word}</b></div>
+              <Thumb p={p} />
               <div className="pk-name">{p.name}</div>
             </Link>
           ))}

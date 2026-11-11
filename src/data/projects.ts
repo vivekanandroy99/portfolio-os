@@ -26,6 +26,15 @@ export type Project = {
   featured?: boolean;
   isNew?: boolean;
   accent?: Accent;
+  /*
+    Thumbnail media. Drop files in /public/work and point at them, e.g.
+      media: { type: "video", src: "/work/altbot.mp4", poster: "/work/altbot.jpg" }
+      media: { type: "gif", src: "/work/kiosk.gif" }
+      media: { type: "image", src: "/work/xros.jpg" }
+    Videos play muted, looped and only while on screen. Keep clips short (3 to 8 s), small (under ~3 MB) and 16:10.
+    Leave it out and the coloured placeholder with the big word shows instead.
+  */
+  media?: { type: "video" | "gif" | "image"; src: string; poster?: string; alt?: string };
 };
 
 const OLD = "https://vivekanand.framer.website";
