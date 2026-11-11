@@ -11,12 +11,13 @@ export function Menubar() {
         </Link>
         <nav className="menu" aria-label="sections">
           <a href="/#work" data-jump="work">work</a>
-          <button type="button" className="os-btn" data-os-open data-label="boot it up">
-            os mode
-          </button>
+          <a href={site.links.resume} target="_blank" rel="noopener" data-label="open pdf">resume</a>
           <a href="/#notes" data-jump="notes">notes</a>
           <a href="/#hire" data-jump="hire">hire me</a>
           <Link href="/work">all work</Link>
+          <button type="button" className="os-btn" data-os-open data-label="boot it up">
+            os mode
+          </button>
         </nav>
         <div className="status">
           <span className="now">

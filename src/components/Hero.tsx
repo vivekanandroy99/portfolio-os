@@ -48,6 +48,9 @@ export function Hero() {
               <a className="btn ghost" href="#say-hi" data-jump="say-hi" data-label="say hi">
                 get in touch
               </a>
+              <a className="btn dark" href={site.links.resume} target="_blank" rel="noopener" data-label="open pdf">
+                resume <small>↗</small>
+              </a>
             </div>
           </div>
           <div className="win reel" data-label="watch" data-tilt>

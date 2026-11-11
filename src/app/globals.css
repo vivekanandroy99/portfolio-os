@@ -737,3 +737,10 @@ html.no-cursor,html.no-cursor *{cursor:none!important}
 .row{transition:opacity .18s ease-out,filter .18s ease-out,transform .22s cubic-bezier(.2,.9,.3,1)}
 .row.dim{opacity:.32;transform:scale(.965)}
 @media (max-width:860px){.rows{gap:72px}}
+
+/* os mode teaser: dark section */
+.play.os-tease{background:radial-gradient(70% 90% at 50% 0%,rgba(255,255,255,.07),transparent 70%),#151719;color:#f4f3ee}
+.play.os-tease .sec-head p{color:rgba(244,243,238,.7)}
+.play.os-tease h2{color:#f4f3ee}
+.play.os-tease .os-launch{box-shadow:0 0 0 1px rgba(255,255,255,.14),0 30px 80px -20px rgba(0,0,0,.7)}
+.ctas{flex-wrap:wrap;justify-content:center}
