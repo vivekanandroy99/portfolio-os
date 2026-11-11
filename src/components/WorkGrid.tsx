@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { categoryLabels, projects, type Category } from "@/data/projects";
 import { Bar } from "./Win";
@@ -22,12 +23,7 @@ export function WorkGrid() {
       </div>
       <div className="wgrid">
         {shown.map((p) => (
-          <a
-            key={p.slug}
-            className="wcard win"
-            {...(p.url ? { href: p.url, target: "_blank", rel: "noopener" } : { href: "#", "data-soon": "" })}
-            data-label={p.url ? "open ↗" : "soon"}
-          >
+          <Link key={p.slug} className="wcard win" href={`/work/${p.slug}`} data-label="open">
             <Bar title={p.file} />
             <Thumb p={p}>{p.isNew && <span className="ph">new</span>}</Thumb>
             <div className="wmeta">
@@ -37,7 +33,7 @@ export function WorkGrid() {
                 {p.categories.map((c) => <span key={c}>{categoryLabels[c]}</span>)}
               </div>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
     </>
