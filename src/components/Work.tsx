@@ -5,12 +5,10 @@ import { WorkFloaties } from "./Floaties";
 import { Thumb } from "./Thumb";
 
 function linkProps(p: Project) {
-  return p.url
-    ? { href: p.url, target: "_blank", rel: "noopener" }
-    : { href: "#work", "data-soon": "" };
+  return { href: `/work/${p.slug}` };
 }
 
-function Accent({ p }: { p: Project }) {
+export function Accent({ p }: { p: Project }) {
   const a = p.accent;
   if (!a || a.kind === "none") return null;
   switch (a.kind) {
@@ -59,20 +57,20 @@ export function WorkSection() {
         <div className="rows">
           {featured.map((p, i) => (
             <article className={`row${i % 2 ? " flip" : ""}`} key={p.slug}>
-              <a className="media win" {...linkProps(p)} data-label={p.cursorLabel} data-tilt>
+              <Link className="media win" {...linkProps(p)} data-label={p.cursorLabel} data-tilt>
                 <Bar title={p.file} />
                 <Thumb p={p}>
                   {!p.media && <span className="ph">{p.url ? "add video" : "new · add media"}</span>}
                 </Thumb>
-              </a>
+              </Link>
               <div className="side">
                 <Accent p={p} />
                 <h3>{p.name}</h3>
                 <p>{p.blurb}</p>
                 <div className="tags2">{p.tags.map((t) => <span key={t}>{t}</span>)}</div>
-                <a className="more" {...linkProps(p)} data-label={p.cursorLabel}>
-                  {p.url ? "open project ↗" : "case study coming soon"}
-                </a>
+                <Link className="more" {...linkProps(p)} data-label={p.cursorLabel}>
+                  open project →
+                </Link>
               </div>
             </article>
           ))}
@@ -84,7 +82,7 @@ export function WorkSection() {
         </div>
         <div className="peek" aria-label="more projects">
           {peek.map((p) => (
-            <Link className="pk win" href="/work" data-label="see all" key={p.slug}>
+            <Link className="pk win" href={`/work/${p.slug}`} data-label="open" key={p.slug}>
               <Bar title={p.file} />
               <Thumb p={p} />
               <div className="pk-name">{p.name}</div>
