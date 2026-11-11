@@ -35,7 +35,7 @@ export function Hero() {
             <p className="lede">{site.lede}</p>
             <div className="chips">
               {site.chips.map((c, i) => (
-                <span className={`chip c${i % 4}`} key={c}>
+                <span className={`chip c${i % 6}`} key={c}>
                   <i aria-hidden="true" />
                   {c}
                 </span>

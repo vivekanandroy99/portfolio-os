@@ -709,3 +709,25 @@ html.no-cursor,html.no-cursor *{cursor:none!important}
 .thumb .thumb-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s cubic-bezier(.2,.9,.3,1)}
 .media:hover .thumb-media,.wcard:hover .thumb-media,.pk:hover .thumb-media{transform:scale(1.04)}
 .thumb.has-media .ph{z-index:2}
+
+/* ===== bigger project rows + filled tags ===== */
+.rows{max-width:1200px}
+.side{gap:18px}
+.acc{font-size:14px}
+.acc-chat{font-size:18px;padding:11px 18px;border-radius:22px}
+.side h3{font-family:var(--f-name);font-weight:700;font-size:clamp(30px,3.2vw,44px);letter-spacing:-.03em;line-height:1.05;margin-top:6px}
+.side p{font-size:clamp(17px,1.35vw,20px);line-height:1.55;max-width:34ch;color:#55534d}
+.tags2{gap:8px}
+.tags2 span{font-family:var(--f-mono);font-weight:600;font-size:14px;padding:7px 14px;border:0;color:var(--ink);background:var(--tg,#ece9e1)}
+.tags2 span:nth-child(4n+1){--tg:#e4dcff}
+.tags2 span:nth-child(4n+2){--tg:#fff0b0}
+.tags2 span:nth-child(4n+3){--tg:#ffd9c9}
+.tags2 span:nth-child(4n+4){--tg:#cdeedd}
+.more{font-size:15px;font-weight:600;font-family:var(--f-mono)}
+.wcard .tags2 span{font-size:12px;padding:5px 11px}
+@media (max-width:860px){.side h3{font-size:28px}.side p{font-size:16px}.tags2 span{font-size:13px;padding:6px 12px}}
+
+/* hero skill tags: pastel fill in their own colour */
+.chip{background:color-mix(in srgb,var(--dot) 18%,#fff);box-shadow:0 0 0 .5px color-mix(in srgb,var(--dot) 35%,transparent),0 1px 2px rgba(0,0,0,.05),0 6px 14px -8px rgba(20,25,30,.25),inset 0 1px 0 rgba(255,255,255,.7)}
+.chip i{box-shadow:0 0 0 3px rgba(255,255,255,.7)}
+.chip.c4{--dot:#ff5fa2}.chip.c5{--dot:#3aa0ff}
