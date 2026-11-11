@@ -241,10 +241,57 @@ export function init() {
     let W = 0, H = 0, dpr = 1, cols = 0, rows = 0, nodes = [], fx = {}, deco = null, guides = [];
     let mx = -9999, my = -9999, inView = true, cur = 0, ripples = [], wash = null, bubbles = [], bits = [];
     // bubble counter widget
+    // score is per visitor: it lives in this browser only, so every new person starts at zero
     const counter = $("[data-pop-count]");
-    let pops = 0;
+    const arcade = counter && counter.closest(".pop-arcade");
+    const cells = arcade ? [...arcade.querySelectorAll("[data-pop-wrap] i")] : [];
+    const RANKS = [[0, "pop a bubble to start"], [1, "rookie popper"], [5, "bubble curious"], [12, "pop menace"], [25, "certified popaholic"], [50, "bubble lord"], [100, "touch grass maybe?"]];
+    let pops = 0, lastPop = 0, combo = 0, comboT = 0;
     try { pops = parseInt(localStorage.getItem("pops") || "0", 10) || 0; } catch {}
-    if (counter) counter.textContent = String(pops);
+    const paint = (fresh) => {
+      if (!counter) return;
+      counter.textContent = String(pops).padStart(3, "0");
+      const lvl = Math.floor(pops / cells.length) + 1, filled = pops % cells.length;
+      const lv = arcade.querySelector("[data-pop-lvl]"); if (lv) lv.textContent = String(lvl);
+      cells.forEach((c, i) => c.classList.toggle("popped", i < filled));
+      if (fresh && filled === 0 && pops > 0) { cells.forEach((c) => c.classList.add("popped")); setTimeout(() => cells.forEach((c) => c.classList.remove("popped")), 380); }
+      const rk = arcade.querySelector("[data-pop-rank]");
+      if (rk) rk.textContent = RANKS.filter(([n]) => pops >= n).pop()[1];
+    };
+    paint(false);
+
+    // pop sounds, made on the fly with web audio (no files to load). a click wakes the audio up.
+    let actx = null, muted = false;
+    try { muted = localStorage.getItem("popSound") === "off"; } catch {}
+    const sndBtn = arcade && arcade.querySelector("[data-pop-sound]");
+    const showSnd = () => { if (sndBtn) { sndBtn.classList.toggle("off", muted); sndBtn.setAttribute("aria-label", muted ? "sound off" : "sound on"); } };
+    showSnd();
+    on(sndBtn, "click", (e) => { e.stopPropagation(); muted = !muted; try { localStorage.setItem("popSound", muted ? "off" : "on"); } catch {} showSnd(); say(muted ? "shh, pops muted" : "pops are loud again"); if (!muted) popSound(1, false); });
+    const popSound = (n, disco) => {
+      if (muted) return;
+      try {
+        actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+        if (actx.state === "suspended") actx.resume();
+        const t = actx.currentTime, base = rnd(520, 760) * (1 + Math.min(n - 1, 8) * 0.06);
+        // the "pop": a sine that drops fast in pitch, with a very short click of noise on top
+        const o = actx.createOscillator(), g = actx.createGain();
+        o.type = "sine"; o.frequency.setValueAtTime(base, t); o.frequency.exponentialRampToValueAtTime(base * 0.28, t + 0.09);
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.5, t + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+        o.connect(g).connect(actx.destination); o.start(t); o.stop(t + 0.14);
+        const len = Math.floor(actx.sampleRate * 0.025), buf = actx.createBuffer(1, len, actx.sampleRate), d = buf.getChannelData(0);
+        for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 3;
+        const ns = actx.createBufferSource(), hp = actx.createBiquadFilter(), ng = actx.createGain();
+        ns.buffer = buf; hp.type = "highpass"; hp.frequency.value = 1800; ng.gain.value = 0.35;
+        ns.connect(hp).connect(ng).connect(actx.destination); ns.start(t);
+        if (disco) [0, 1, 2, 3].forEach((k) => {
+          const b = actx.createOscillator(), bg = actx.createGain(), s = t + 0.06 + k * 0.07;
+          b.type = "triangle"; b.frequency.value = [784, 988, 1175, 1568][k];
+          bg.gain.setValueAtTime(0.0001, s); bg.gain.exponentialRampToValueAtTime(0.18, s + 0.01); bg.gain.exponentialRampToValueAtTime(0.0001, s + 0.22);
+          b.connect(bg).connect(actx.destination); b.start(s); b.stop(s + 0.25);
+        });
+      } catch {}
+    };
+    signal.addEventListener("abort", () => { try { actx && actx.close(); } catch {} });
     const rnd = (a, b) => a + Math.random() * (b - a);
     const DISCO = schemes.length - 1;
     let plain = 0; // empty clicks since the last pop; a few of them wash the mat back to brown
@@ -321,10 +368,19 @@ export function init() {
       for (let k = 0; k < 20; k++) { const a = (k / 20) * Math.PI * 2 + rnd(-0.2, 0.2), v = rnd(2, 6); bits.push({ x: hit.x, y: hit.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1, c: sc[k % sc.length] }); }
       pops++;
       try { localStorage.setItem("pops", String(pops)); } catch {}
-      if (counter) {
-        counter.textContent = String(pops);
-        const w = counter.closest(".s-counter");
-        if (w) { w.style.setProperty("--pc", sc[0]); w.classList.remove("bump"); void w.offsetWidth; w.classList.add("bump"); }
+      const now = performance.now();
+      combo = now - lastPop < 1400 ? combo + 1 : 1; lastPop = now;
+      popSound(combo, hit.s === DISCO);
+      if (arcade) {
+        paint(true);
+        arcade.style.setProperty("--pc", hit.s === DISCO ? "#ff5fa2" : sc[0]);
+        arcade.classList.remove("bump"); void arcade.offsetWidth; arcade.classList.add("bump");
+        const cb = arcade.querySelector("[data-pop-combo]");
+        if (cb) { cb.textContent = combo > 1 ? `x${combo} combo` : hit.s === DISCO ? "disco!" : "+1"; cb.classList.remove("on"); void cb.offsetWidth; cb.classList.add("on"); clearTimeout(comboT); comboT = setTimeout(() => cb.classList.remove("on"), 1100); }
+        const fl = document.createElement("span"); fl.className = "pa-float"; fl.textContent = hit.s === DISCO ? "✦" : "+1";
+        arcade.appendChild(fl); setTimeout(() => fl.remove(), 900);
+        if (pops % cells.length === 0) say(`level ${pops / cells.length + 1}! fresh bubble wrap`);
+        const r = RANKS.find(([n]) => n === pops); if (r && pops > 1) say(`new rank: ${r[1]}`);
       }
       document.body.classList.remove("on-bubble");
     });

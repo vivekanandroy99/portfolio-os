@@ -71,7 +71,7 @@ export function Hero() {
         <div className="sticker s-badge" style={{ right: "8%", top: "27%" }} data-label="drag me">
           open to<br />work!
         </div>
-        <div className="sticker s-face" style={{ left: "8%", top: "6%" }} data-label="drag me">
+        <div className="sticker s-face" style={{ right: "4%", top: "9%" }} data-label="drag me">
           ( ˘ ᵕ ˘ )
         </div>
         <div className="sticker s-cursor" style={{ left: "10%", top: "66%" }} data-label="drag me">
@@ -81,12 +81,23 @@ export function Hero() {
           <span>click stuff</span>
         </div>
 
-        <div className="sticker s-counter" style={{ left: "3%", top: "33%" }} data-label="drag me">
-          <span className="pc-bubble" aria-hidden="true" />
-          <span className="pc-text">
+        {/* bubble pop arcade: score, combo, a strip of bubble wrap that fills up a level, and a rank */}
+        <div className="sticker pop-arcade" style={{ left: "-4%", top: "5%" }} data-label="pop the bubbles">
+          <div className="pa-top">
+            <span className="pa-logo">bubble<b>pop</b></span>
+            <span className="pa-lvl">lvl <b data-pop-lvl>1</b></span>
+            <button type="button" className="pa-snd" data-pop-sound aria-label="sound on" data-label="sound">
+              <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><path d="M3 8h3l4-3.5v11L6 12H3z" fill="currentColor" /><path className="w1" d="M13 7.5a3.5 3.5 0 0 1 0 5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /><path className="w2" d="M15.2 5.2a6.6 6.6 0 0 1 0 9.6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /><path className="x" d="M13.5 7.5l4 5m0-5l-4 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
+            </button>
+          </div>
+          <div className="pa-screen">
             <b data-pop-count>0</b>
-            <small>bubbles popped</small>
-          </span>
+            <span className="pa-combo" data-pop-combo />
+          </div>
+          <div className="pa-wrap" data-pop-wrap aria-hidden="true">
+            {Array.from({ length: 8 }, (_, i) => <i key={i} />)}
+          </div>
+          <small className="pa-rank" data-pop-rank>pop a bubble to start</small>
         </div>
 
         <HeroFloaties />
