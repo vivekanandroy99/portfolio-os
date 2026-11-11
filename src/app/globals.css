@@ -850,3 +850,8 @@ html.modal-open .cur,html.modal-open #curLabel{opacity:0!important}
 @keyframes pabump{0%{transform:rotate(-3deg)}35%{transform:rotate(-1deg) scale(1.06)}65%{transform:rotate(-4.5deg) scale(.98)}100%{transform:rotate(-3deg)}}
 @keyframes panum{30%{transform:translateY(-3px) scale(1.08);color:#fff}}
 @media (prefers-reduced-motion:reduce){.pop-arcade.bump,.pop-arcade.bump .pa-screen b,.pa-float{animation:none}}
+
+/* flipped rows: the media sits on the right, so give the right column the big share too */
+@media (min-width:861px) and (pointer:fine){
+  .row.flip{grid-template-columns:minmax(0,1fr) minmax(0,1.6fr)}
+}
