@@ -246,20 +246,6 @@ export const caseStudies: Record<string, CaseStudy> = {
     ],
   },
 
-  "altcore-xr": {
-    client: "altcore",
-    year: "2026",
-    role: "creative technologist", // TODO
-    theme: { mode: "dark", bg: "#0b0d17", surface: "#151a2a", ink: "#eef1ff", accent: "#7cf3d0", accent2: "#8a7dff" },
-    tagline: "a mixed reality demo for altcore.", // TODO: the real one-liner
-    intro: "placeholder: what it is, who tries it, and what happens when they put the headset on.",
-    facts: [
-      { value: "mr", label: "TODO: headset / platform" },
-      { value: "unity", label: "urp" },
-    ],
-    blocks: [],
-  },
-
   xros: {
     tools: ["unity"],
     links: [{ label: "old case study", href: `${OLD}/mixedreality` }],

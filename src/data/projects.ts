@@ -80,21 +80,6 @@ export const projects: Project[] = [
     accent: { kind: "kiosk" },
   },
   {
-    slug: "altcore-xr",
-    name: "altcore xr", // TODO: real name
-    file: "altcore-xr.unity",
-    word: "xr",
-    tint: "t1",
-    blurb: "placeholder: the mixed reality project for altcore. what it is and what you built.",
-    short: "mixed reality demo for altcore. details coming soon.",
-    tags: ["xr", "unity", "mixed reality"],
-    categories: ["xr"],
-    cursorLabel: "put it on",
-    featured: true,
-    isNew: true,
-    accent: { kind: "xyz" },
-  },
-  {
     slug: "xros",
     name: "mixed reality workspace",
     file: "xros.unity",
