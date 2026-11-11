@@ -731,3 +731,9 @@ html.no-cursor,html.no-cursor *{cursor:none!important}
 .chip{background:color-mix(in srgb,var(--dot) 18%,#fff);box-shadow:0 0 0 .5px color-mix(in srgb,var(--dot) 35%,transparent),0 1px 2px rgba(0,0,0,.05),0 6px 14px -8px rgba(20,25,30,.25),inset 0 1px 0 rgba(255,255,255,.7)}
 .chip i{box-shadow:0 0 0 3px rgba(255,255,255,.7)}
 .chip.c4{--dot:#ff5fa2}.chip.c5{--dot:#3aa0ff}
+
+/* rows: more air between projects, and the focus swap happens fast */
+.rows{gap:clamp(110px,13vw,200px)}
+.row{transition:opacity .18s ease-out,filter .18s ease-out,transform .22s cubic-bezier(.2,.9,.3,1)}
+.row.dim{opacity:.32;transform:scale(.965)}
+@media (max-width:860px){.rows{gap:72px}}
