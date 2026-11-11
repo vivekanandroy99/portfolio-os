@@ -15,9 +15,6 @@ export function Menubar() {
           <a href="/#notes" data-jump="notes">notes</a>
           <a href="/#hire" data-jump="hire">hire me</a>
           <Link href="/work">all work</Link>
-          <button type="button" className="os-btn" data-os-open data-label="boot it up">
-            os mode
-          </button>
         </nav>
         <div className="status">
           <span className="now">
@@ -52,7 +49,6 @@ export function Footer() {
             <h4>sections</h4>
             <ul>
               <li><a href="/#work" data-jump="work">work</a></li>
-              <li><a href="/#playground" data-jump="playground">os mode</a></li>
               <li><Link href="/work">all work</Link></li>
             </ul>
           </div>

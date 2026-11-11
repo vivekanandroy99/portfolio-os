@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Menubar, Footer, Overlays } from "@/components/Chrome";
-import { OsMode } from "@/components/OsMode";
 import { Interactions } from "@/components/Interactions";
 import "./globals.css";
 
@@ -33,7 +32,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Menubar />
         {children}
         <Footer />
-        <OsMode />
         <Overlays />
         <Interactions />
       </body>

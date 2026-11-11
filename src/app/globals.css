@@ -770,3 +770,48 @@ html.modal-open{overflow:hidden}
 html.modal-open.no-cursor .resume-modal,html.modal-open.no-cursor .resume-modal *{cursor:auto!important}
 html.modal-open.no-cursor .resume-modal a,html.modal-open.no-cursor .resume-modal button,html.modal-open.no-cursor .resume-modal [data-close]{cursor:pointer!important}
 html.modal-open .cur,html.modal-open #curLabel{opacity:0!important}
+
+/* ===== blinking eyes with a sparkle ===== */
+.eye-a .eye{overflow:hidden}
+.eye-a .eye i::after{content:"";position:absolute;width:34%;height:34%;left:18%;top:14%;border-radius:50%;background:#fff;opacity:.95}
+.eye-a .eye::before{content:"";position:absolute;inset:0;z-index:2;background:var(--pop);transform:scaleY(0);transform-origin:50% 0;animation:lid 5.2s infinite}
+.eye-a + .eye-a .eye::before,.eye-a ~ .eye-a .eye::before{animation-delay:.03s}
+@keyframes lid{0%,88%,100%{transform:scaleY(0)}90.5%{transform:scaleY(1)}93%{transform:scaleY(0)}95%{transform:scaleY(0)}96.5%{transform:scaleY(1)}98.5%{transform:scaleY(0)}}
+@media (prefers-reduced-motion:reduce){.eye-a .eye::before{animation:none}}
+
+/* ===== bigger work: rows and archive cards, sized per screen ===== */
+#work .wrap{max-width:1340px}
+.rows{max-width:1300px}
+.row{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:clamp(32px,4.5vw,72px)}
+.media .thumb b{font-family:var(--f-display);font-size:clamp(56px,7vw,110px)}
+.peek{gap:clamp(18px,2.2vw,34px);grid-template-columns:repeat(4,minmax(0,1fr)) minmax(0,.55fr)}
+.pk .bar{height:30px}
+.pk .lights i{width:10px;height:10px}
+.pk .title{font-size:12px}
+.pk .thumb b{font-size:clamp(26px,2.7vw,42px)}
+.pk-name{font-size:13px;padding:11px 12px}
+@media (min-width:1600px){
+  #work .wrap{max-width:1520px}
+  .rows{max-width:1480px}
+  .peek{gap:40px}
+}
+@media (max-width:1100px) and (min-width:861px){
+  .peek{grid-template-columns:repeat(3,minmax(0,1fr)) minmax(0,.6fr)}
+  .peek .pk:nth-child(4):not(.more-pk){display:none}
+}
+@media (max-width:860px){
+  .row{grid-template-columns:minmax(0,1fr)}
+  .peek{gap:16px}
+}
+
+/* ===== ways to work together: equal cards, the hovered one grows ===== */
+.way,.way.feat{transform:none;transition:transform .35s cubic-bezier(.2,.9,.3,1),box-shadow .35s,opacity .3s,filter .3s}
+.way.feat{box-shadow:var(--shadow-soft)}
+@media (hover:hover) and (min-width:861px){
+  .ways{align-items:stretch}
+  .ways:hover .way{transform:scale(.95);opacity:.7;filter:saturate(.6)}
+  .ways .way:hover{transform:scale(1.08) translateY(-6px);opacity:1;filter:none;z-index:2;box-shadow:0 0 0 1.5px var(--ink),var(--shadow-win)}
+}
+/* bigger rows reach the side floaties: tuck those clips behind the project windows */
+#work .floaty{z-index:0}
+#work .rows,#work .peek{position:relative;z-index:1}
