@@ -151,13 +151,27 @@ export function init() {
     lab.style.left = mx + "px"; lab.style.top = my + "px";
     const t = e.target.closest("[data-label],a,button,summary");
     const text = t && t.dataset.label ? t.dataset.label : "";
-    lab.textContent = text; lab.classList.toggle("on", !!text); cur.classList.toggle("big", !!t);
+    lab.textContent = text; lab.classList.toggle("on", !!text);
+    // pick a cursor shape for whatever is under the pointer
+    const el = e.target, near = (q) => el.closest && el.closest(q);
+    const mode = document.body.classList.contains("on-bubble") ? "pin"
+      : near(".bug,#bugField") ? "swat"
+      : near("#paint") ? "pencil"
+      : near(".f-clip,.reel,.clip-modal .f-clip") ? "play"
+      : near(".sticker,.floaty,.os .win .bar") ? "grab"
+      : near(".media,.wcard,.pk") ? "peek"
+      : near("a,button,summary,[data-os-open],.chip,#sim,label,input,select") ? "point"
+      : near(".hero") && !near("h1,p,.win") ? "knife"
+      : "arrow";
+    if (cur.dataset.mode !== mode) cur.dataset.mode = mode;
   });
   if (cur) {
     if (fine() && !calm) {
       document.documentElement.classList.add("no-cursor");
       cur.style.display = "";
-      loop(() => { cx += (mx - cx) * 0.22; cy += (my - cy) * 0.22; cur.style.transform = `translate(${cx}px,${cy}px)`; });
+      loop(() => { cx += (mx - cx) * 0.55; cy += (my - cy) * 0.55; cur.style.transform = `translate(${cx}px,${cy}px)`; });
+      on(window, "pointerdown", () => cur.classList.add("down"));
+      on(window, "pointerup", () => cur.classList.remove("down"));
     } else {
       document.documentElement.classList.remove("no-cursor");
       cur.style.display = "none";

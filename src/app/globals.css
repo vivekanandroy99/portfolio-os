@@ -670,3 +670,31 @@ a,img,svg,canvas{-webkit-user-drag:none}
 
 /* mat uses the same off-white as the rest of the site */
 .hero,.hero.mat-live{background-color:var(--paper)}
+
+/* ===== shape-shifting cursor ===== */
+.cur,.cur.big,body.on-bubble .cur{width:0;height:0;margin:0;border:0;border-radius:0;background:none;transition:none}
+.cur .c{position:absolute;left:0;top:0;opacity:0;transform:scale(.4);transform-origin:0 0;transition:opacity .12s,transform .2s cubic-bezier(.2,.9,.3,1.4);filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+/* each shape is placed so its working point (tip, nib, pin point) sits on the real pointer */
+.c-arrow{margin:-2px 0 0 -3px}
+.c-point{margin:-2px 0 0 -9px}
+.c-grab{margin:-14px 0 0 -15px}
+.c-pin{margin:-36px 0 0 -4px;transform-origin:4px 36px!important}
+.c-knife{margin:-41px 0 0 -3px;transform-origin:3px 41px!important}
+.c-pencil{margin:-33px 0 0 -3px;transform-origin:3px 33px!important}
+.c-swat{margin:-12px 0 0 -12px;transform-origin:12px 12px!important}
+.c-play,.c-peek{display:grid;place-items:center;border-radius:50%;transform-origin:50% 50%!important}
+.c-play{width:54px;height:54px;margin:-27px 0 0 -27px;background:rgba(22,24,26,.82);backdrop-filter:blur(6px);box-shadow:0 0 0 1.5px rgba(255,255,255,.6)}
+.c-play i{width:0;height:0;margin-left:4px;border-left:15px solid #fff;border-top:9px solid transparent;border-bottom:9px solid transparent}
+.c-peek{width:52px;height:52px;margin:-26px 0 0 -26px;background:var(--butter);color:var(--ink);font:700 22px/1 var(--f-name);box-shadow:0 0 0 1.5px var(--ink)}
+.cur[data-mode="arrow"] .c-arrow,.cur[data-mode="point"] .c-point,.cur[data-mode="grab"] .c-grab,.cur[data-mode="pin"] .c-pin,
+.cur[data-mode="knife"] .c-knife,.cur[data-mode="play"] .c-play,.cur[data-mode="peek"] .c-peek,.cur[data-mode="pencil"] .c-pencil,
+.cur[data-mode="swat"] .c-swat{opacity:1;transform:none}
+/* press feedback */
+.cur.down .c-arrow,.cur.down .c-point{transform:scale(.88)}
+.cur.down .c-grab{transform:scale(.85) rotate(-8deg)}
+.cur.down .c-pin{transform:translate(-3px,3px) scale(.92)}
+.cur.down .c-knife{transform:rotate(-12deg)}
+.cur.down .c-swat{transform:rotate(-25deg) scale(.95)}
+.cur.down .c-play,.cur.down .c-peek{transform:scale(.88)}
+.cur-label{transform:translate(22px,20px)}
+.cur[data-mode="play"] ~ .cur-label,.cur[data-mode="peek"] ~ .cur-label{transform:translate(32px,24px)}
