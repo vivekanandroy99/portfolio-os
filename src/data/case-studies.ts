@@ -246,7 +246,56 @@ export const caseStudies: Record<string, CaseStudy> = {
     ],
   },
 
+  biasai: {
+    tools: ["unity"],
+    links: [{ label: "old case study", href: `${OLD}/aibiases` }],
+    theme: { mode: "dark", bg: "#0f0f14", surface: "#191922", ink: "#f1f0f7", accent: "#ff4d6d", accent2: "#7b5cff" },
+    facts: [
+      { value: "xr", label: "immersive experience" },
+      { value: "unity", label: "built in unity" },
+      { value: "ui/ux", label: "interaction design" },
+    ],
+    cover: { type: "youtube", src: "z9-AiQk1nms", caption: "biasai walkthrough" },
+    blocks: [
+      { kind: "gallery", heading: "another look", items: [{ type: "youtube", src: "a_XdNDbemv8", caption: "biasai, part two" }] },
+      { kind: "gallery", heading: "screens", items: [
+          { type: "image", src: "https://framerusercontent.com/images/gSFI1ATSMDdNTc0MD1uDUwdQkc.jpg", alt: "biasai screen 1" },
+          { type: "image", src: "https://framerusercontent.com/images/gqH6l0vOsA98YtuFYe5kwz3VA.jpg", alt: "biasai screen 2" },
+          { type: "image", src: "https://framerusercontent.com/images/ht8YuHxRNWcTgufXljLDT9YDd8.jpg", alt: "biasai screen 3" },
+          { type: "image", src: "https://framerusercontent.com/images/HN7DcUbjJZyftMLXGxMcBty9M.jpg", alt: "biasai screen 4" },
+          { type: "image", src: "https://framerusercontent.com/images/HeQt8QpajsGZLBRdcoqaEKBU.jpg", alt: "biasai screen 5" },
+          { type: "image", src: "https://framerusercontent.com/images/88jGAjKl9CLHlBc784GTjdzULn4.jpg", alt: "biasai screen 6" },
+          { type: "image", src: "https://framerusercontent.com/images/FXP2S1FVRNZ0mKRNDtO60BtMhcM.jpg", alt: "biasai screen 7" },
+          { type: "image", src: "https://framerusercontent.com/images/POCnljcvRLGi4vi6AVJiGejlEo.jpg", alt: "biasai screen 8" },
+          { type: "image", src: "https://framerusercontent.com/images/NJpeRVu0R4v5UpkqDjGnYtUa8.jpg", alt: "biasai screen 9" },
+          { type: "image", src: "https://framerusercontent.com/images/vTMAaDoTWiiWn4w1wkHZVRlG54.jpg", alt: "biasai screen 10" },
+          { type: "image", src: "https://framerusercontent.com/images/4DDwzB0GGMYL7Gu7iRRkvQkqvU.jpg", alt: "biasai screen 11" },
+          { type: "image", src: "https://framerusercontent.com/images/StQPnTMKzi3gZPzkFXmVlZx10Lc.jpg", alt: "biasai screen 12" },
+          { type: "image", src: "https://framerusercontent.com/images/SPyyTwNV2GLqE6ZmCa6RwwfHDfU.jpg", alt: "biasai screen 13" },
+          { type: "image", src: "https://framerusercontent.com/images/WRQXOKTq1iBiKTwP6lX4rCa5yU.jpg", alt: "biasai screen 14" },
+          { type: "image", src: "https://framerusercontent.com/images/NGtXpUCCAdQLWIjQNUIrxeR5jg.jpg", alt: "biasai screen 15" }
+      ] },
+    ],
+  },
+  "fit-mate": {
+    links: [{ label: "old case study", href: "https://vivekanandr.myportfolio.com/workout-app" }],
+    theme: { mode: "light", bg: "#f1fbf4", surface: "#ffffff", ink: "#10241a", accent: "#19b45b", accent2: "#00a0b0" },
+    tagline: "a workout buddy with an ai brain.",
+    facts: [
+      { value: "ai", label: "ai-assisted workouts" },
+      { value: "app", label: "mobile app concept" },
+    ],
+    cover: { type: "image", src: "https://cdn.myportfolio.com/96684c27-b99e-49b1-973f-29a0e2c8894b/f848351a-bfbe-4388-96d6-ead0fa72a2dc_rwc_0x0x1449x1087x1449.png?h=aeb0167708efa7d14f09ba49c8bf79fa", alt: "fit-mate app screens", caption: "fit-mate" },
+    blocks: [],
+  },
   xros: {
+    theme: { mode: "dark", bg: "#081413", surface: "#10201e", ink: "#e8fbf5", accent: "#5ff0c4", accent2: "#3aa0ff" },
+    tagline: "a workspace that lives in the room around you.",
+    facts: [
+      { value: "mr", label: "mixed reality workspace" },
+      { value: "unity", label: "built and prototyped in unity" },
+      { value: "ui/ux", label: "spatial interface design + research" },
+    ],
     tools: ["unity"],
     links: [{ label: "old case study", href: `${OLD}/mixedreality` }],
     cover: { type: "youtube", src: "aBXUb4oh4Eg", caption: "xros walkthrough" },
@@ -287,6 +336,13 @@ export const caseStudies: Record<string, CaseStudy> = {
     ],
   },
   chorespace: {
+    theme: { mode: "light", bg: "#fff4ee", surface: "#ffffff", ink: "#2a1712", accent: "#ff6a3d", accent2: "#ffb03d" },
+    tagline: "your to-do list, pinned to the real world.",
+    facts: [
+      { value: "ar", label: "tasks placed in real space" },
+      { value: "compass", label: "ar pointers guide you to each one" },
+      { value: "unity", label: "built in unity" },
+    ],
     tools: ["unity"],
     links: [{ label: "old case study", href: `${OLD}/chorespace` }],
     cover: { type: "youtube", src: "yVrFMF_iwxY", caption: "chorespace demo" },
@@ -309,6 +365,13 @@ export const caseStudies: Record<string, CaseStudy> = {
     ],
   },
   "stewart-platform": {
+    theme: { mode: "dark", bg: "#111213", surface: "#1b1d1f", ink: "#eceae4", accent: "#ffd23f", accent2: "#ff8a00" },
+    tagline: "six motors, six degrees of freedom.",
+    facts: [
+      { value: "6dof", label: "stewart motion platform" },
+      { value: "arduino", label: "electronics + control" },
+      { value: "c++", label: "motion code" },
+    ],
     tools: ["arduino", "c++"],
     links: [{ label: "old case study", href: `${OLD}/stewartplatform` }],
     cover: { type: "youtube", src: "6BB8TpbHCN0", caption: "stewart platform in motion" },
@@ -323,11 +386,23 @@ export const caseStudies: Record<string, CaseStudy> = {
     ],
   },
   "game-showreel": {
+    theme: { mode: "dark", bg: "#120d1f", surface: "#1d1630", ink: "#f3edff", accent: "#b28cff", accent2: "#ff5fa2" },
+    tagline: "press start: concepts, prototypes and gameplay.",
+    facts: [
+      { value: "game design", label: "concept prototypes" },
+      { value: "unity", label: "gameplay built in unity" },
+    ],
     tools: ["unity"],
     cover: { type: "youtube", src: "w3JkzSgb3Cc", caption: "game design showreel" },
     blocks: [],
   },
   error: {
+    theme: { mode: "light", bg: "#fbf3e4", surface: "#fffaf0", ink: "#2b1d12", accent: "#e8423b", accent2: "#ffb703" },
+    tagline: "error !!! a claymation short, one frame at a time.",
+    facts: [
+      { value: "stop motion", label: "shot frame by frame" },
+      { value: "clay", label: "hand-made characters and sets" },
+    ],
     cover: { type: "youtube", src: "ektV0BSIR40", caption: "error !!!" },
     blocks: [],
   },
