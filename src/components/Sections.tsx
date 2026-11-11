@@ -1,30 +1,5 @@
 import { Bar, Win } from "./Win";
 
-export function OsTeaser() {
-  return (
-    <section className="play os-tease" id="playground">
-      <div className="wrap">
-        <div className="sec-head">
-          <div>
-            <h2>prefer to <em>click around?</em></h2>
-          </div>
-          <p>switch this site into a little desktop. drag windows, paint, squash bugs and poke at toys.</p>
-        </div>
-        <button type="button" className="os-launch" data-os-open data-label="boot it up">
-          <span className="mini" aria-hidden="true">
-            <i className="w1" />
-            <i className="w2" />
-            <i className="w3" />
-          </span>
-          <span className="txt">
-            enter os mode <kbd>⌘ O</kbd>
-          </span>
-        </button>
-      </div>
-    </section>
-  );
-}
-
 export function Notes() {
   return (
     <section className="notes deco-host" id="notes">
