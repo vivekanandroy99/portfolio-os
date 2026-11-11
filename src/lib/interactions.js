@@ -157,6 +157,7 @@ export function init() {
     const mode = document.body.classList.contains("on-bubble") ? "pin"
       : near(".bug,#bugField") ? "swat"
       : near("#paint") ? "pencil"
+      : near(".resume-body") ? "arrow"
       : near(".f-clip,.reel,.clip-modal .f-clip") ? "play"
       : near(".sticker,.floaty,.os .win .bar") ? "grab"
       : near(".media,.wcard,.pk") ? "peek"
@@ -583,6 +584,36 @@ export function init() {
     document.addEventListener("keydown", esc);
     signal.addEventListener("abort", () => back.remove());
   }));
+
+  // resume: preview in a window on the same page, with download / share / new tab
+  const rm = $("#resumeModal");
+  if (rm) {
+    const frame = rm.querySelector("iframe");
+    const openR = () => {
+      if (!frame.src) { frame.addEventListener("load", () => rm.classList.add("ready"), { once: true }); frame.src = frame.dataset.src; }
+      rm.hidden = false; rm.classList.remove("out");
+      document.documentElement.classList.add("modal-open");
+    };
+    const closeR = () => {
+      if (rm.hidden) return;
+      rm.classList.add("out");
+      setTimeout(() => { rm.hidden = true; rm.classList.remove("out"); }, 200);
+      document.documentElement.classList.remove("modal-open");
+    };
+    on(document, "click", (e) => {
+      const t = e.target.closest && e.target.closest("[data-resume]");
+      if (t && !e.metaKey && !e.ctrlKey) { e.preventDefault(); openR(); return; }
+      if (!rm.hidden && (e.target === rm || e.target.closest("#resumeModal [data-close]"))) closeR();
+    });
+    on(document, "keydown", (e) => { if (e.key === "Escape") closeR(); });
+    on(rm.querySelector("[data-resume-share]"), "click", async (e) => {
+      const url = e.currentTarget.dataset.url;
+      try {
+        if (navigator.share) { await navigator.share({ title: "vivekanand roy · resume", url }); return; }
+      } catch (err) { if (err && err.name === "AbortError") return; }
+      try { await navigator.clipboard.writeText(url); say("link copied ✓"); } catch { say(url); }
+    });
+  }
 
   // project videos: play only while on screen, pause when scrolled away (saves battery and data)
   const vids = $$("video[data-inview-play]");

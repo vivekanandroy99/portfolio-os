@@ -24,4 +24,14 @@ export const site = {
     resume: "https://drive.google.com/file/d/1ddykuFGh-BpBfZYJmRzHCXBH7HsL6fUI/view?usp=sharing",
     paintings: "https://vivekanand.framer.website/mypaintings",
   },
+  /*
+    Resume preview (opens in a window on the same page).
+    Right now it reads from Google Drive. To host it on the site instead, drop the file at
+    public/resume.pdf and set all three to "/resume.pdf".
+  */
+  resume: {
+    preview: "https://drive.google.com/file/d/1ddykuFGh-BpBfZYJmRzHCXBH7HsL6fUI/preview",
+    download: "https://drive.google.com/uc?export=download&id=1ddykuFGh-BpBfZYJmRzHCXBH7HsL6fUI",
+    share: "https://drive.google.com/file/d/1ddykuFGh-BpBfZYJmRzHCXBH7HsL6fUI/view?usp=sharing",
+  },
 };

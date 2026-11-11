@@ -744,3 +744,29 @@ html.no-cursor,html.no-cursor *{cursor:none!important}
 .play.os-tease h2{color:#f4f3ee}
 .play.os-tease .os-launch{box-shadow:0 0 0 1px rgba(255,255,255,.14),0 30px 80px -20px rgba(0,0,0,.7)}
 .ctas{flex-wrap:wrap;justify-content:center}
+
+/* resume preview window */
+.resume-modal{position:fixed;inset:0;z-index:4900;display:grid;place-items:center;padding:24px;background:rgba(20,22,24,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);animation:fadein .2s ease}
+.resume-modal[hidden]{display:none}
+.resume-modal.out{opacity:0;transition:opacity .2s}
+.resume-win{width:min(900px,100%);height:min(92vh,1100px);display:flex;flex-direction:column;overflow:hidden;animation:rpop .28s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes rpop{from{transform:translateY(14px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+.resume-win .lights i[data-close]{cursor:pointer}
+.resume-body{position:relative;flex:1;background:#e9e7e1}
+.resume-body iframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity .3s}
+.resume-modal.ready .resume-body iframe{opacity:1}
+.resume-loading{position:absolute;inset:0;display:grid;place-items:center;color:#8a867c;font-size:15px}
+.resume-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:14px 16px;border-top:1px solid var(--hairline);background:#fbfaf7}
+.resume-tools .resume-x{margin-left:auto}
+html.modal-open{overflow:hidden}
+@media (max-width:860px){
+  .resume-modal{padding:0}
+  .resume-win{width:100%;height:100%;border-radius:0}
+  .resume-tools{padding:10px 12px calc(10px + env(safe-area-inset-bottom));gap:8px}
+  .resume-tools .btn{padding:10px 14px;font-size:14px}
+  .resume-tools a[target]{display:none}
+}
+/* the pdf lives in an iframe the custom cursor can't follow into, so use the real cursor while it's open */
+html.modal-open.no-cursor .resume-modal,html.modal-open.no-cursor .resume-modal *{cursor:auto!important}
+html.modal-open.no-cursor .resume-modal a,html.modal-open.no-cursor .resume-modal button,html.modal-open.no-cursor .resume-modal [data-close]{cursor:pointer!important}
+html.modal-open .cur,html.modal-open #curLabel{opacity:0!important}

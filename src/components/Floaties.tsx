@@ -8,12 +8,13 @@ import { site } from "@/data/site";
 
 type Pos = CSSProperties;
 
-export function FileIcon({ label, ext, href, style, color, external }: { label: string; ext: string; href: string; style: Pos; color?: string; external?: boolean }) {
+export function FileIcon({ label, ext, href, style, color, external, resume }: { label: string; ext: string; href: string; style: Pos; color?: string; external?: boolean; resume?: boolean }) {
   return (
     <a
       className="sticker floaty f-file"
       href={href}
       {...(external ? { target: "_blank", rel: "noopener" } : {})}
+      {...(resume ? { "data-resume": "" } : {})}
       style={style}
       data-label={`open ${label}`}
       draggable={false}
@@ -49,7 +50,7 @@ export function Clip({ name, src, style, tint, size = "m" }: { name: string; src
 export function HeroFloaties() {
   return (
     <>
-      <FileIcon label="resume.pdf" ext="PDF" href={site.links.resume} external style={{ left: "4%", top: "19%", rotate: "-7deg" }} />
+      <FileIcon label="resume.pdf" ext="PDF" href={site.links.resume} resume style={{ left: "4%", top: "19%", rotate: "-7deg" }} />
       <FolderIcon label="work" href="/work" color="#c9b8ff" style={{ right: "9%", top: "46%", rotate: "8deg" }} />
       <Clip name="xros.mp4" tint="t4" size="m" style={{ left: "1%", top: "77%", rotate: "-3deg" }} />
       <Clip name="altbot.mov" tint="t1" size="s" style={{ right: "0%", top: "59%", rotate: "5deg" }} />

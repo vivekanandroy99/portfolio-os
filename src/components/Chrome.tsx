@@ -11,7 +11,7 @@ export function Menubar() {
         </Link>
         <nav className="menu" aria-label="sections">
           <a href="/#work" data-jump="work">work</a>
-          <a href={site.links.resume} target="_blank" rel="noopener" data-label="open pdf">resume</a>
+          <a href={site.links.resume} data-resume data-label="preview">resume</a>
           <a href="/#notes" data-jump="notes">notes</a>
           <a href="/#hire" data-jump="hire">hire me</a>
           <Link href="/work">all work</Link>
@@ -85,6 +85,25 @@ export function Footer() {
 export function Overlays() {
   return (
     <>
+      {/* resume preview window, opened by anything with data-resume */}
+      <div className="resume-modal" id="resumeModal" hidden role="dialog" aria-modal="true" aria-label="resume">
+        <div className="win resume-win">
+          <div className="bar">
+            <span className="lights"><i data-close title="close" /><i /><i /></span>
+            <span className="ttl">vivekanand-roy-resume.pdf</span>
+          </div>
+          <div className="resume-body">
+            <div className="resume-loading">loading resume…</div>
+            <iframe data-src={site.resume.preview} title="resume preview" />
+          </div>
+          <div className="resume-tools">
+            <a className="btn" href={site.resume.download} download data-label="save it">download <small>↓</small></a>
+            <button type="button" className="btn ghost" data-resume-share data-url={site.resume.share} data-label="share">share <small>↗</small></button>
+            <a className="btn ghost" href={site.resume.share} target="_blank" rel="noopener" data-label="new tab">open in new tab</a>
+            <button type="button" className="btn ghost resume-x" data-close aria-label="close">close <small>esc</small></button>
+          </div>
+        </div>
+      </div>
       {/* custom cursor: one shape per mode, the active one is chosen from what you hover */}
       <div className="cur" id="cur" data-mode="arrow" aria-hidden="true">
         <svg className="c c-arrow" width="22" height="34" viewBox="0 0 11 17" shapeRendering="crispEdges">
