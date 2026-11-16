@@ -192,6 +192,41 @@ function BlockView({ b }: { b: Block }) {
           </blockquote>
         </section>
       );
+    case "split":
+      return (
+        <section className={`pp-sec pp-split${b.flip ? " flip" : ""}`}>
+          <div className="pp-split-copy">
+            <Head kicker={b.kicker} heading={b.heading} />
+            <div className="pp-prose">{b.body.map((p, i) => <p key={i}>{p}</p>)}</div>
+            {b.points?.length ? <ul className="pp-list">{b.points.map((t, i) => <li key={i}>{t}</li>)}</ul> : null}
+          </div>
+          <Frame m={b.media} />
+        </section>
+      );
+    case "compare":
+      return (
+        <section className="pp-sec">
+          <Head kicker={b.kicker} heading={b.heading} />
+          <div className="pp-compare">
+            {[
+              { side: "before", mark: "✕", ...b.before },
+              { side: "after", mark: "✓", ...b.after },
+            ].map((c) => (
+              <div className={`pp-card ${c.side}`} key={c.side}>
+                <h3>{c.title}</h3>
+                <ul>
+                  {c.items.map((t, i) => (
+                    <li key={i}>
+                      <span aria-hidden="true">{c.mark}</span>
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
     case "gallery":
       return (
         <section className="pp-sec">
