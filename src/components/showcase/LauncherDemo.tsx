@@ -53,6 +53,7 @@ export function LauncherDemo() {
   const [settings, setSettings] = useState(false);
   const [osk, setOsk] = useState<"auto" | "always" | "off">("auto");
   const [kiosk, setKiosk] = useState<"off" | "kiosk" | "bigpicture">("kiosk");
+  const [touched, setTouched] = useState(false);
   const holdRef = useRef<number | null>(null);
   const timers = useRef<number[]>([]);
 
@@ -130,7 +131,7 @@ export function LauncherDemo() {
   }
 
   return (
-    <div className="kd">
+    <div className="kd" onPointerDownCapture={() => setTouched(true)}>
       <div className="kd-bar" role="group" aria-label="demo settings">
         <div className="kd-seg" role="radiogroup" aria-label="who is using it">
           <span>signed in as</span>
@@ -151,6 +152,9 @@ export function LauncherDemo() {
         </p>
       </div>
 
+      <div className="kd-tags" aria-hidden="true">
+        <span>the app · a showroom pc</span>
+      </div>
       <div className={`kd-screen ${locked ? "locked" : ""}`}>
         {/* header */}
         <header className="kd-top">
@@ -212,6 +216,12 @@ export function LauncherDemo() {
                   <button className="kd-more" onClick={() => setModal(true)}>
                     about
                   </button>
+                  {!touched && (
+                    <span className="kd-finger" aria-hidden="true">
+                      <b>👈</b>
+                      <em>tap launch</em>
+                    </span>
+                  )}
                 </div>
               </div>
             </div>

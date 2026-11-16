@@ -231,6 +231,7 @@ export function AltbotDemo() {
   const [slide, setSlide] = useState(0);
   const [sent, setSent] = useState(false);
   const [input, setInput] = useState("");
+  const touched = msgs.length > 0 || busy !== "";
   const timers = useRef<number[]>([]);
   const scroller = useRef<HTMLDivElement>(null);
   const idRef = useRef(0);
@@ -323,6 +324,8 @@ export function AltbotDemo() {
       </div>
 
       <div className="ab-demo-grid">
+        <span className="ab-col-tag app">the app · a showroom screen</span>
+        <span className="ab-col-tag site">what's going on inside</span>
         {/* the kiosk screen */}
         <div className={`ab-stage ${panel ? "room" : ""} st-${state}`}>
           <div className="ab-stage-bg" aria-hidden="true" />
@@ -397,6 +400,12 @@ export function AltbotDemo() {
                   <path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-2.1A7 7 0 0 0 19 12h-2Z" fill="currentColor" />
                 </svg>
               </button>
+              {!touched && (
+                <span className="ab-finger" aria-hidden="true">
+                  <b>👇</b>
+                  <small>tap to talk</small>
+                </span>
+              )}
               <span className="ab-state">
                 {busy === "listening" ? "listening…" : busy === "thinking" ? "thinking…" : busy === "speaking" ? "speaking" : "tap to talk"}
               </span>
@@ -438,7 +447,10 @@ export function AltbotDemo() {
         </aside>
       </div>
 
-      <div className="ab-chips" role="group" aria-label="questions to ask">
+      <div className={`ab-chips${touched ? "" : " hint"}`} role="group" aria-label="questions to ask">
+        <span className="ab-chips-lead" aria-hidden="true">
+          {touched ? "ask:" : "👉 tap a question"}
+        </span>
         {TURNS.map((t) => (
           <button key={t.id} onClick={() => ask(t)} disabled={!!busy} className={`k-${t.kind}`} lang={lang === "hi" ? "hi" : "en"} data-label="ask">
             {t.q[lang]}
