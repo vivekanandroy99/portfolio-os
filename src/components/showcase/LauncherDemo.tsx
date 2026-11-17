@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 
 /*
   A clickable stand-in for the altcore launcher, with made-up apps for a made-up showroom.
@@ -36,7 +36,11 @@ function Art({ a, big }: { a: App; big?: boolean }) {
   );
 }
 
-export function LauncherDemo() {
+export type DemoEvent = "launched" | "unlocked" | "layout";
+
+export function LauncherDemo({ onEvent, overlay, covered }: { onEvent?: (e: DemoEvent) => void; overlay?: ReactNode; covered?: boolean } = {}) {
+  const emit = useRef(onEvent);
+  emit.current = onEvent;
   const [role, setRole] = useState<Role>("visitor");
   const [layout, setLayout] = useState<"showcase" | "gallery">("showcase");
   const [cat, setCat] = useState("all");
@@ -58,6 +62,15 @@ export function LauncherDemo() {
   const timers = useRef<number[]>([]);
 
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
+  useEffect(() => {
+    // while the trailer covers the screen, close whatever was left open, so each "your turn" starts clean
+    if (!covered) return;
+    setLaunch(null);
+    setModal(false);
+    setPinOpen(false);
+    setWhere(false);
+    setSettings(false);
+  }, [covered]);
   useEffect(() => {
     // switching roles = a different person signs in
     setLocked(role === "visitor" && kiosk !== "off");
@@ -82,7 +95,12 @@ export function LauncherDemo() {
     const steps = STEPS[a.kind];
     setLaunch({ app: a, step: 0, running: false });
     steps.forEach((_, i) => timers.current.push(window.setTimeout(() => setLaunch((l) => (l ? { ...l, step: i + 1 } : l)), 700 * (i + 1))));
-    timers.current.push(window.setTimeout(() => setLaunch((l) => (l ? { ...l, running: true } : l)), 700 * steps.length + 400));
+    timers.current.push(
+      window.setTimeout(() => {
+        setLaunch((l) => (l ? { ...l, running: true } : l));
+        emit.current?.("launched");
+      }, 700 * steps.length + 400),
+    );
   }
 
   function stop() {
@@ -121,6 +139,7 @@ export function LauncherDemo() {
       if (pin === PIN) {
         setPinOpen(false);
         setWhere(true);
+        emit.current?.("unlocked");
       } else {
         setPinBad(true);
         setPin("");
@@ -156,6 +175,7 @@ export function LauncherDemo() {
         <span>the app · a showroom pc</span>
       </div>
       <div className={`kd-screen ${locked ? "locked" : ""}`}>
+        {overlay}
         {/* header */}
         <header className="kd-top">
           <button
@@ -388,7 +408,10 @@ export function LauncherDemo() {
                 <span>interface layout</span>
                 <div className="kd-opts">
                   {(["showcase", "gallery"] as const).map((l) => (
-                    <button key={l} className={layout === l ? "on" : ""} onClick={() => setLayout(l)}>
+                    <button key={l} className={layout === l ? "on" : ""} onClick={() => {
+                        setLayout(l);
+                        emit.current?.("layout");
+                      }}>
                       {l}
                       <small>{l === "showcase" ? "one big featured world with a list beside it" : "a scrolling carousel of every world"}</small>
                     </button>

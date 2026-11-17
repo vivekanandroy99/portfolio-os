@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LauncherDemo } from "./LauncherDemo";
+import { LauncherTrailer } from "./LauncherTrailer";
 import { MoreWork } from "./MoreWork";
 
 /*
@@ -106,11 +106,11 @@ export function LauncherShowcase() {
 
       <section className="kl-wrap kl-demo-sec" id="demo">
         <div className="kl-head">
-          <span className="kl-kick">try it</span>
-          <h2>a showroom pc, in your browser</h2>
-          <p>made-up apps for a made-up showroom. play something, switch between a kiosk visitor, staff and an admin, open settings, or find the hidden way out of kiosk mode.</p>
+          <span className="kl-kick">watch, then try it</span>
+          <h2>the trailer, and you&apos;re in it</h2>
+          <p>the launcher&apos;s trailer plays on a showroom pc. a few times it stops and hands the screen to you: launch an app, break out of kiosk mode, change the layout. the apps are made up; the flows are the real ones.</p>
         </div>
-        <LauncherDemo />
+        <LauncherTrailer />
       </section>
 
       <section className="kl-wrap kl-sec">
