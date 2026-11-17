@@ -117,6 +117,22 @@
 .pp-gallery .pp-frame{transition:transform .3s cubic-bezier(.2,.9,.3,1)}
 .pp-gallery .pp-frame:hover{transform:translateY(-4px)}
 
+/* split: copy beside one picture */
+.pp-split{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(28px,5vw,64px);align-items:center}
+.pp-split.flip .pp-split-copy{order:2}
+.pp-split .pp-head{margin-bottom:18px}
+.pp-split .pp-prose p:last-child{margin-bottom:0}
+.pp-split .pp-list{margin-top:20px;font-size:16px}
+
+/* compare: without vs with */
+.pp-compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.pp-compare ul{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:12px}
+.pp-compare li{display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:16px;line-height:1.5;color:var(--pp-muted)}
+.pp-compare li span{font-weight:700;color:var(--pp-muted)}
+.pp-compare .after{box-shadow:var(--pp-shadow),inset 0 0 0 1.5px var(--pp-accent)}
+.pp-compare .after li{color:var(--pp-ink)}
+.pp-compare .after li span{color:var(--pp-accent)}
+
 .pp-soon{display:grid;gap:12px;justify-items:start;grid-column:1/-1;max-width:720px}
 .pp-soon h2{margin:0;font-size:clamp(26px,3vw,38px)}
 
@@ -143,6 +159,9 @@
   .pp-pipe li{padding-top:0}
   .pp-pipe .dot{left:-34px}
   .pp-stack div{grid-template-columns:minmax(0,1fr);gap:6px}
+  .pp-split{grid-template-columns:minmax(0,1fr)}
+  .pp-split.flip .pp-split-copy{order:0}
+  .pp-compare{grid-template-columns:minmax(0,1fr)}
 }
 @media (max-width:600px){
   .pp-features,.pp-gallery.n2,.pp-gallery.n3{grid-template-columns:minmax(0,1fr)}
