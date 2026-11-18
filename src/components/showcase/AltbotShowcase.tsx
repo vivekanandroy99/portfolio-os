@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AltbotDemo } from "./AltbotDemo";
+import { AltbotFilm, AltbotStaffMenu } from "./AltbotFilm";
 import { MoreWork } from "./MoreWork";
 
 /*
@@ -58,15 +59,6 @@ const process = [
   { t: "chase the slow bits", b: "a big soft shadow on the settings sheet was redrawn every frame and made the hindi voice 3x slower than real time. it's a 1 px edge now, and unity is capped at 60 fps so the voice gets the gpu." },
 ];
 
-const staff = [
-  { t: "make a new bot in a minute", b: "say or type a name, pick a look and whether it answers from documents or chats freely. that's it." },
-  { t: "add documents from a usb", b: "pdf, word, powerpoint, text. dropped in from the menu, searchable a moment later." },
-  { t: "the owner teaches, the bot doesn't self-learn", b: "a learning page lists questions it couldn't fully answer. staff type or speak the right answer once and every bot sharing those documents knows it." },
-  { t: "reports in excel", b: "today, 7 or 30 days: what got asked, what got answered, what didn't. exported as a real .xlsx to the desktop or a usb stick." },
-  { t: "help on every page", b: "a ? on every menu page opens a guide with pictures, plus a full staff manual as a pdf." },
-  { t: "staff sign-in", b: "the menu sits behind a sign-in card, with staff accounts managed in the app." },
-];
-
 const access = [
   { t: "text & button size", b: "everything on screen from 0.6x to 1.6x, live." },
   { t: "light or dark", b: "dark by default, a light appearance one tap away." },
@@ -83,16 +75,6 @@ const cast = [
   ["leo", "open chat", "am_fenrir / veena vinaya"],
   ["pearl", "knowledge only (p&i)", "af_heart / veena kavya"],
   ["peter", "knowledge only (p&i)", "am_michael / veena vinaya"],
-];
-
-const shots = [
-  { src: "/work/altbot/bots.webp", t: "the menu: bots + their pages" },
-  { src: "/work/altbot/conversation.webp", t: "conversation: strictness + checking" },
-  { src: "/work/altbot/look-voice.webp", t: "look & voice" },
-  { src: "/work/altbot/listening.webp", t: "listening & language" },
-  { src: "/work/altbot/lighting.webp", t: "lighting looks per bot" },
-  { src: "/work/altbot/new-bot.webp", t: "making a new bot" },
-  { src: "/work/altbot/models.webp", t: "ai models, swappable" },
 ];
 
 export function AltbotShowcase() {
@@ -142,6 +124,15 @@ export function AltbotShowcase() {
       </div>
 
       {/* demo */}
+      <section id="film" className="ab-wrap ab-sec">
+        <div className="ab-head">
+          <span className="ab-kick">watch it</span>
+          <h2>the whole app in five minutes</h2>
+          <p>recorded from the real build, no mock-ups. jump to any part with the chapters.</p>
+        </div>
+        <AltbotFilm />
+      </section>
+
       <section id="demo" className="ab-wrap ab-sec">
         <div className="ab-head">
           <span className="ab-kick">try it</span>
@@ -265,39 +256,15 @@ export function AltbotShowcase() {
         </ol>
       </section>
 
-      {/* ui */}
-      <section className="ab-sec ab-ui">
+      {/* the staff menu */}
+      <section id="staff" className="ab-sec ab-staff-sec">
         <div className="ab-wrap">
           <div className="ab-head">
-            <span className="ab-kick">the design</span>
-            <h2>an apple-calm menu for people who aren&apos;t technical</h2>
-            <p>dark by default, one orange accent, one line of plain english under every setting. the menu floats over the full-screen 3d scene; the conversation sits in a frosted card beside the character on wide screens, or along the bottom on portrait tvs. the mic button turns red with a ripple while it listens. icons and controls are drawn in code, with no image files.</p>
+            <span className="ab-kick">the staff menu · accessibility</span>
+            <h2>run by showroom staff, not engineers</h2>
+            <p>the people who look after a kiosk are sales and front-desk staff, standing at a touch screen with no keyboard. so everything they might need lives in one menu behind a sign-in, written in plain words. this is the real menu, page by page: tap any page to jump to it.</p>
           </div>
-        </div>
-        <div className="ab-strip" tabIndex={0} aria-label="menu screens, scroll sideways">
-          {shots.map((s) => (
-            <figure key={s.src}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={s.src} alt={s.t} />
-              <figcaption>{s.t}</figcaption>
-            </figure>
-          ))}
-        </div>
-      </section>
-
-      {/* staff + access */}
-      <section className="ab-wrap ab-sec">
-        <div className="ab-head">
-          <span className="ab-kick">ease of use</span>
-          <h2>run by showroom staff, not engineers</h2>
-        </div>
-        <div className="ab-cards">
-          {staff.map((a) => (
-            <div className="ab-card" key={a.t}>
-              <h3>{a.t}</h3>
-              <p>{a.b}</p>
-            </div>
-          ))}
+          <AltbotStaffMenu />
         </div>
       </section>
 
