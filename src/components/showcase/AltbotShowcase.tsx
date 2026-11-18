@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AltbotDemo } from "./AltbotDemo";
-import { AltbotFilm, AltbotStaffMenu } from "./AltbotFilm";
+import { AltbotFeatures, AltbotPromo, AltbotStaffBlocks } from "./AltbotBlocks";
+import { AltbotFilm } from "./AltbotFilm";
 import { MoreWork } from "./MoreWork";
 
 /*
@@ -38,15 +39,6 @@ const offlineOnline = [
   ["document search", "on the pc", "still on the pc"],
   ["what leaves the pc", "nothing", "only the question, the matching passages and the persona"],
   ["hardware", "a gaming-class gpu (~10.6 gb vram)", "an ordinary pc: the online build ships without the local models"],
-];
-
-const actions = [
-  { t: "presents slides", b: "“walk me through the brochure” and it presents each slide, talking through it, then moves on by itself." },
-  { t: "pictures + videos", b: "the video pauses while the bot talks and carries on after." },
-  { t: "web pages", b: "a locked-down in-app browser: only that site, no downloads, cookies cleared on close." },
-  { t: "qr codes", b: "“send it to my phone” shows a qr code for the page or a whatsapp chat." },
-  { t: "project cards", b: "“show me your museum projects” pulls cards from the company's own website, with photos." },
-  { t: "call me back", b: "a short form with its own on-screen keyboard. numbers never go into the app's logs." },
 ];
 
 const process = [
@@ -96,17 +88,12 @@ export function AltbotShowcase() {
             a life-size character for showroom screens. visitors ask out loud in hindi or english, it answers out loud with a lip-synced face, and it only talks about what&apos;s in the company&apos;s own documents. the whole thing runs on one pc.
           </p>
           <div className="ab-hero-cta">
-            <a href="#demo" className="ab-btn" data-label="try it">try the demo ↓</a>
+            <a href="#features" className="ab-btn" data-label="explore">explore it ↓</a>
+            <a href="#demo" className="ab-btn ghost" data-label="try it">try the demo</a>
             <a href="#offline" className="ab-btn ghost" data-label="why offline">why offline?</a>
           </div>
         </div>
-        <figure className="ab-tv" aria-label="altbot on a portrait screen">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/work/altbot/kiosk.webp" alt="maya, the altbot character, standing on a portrait screen with a glass chat card" />
-          <span className="ab-bubble b1">do you deliver to pune?</span>
-          <span className="ab-bubble b2 bot">yes! 7 to 10 days, free above ₹25,000.</span>
-          <span className="ab-bubble b3">क्या Oslo sofa हरे रंग में मिलता है?</span>
-        </figure>
+        <AltbotPromo />
       </header>
 
       <div className="ab-wrap">
@@ -124,13 +111,14 @@ export function AltbotShowcase() {
       </div>
 
       {/* demo */}
-      <section id="film" className="ab-wrap ab-sec">
+      {/* what it does */}
+      <section id="features" className="ab-wrap ab-sec">
         <div className="ab-head">
-          <span className="ab-kick">watch it</span>
-          <h2>the whole app in five minutes</h2>
-          <p>recorded from the real build, no mock-ups. jump to any part with the chapters.</p>
+          <span className="ab-kick">what it does</span>
+          <h2>fourteen things, each one a real screen</h2>
+          <p>no mock-ups here: every block is a screenshot of the running app. open one to see the screen, how it works and one design decision behind it.</p>
         </div>
-        <AltbotFilm />
+        <AltbotFeatures />
       </section>
 
       <section id="demo" className="ab-wrap ab-sec">
@@ -221,22 +209,6 @@ export function AltbotShowcase() {
       </section>
 
       {/* actions */}
-      <section className="ab-wrap ab-sec">
-        <div className="ab-head">
-          <span className="ab-kick">bot actions</span>
-          <h2>it shows things, not just talks about them</h2>
-          <p>a screen panel opens beside the character and the character steps aside to make room. show requests are matched without the ai, in english or hindi (“मुझे brochure दिखाओ”), and only things the owner switched on can be shown.</p>
-        </div>
-        <div className="ab-cards">
-          {actions.map((a) => (
-            <div className="ab-card" key={a.t}>
-              <h3>{a.t}</h3>
-              <p>{a.b}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* process */}
       <section className="ab-wrap ab-sec ab-process">
         <div className="ab-head">
@@ -262,9 +234,9 @@ export function AltbotShowcase() {
           <div className="ab-head">
             <span className="ab-kick">the staff menu · accessibility</span>
             <h2>run by showroom staff, not engineers</h2>
-            <p>the people who look after a kiosk are sales and front-desk staff, standing at a touch screen with no keyboard. so everything they might need lives in one menu behind a sign-in, written in plain words. this is the real menu, page by page: tap any page to jump to it.</p>
+            <p>the people who look after a kiosk are sales and front-desk staff, standing at a touch screen with no keyboard. so everything they might need lives in one menu behind a sign-in, written in plain words. every page below is a real screenshot.</p>
           </div>
-          <AltbotStaffMenu />
+          <AltbotStaffBlocks />
         </div>
       </section>
 
@@ -282,6 +254,16 @@ export function AltbotShowcase() {
             </li>
           ))}
         </ul>
+      </section>
+
+      {/* the explainer */}
+      <section id="film" className="ab-wrap ab-sec">
+        <div className="ab-head">
+          <span className="ab-kick">the explainer</span>
+          <h2>or just watch it</h2>
+          <p>the whole app in five minutes, recorded from the real build, or the one-minute promo.</p>
+        </div>
+        <AltbotFilm />
       </section>
 
       {/* cast + stack */}
