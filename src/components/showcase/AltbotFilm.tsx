@@ -60,22 +60,22 @@ function useLook(video: React.RefObject<HTMLVideoElement | null>, marks: Mark[],
 const CHAPTERS = [
   { at: { light: 0, dark: 0 }, n: "intro" },
   { at: { light: 7.5, dark: 7.0 }, n: "how i approached it" },
-  { at: { light: 46.5, dark: 46.3 }, n: "natural conversation" },
-  { at: { light: 64.3, dark: 60 }, n: "the topic gate" },
-  { at: { light: 71.2, dark: 65 }, n: "hindi + english" },
-  { at: { light: 79.6, dark: 73.3 }, n: "two kinds of bot" },
-  { at: { light: 93.4, dark: 85 }, n: "shows, not just tells" },
-  { at: { light: 98.2, dark: 87.8 }, n: "slide decks" },
-  { at: { light: 111.4, dark: 97.2 }, n: "live websites" },
-  { at: { light: 118.8, dark: 104.6 }, n: "photo presentations" },
-  { at: { light: 130.2, dark: 115.8 }, n: "take it home (qr)" },
-  { at: { light: 136.1, dark: 121.5 }, n: "lead capture" },
-  { at: { light: 142.3, dark: 128.9 }, n: "six characters" },
-  { at: { light: 153, dark: 138.8 }, n: "every screen shape" },
-  { at: { light: 158, dark: 144.5 }, n: "the staff menu" },
-  { at: { light: 245.3, dark: 229.7 }, n: "diagnostics" },
+  { at: { light: 46.7, dark: 46.2 }, n: "natural conversation" },
+  { at: { light: 64.5, dark: 58.0 }, n: "the topic gate" },
+  { at: { light: 71.4, dark: 65.2 }, n: "hindi + english" },
+  { at: { light: 79.8, dark: 73.5 }, n: "two kinds of bot" },
+  { at: { light: 93.6, dark: 83.6 }, n: "it shows, not just tells" },
+  { at: { light: 98.4, dark: 88.0 }, n: "slide decks" },
+  { at: { light: 111.6, dark: 97.4 }, n: "live websites" },
+  { at: { light: 119.0, dark: 104.9 }, n: "photo presentations" },
+  { at: { light: 130.4, dark: 116.0 }, n: "take it home (qr)" },
+  { at: { light: 136.1, dark: 121.4 }, n: "lead capture" },
+  { at: { light: 142.5, dark: 127.4 }, n: "multiple ai characters" },
+  { at: { light: 154.0, dark: 139.0 }, n: "every screen shape" },
+  { at: { light: 160.0, dark: 145.0 }, n: "the staff menu" },
+  { at: { light: 245.4, dark: 229.6 }, n: "diagnostics" },
   { at: { light: 264.5, dark: 240.0 }, n: "under the hood" },
-  { at: { light: 291.5, dark: 267.5 }, n: "on-device" },
+  { at: { light: 291.5, dark: 267.0 }, n: "on-device" },
 ];
 
 export function AltbotFilm() {
@@ -101,7 +101,7 @@ export function AltbotFilm() {
             5-minute walkthrough
           </button>
           <button role="radio" aria-checked={cut === "promo"} className={cut === "promo" ? "on" : ""} onClick={() => setCut("promo")}>
-            1-minute promo
+            the promo
           </button>
         </div>
         {cut === "full" && <LookSwitch look={look} set={set} />}

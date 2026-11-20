@@ -110,7 +110,7 @@ const FEATURES: Feature[] = [
     design: "three fields and one button. it only shows on bots where the owner switched it on.",
   },
   {
-    id: "cast", n: "11", title: "six characters", line: "each with its own look, voice and personality.", size: "tall", focus: "20% 30%",
+    id: "cast", n: "11", title: "multiple characters", line: "each with its own look, voice and personality.", size: "tall", focus: "20% 30%",
     how: ["two company experts, two free-chat characters, two for a second company.", "each speaks with one voice in both languages, so it sounds like one person.", "staff can make new bots in the app from an existing look."],
     design: "nods, smiles, brow raises and glances at the screen panel are driven by code, so they fit what's being said.",
   },
@@ -447,12 +447,35 @@ export function AltbotPromo() {
     video.current?.play().catch(() => {});
   }, []);
   return (
-    <figure className="ab-tv" aria-label="altbot's one-minute promo, on a portrait screen">
+    <figure className="ab-tv" aria-label="the altbot promo, on a portrait screen">
       <video ref={video} src="/work/altbot/promo-portrait.mp4" poster="/work/altbot/promo-portrait.jpg" muted loop playsInline preload="metadata" onClick={sound} />
       <button className="ab-tv-sound" onClick={sound} data-label={muted ? "sound on" : "mute"}>
         {muted ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}
         {muted ? "play with sound" : "sound on"}
       </button>
+    </figure>
+  );
+}
+
+/* ---------- the cast: the bots one after another, from the showcase film ---------- */
+
+export function AltbotCastClip() {
+  const [look] = useAppLook();
+  const box = useRef<HTMLElement | null>(null);
+  const [seen, setSeen] = useState(false);
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setSeen(e.isIntersecting), { threshold: 0.3 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <figure ref={box} className="ab-cast-clip">
+      <Clip key={look} src={`/work/altbot/cast/bots-${look}.mp4`} poster={`/work/altbot/cast/bots-${look}.jpg`} label="the bots, one after another, in the running app" active={seen} />
+      <figcaption>
+        <LookSwitch />
+      </figcaption>
     </figure>
   );
 }

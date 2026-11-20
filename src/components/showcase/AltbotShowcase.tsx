@@ -5,7 +5,7 @@ import {
 } from "lucide-react";
 import { siDotnet, siGitlfs, siGoogle, siHuggingface, siNvidia, siOnnx, siPython, siUnity, type SimpleIcon } from "simple-icons";
 import { AltbotDemo } from "./AltbotDemo";
-import { AltbotEditions, AltbotFeatures, AltbotPromo, AltbotStaffBlocks } from "./AltbotBlocks";
+import { AltbotCastClip, AltbotEditions, AltbotFeatures, AltbotPromo, AltbotStaffBlocks } from "./AltbotBlocks";
 import { AltbotFilm } from "./AltbotFilm";
 import { MoreWork } from "./MoreWork";
 
@@ -284,14 +284,15 @@ export function AltbotShowcase() {
       <section className="ab-wrap ab-sec">
         <div className="ab-head">
           <span className="ab-kick">the cast</span>
-          <h2>six bots, one app</h2>
+          <h2>multiple bots, one app</h2>
           <p>each has its own face, voice and brief. eyes glance and blink, and the mouth follows the voice live.</p>
         </div>
+        <AltbotCastClip />
         <ul className="ab-cast">
           {cast.map((c) => (
             <li key={c.id}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={`/work/altbot/cast/${c.id}.webp`} alt={`${c.id}, one of the six characters`} loading="lazy" decoding="async" />
+              <img src={`/work/altbot/cast/${c.id}.webp`} alt={`${c.id}, one of the bots`} loading="lazy" decoding="async" />
               <div>
                 <b>{c.id}</b>
                 <span className={c.mode === "open chat" ? "open" : ""}>{c.mode}</span>
@@ -307,7 +308,7 @@ export function AltbotShowcase() {
         <div className="ab-head">
           <span className="ab-kick">the explainer</span>
           <h2>or just watch it</h2>
-          <p>the whole app in five minutes, recorded from the real build, or the one-minute promo.</p>
+          <p>the whole app in five minutes, recorded from the real build, or the short promo.</p>
         </div>
         <AltbotFilm />
       </section>

@@ -335,6 +335,9 @@
 .ab-access p{margin:3px 0 0;font-size:14px;line-height:1.5;color:var(--muted)}
 
 /* cast */
+.ab-cast-clip{margin:0 0 20px;display:grid;justify-items:center;gap:14px}
+.ab-cast-clip video{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;border-radius:22px;background:#0b0b0c;box-shadow:0 0 0 8px #0b0b0c,0 50px 90px -40px rgba(20,22,40,.6)}
+.ab-cast-clip figcaption{display:flex;justify-content:center}
 .ab-cast{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
 .ab-cast li{position:relative;border-radius:20px;overflow:hidden;background:#33333b;aspect-ratio:3/4.4;box-shadow:0 24px 44px -30px rgba(20,22,40,.6)}
 .ab-cast img{width:100%;height:100%;object-fit:cover;object-position:50% 0;display:block;transition:transform .6s cubic-bezier(.2,.9,.3,1)}
