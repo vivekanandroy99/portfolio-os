@@ -143,7 +143,20 @@ function Frame({ src, alt, eager }: { src: string; alt: string; eager?: boolean 
 
 /* ---------- scroll story: the screen stays put, the text scrolls past it ---------- */
 
-type Story = { key: string; src: (l: Look) => string; alt: string; icon: LucideIcon; title: string; lead: string; note: string };
+type Story = { key: string; src: (l: Look) => string; clip?: (l: Look) => string; alt: string; icon: LucideIcon; title: string; lead: string; note?: string };
+
+/* a short silent loop from the film; only the clip in view plays */
+function Clip({ src, poster, label, active }: { src: string; poster: string; label: string; active: boolean }) {
+  const v = useRef<HTMLVideoElement | null>(null);
+  useEffect(() => {
+    const el = v.current;
+    if (!el) return;
+    // hidden copies (the phone card on desktop, the pinned screen on phones) stay paused
+    if (active && el.offsetParent !== null && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) el.play().catch(() => {});
+    else el.pause();
+  }, [active, src]);
+  return <video ref={v} src={src} poster={poster} muted loop playsInline preload={active ? "auto" : "none"} aria-label={label} />;
+}
 
 function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | "tall"; label: string }) {
   const [look] = useAppLook();
@@ -169,7 +182,11 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
         <div className="ab-story-sticky">
           <figure className="ab-story-shot">
             {items.map((x, i) => (
-              <Frame key={x.key + look} src={x.src(look)} alt={i === cur ? x.alt : ""} eager={i < 2} />
+              x.clip ? (
+                <Clip key={x.key + look} src={x.clip(look)} poster={x.src(look)} label={x.alt} active={i === cur} />
+              ) : (
+                <Frame key={x.key + look} src={x.src(look)} alt={i === cur ? x.alt : ""} eager={i < 2} />
+              )
             )).map((img, i) => (
               <span key={i} className={i === cur ? "on" : ""} aria-hidden={i !== cur}>
                 {img}
@@ -202,7 +219,7 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
             >
               {/* phones and tablets: each step carries its own screen */}
               <figure className="ab-story-inline">
-                <Frame src={x.src(look)} alt={x.alt} />
+                {x.clip ? <Clip src={x.clip(look)} poster={x.src(look)} label={x.alt} active={i === cur} /> : <Frame src={x.src(look)} alt={x.alt} />}
               </figure>
               <div className="ab-story-copy">
                 <span className="ab-ico">
@@ -210,7 +227,7 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
                 </span>
                 <h3>{x.title}</h3>
                 <p className="lead">{x.lead}</p>
-                <p className="sub">{x.note}</p>
+                {x.note && <p className="sub">{x.note}</p>}
               </div>
             </li>
           );
@@ -222,7 +239,15 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
 }
 
 export function AltbotFeatures() {
-  const items: Story[] = FEATURES.map((f) => ({ key: f.id, src: (l) => shot("f", f.id, l), alt: `the app showing: ${f.title}`, icon: F_ICON[f.id], title: f.title, lead: f.line, note: f.design }));
+  const items: Story[] = FEATURES.map((f) => ({
+    key: f.id,
+    src: (l) => `/work/altbot/clips/${f.id}-${l}.jpg`,
+    clip: (l) => `/work/altbot/clips/${f.id}-${l}.mp4`,
+    alt: `the app showing: ${f.title}`,
+    icon: F_ICON[f.id],
+    title: f.title,
+    lead: f.line,
+  }));
   return <ScrollStory items={items} shape="wide" label="what altbot does, feature by feature" />;
 }
 

@@ -75,7 +75,7 @@ const CHAPTERS = [
   { at: { light: 158, dark: 144.5 }, n: "the staff menu" },
   { at: { light: 245.3, dark: 229.7 }, n: "diagnostics" },
   { at: { light: 264.5, dark: 240.0 }, n: "under the hood" },
-  { at: { light: 289, dark: 264.5 }, n: "on-device" },
+  { at: { light: 291.5, dark: 267.5 }, n: "on-device" },
 ];
 
 export function AltbotFilm() {
