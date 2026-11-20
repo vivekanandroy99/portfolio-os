@@ -39,7 +39,6 @@ function useAppLook(): [Look, (l: Look) => void] {
 export function ThemeToggle({ look, set, label = "app theme" }: { look: Look; set: (l: Look) => void; label?: string }) {
   return (
     <div className="ab-theme" role="radiogroup" aria-label={label}>
-      <span>app</span>
       {(["dark", "light"] as const).map((l) => (
         <button key={l} role="radio" aria-checked={look === l} aria-label={`${l} app theme`} className={look === l ? "on" : ""} onClick={() => set(l)} data-label={l}>
           {l === "dark" ? <Moon aria-hidden="true" /> : <Sun aria-hidden="true" />}
@@ -180,6 +179,68 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
   const root = useRef<HTMLDivElement | null>(null);
   const steps = useRef<(HTMLLIElement | null)[]>([]);
 
+  // upright clips: the screen stays where it is and the text slides over to sit beside it
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    const measure = () => {
+      const stage = el.querySelector<HTMLElement>(".ab-story-stage");
+      const shot = el.querySelector<HTMLElement>(".ab-story-shot");
+      if (!stage || !shot) return;
+      const h = window.innerHeight - 56 - 120;
+      const pw = (h * 9) / 16;
+      const sw = stage.getBoundingClientRect().width;
+      el.style.setProperty("--shift", `${Math.max(0, sw / 2 - pw / 2)}px`);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  // snapping: when scrolling stops, the nearest step glides to the middle of the screen
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    let t = 0;
+    let gliding = false;
+    const settle = () => {
+      if (window.innerWidth <= 900) return;
+      const mid = 56 + (window.innerHeight - 56) / 2;
+      const box = el.getBoundingClientRect();
+      if (box.top > mid || box.bottom < mid) return;
+      let best = 0;
+      let bestD = Infinity;
+      steps.current.forEach((li) => {
+        if (!li) return;
+        const r = li.getBoundingClientRect();
+        const d = r.top + r.height / 2 - mid;
+        if (Math.abs(d) < Math.abs(bestD)) {
+          bestD = d;
+          best = 1;
+        }
+      });
+      if (!best || Math.abs(bestD) < 3 || Math.abs(bestD) > window.innerHeight * 0.6) return;
+      gliding = true;
+      const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      window.scrollBy({ top: bestD, behavior: smooth ? "smooth" : "auto" });
+    };
+    const onScroll = () => {
+      window.clearTimeout(t);
+      t = window.setTimeout(() => {
+        if (gliding) {
+          gliding = false;
+          return;
+        }
+        settle();
+      }, 160);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.clearTimeout(t);
+    };
+  }, []);
+
   // nothing plays (or talks) once the story is scrolled out of view
   useEffect(() => {
     const el = root.current;
@@ -205,7 +266,7 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
   return (
     <div ref={root} className={`ab-story ${shape}`} aria-label={label}>
       <div className="ab-story-stage">
-        <div className={`ab-story-sticky${it?.portrait ? " port" : ""}`}>
+        <div className="ab-story-sticky">
           <figure className={`ab-story-shot${it?.portrait ? " port" : ""}`}>
             {items.map((x, i) => (
               x.clip ? (
@@ -239,7 +300,7 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
             <li
               key={x.key}
               data-i={i}
-              className={i === cur ? "on" : ""}
+              className={`${i === cur ? "on" : ""}${x.portrait ? " port" : ""}`}
               ref={(el) => {
                 steps.current[i] = el;
               }}
