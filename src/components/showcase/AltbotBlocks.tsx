@@ -143,10 +143,10 @@ function Frame({ src, alt, eager }: { src: string; alt: string; eager?: boolean 
 
 /* ---------- scroll story: the screen stays put, the text scrolls past it ---------- */
 
-type Story = { key: string; src: (l: Look) => string; clip?: (l: Look) => string; alt: string; icon: LucideIcon; title: string; lead: string; note?: string; portrait?: boolean };
+type Story = { key: string; src: (l: Look) => string; clip?: (l: Look) => string; alt: string; icon: LucideIcon; title: string; lead: string; note?: string; portrait?: boolean; sound?: boolean };
 
 /* a short silent loop from the film; only the clip in view plays */
-function Clip({ src, poster, label, active }: { src: string; poster: string; label: string; active: boolean }) {
+function Clip({ src, poster, label, active, muted = true }: { src: string; poster: string; label: string; active: boolean; muted?: boolean }) {
   const v = useRef<HTMLVideoElement | null>(null);
   useEffect(() => {
     const el = v.current;
@@ -155,13 +155,39 @@ function Clip({ src, poster, label, active }: { src: string; poster: string; lab
     if (active && el.offsetParent !== null && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) el.play().catch(() => {});
     else el.pause();
   }, [active, src]);
+  useEffect(() => {
+    if (v.current) v.current.muted = muted;
+  }, [muted]);
   return <video ref={v} src={src} poster={poster} muted loop playsInline preload={active ? "auto" : "none"} aria-label={label} />;
+}
+
+/* sound stays off until the visitor asks for it */
+function SoundButton({ on, onToggle }: { on: boolean; onToggle: () => void }) {
+  const Icon = on ? Volume2 : VolumeX;
+  return (
+    <button type="button" className={`ab-sound${on ? " on" : ""}`} onClick={onToggle} aria-pressed={on} aria-label={on ? "turn the sound off" : "turn the sound on"}>
+      <Icon aria-hidden="true" />
+      <span>{on ? "sound on" : "sound off"}</span>
+    </button>
+  );
 }
 
 function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | "tall"; label: string }) {
   const [look] = useAppLook();
   const [cur, setCur] = useState(0);
+  const [sound, setSound] = useState(false);
+  const [seen, setSeen] = useState(false);
+  const root = useRef<HTMLDivElement | null>(null);
   const steps = useRef<(HTMLLIElement | null)[]>([]);
+
+  // nothing plays (or talks) once the story is scrolled out of view
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setSeen(e.isIntersecting), { threshold: 0.05 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   // ordinary page scrolling drives it: the step crossing the middle of the screen is the current one
   useEffect(() => {
@@ -177,13 +203,13 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
 
   const it = items[cur];
   return (
-    <div className={`ab-story ${shape}`} aria-label={label}>
+    <div ref={root} className={`ab-story ${shape}`} aria-label={label}>
       <div className="ab-story-stage">
-        <div className="ab-story-sticky">
+        <div className={`ab-story-sticky${it?.portrait ? " port" : ""}`}>
           <figure className={`ab-story-shot${it?.portrait ? " port" : ""}`}>
             {items.map((x, i) => (
               x.clip ? (
-                <Clip key={x.key + look} src={x.clip(look)} poster={x.src(look)} label={x.alt} active={i === cur} />
+                <Clip key={x.key + look} src={x.clip(look)} poster={x.src(look)} label={x.alt} active={seen && i === cur} muted={!sound} />
               ) : (
                 <Frame key={x.key + look} src={x.src(look)} alt={i === cur ? x.alt : ""} eager={i < 2} />
               )
@@ -192,6 +218,7 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
                 {img}
               </span>
             ))}
+            {it?.sound && <SoundButton on={sound} onToggle={() => setSound((m) => !m)} />}
           </figure>
           <div className="ab-story-foot">
             <span className="ab-story-count">
@@ -219,7 +246,8 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
             >
               {/* phones and tablets: each step carries its own screen */}
               <figure className={`ab-story-inline${x.portrait ? " port" : ""}`}>
-                {x.clip ? <Clip src={x.clip(look)} poster={x.src(look)} label={x.alt} active={i === cur} /> : <Frame src={x.src(look)} alt={x.alt} />}
+                {x.clip ? <Clip src={x.clip(look)} poster={x.src(look)} label={x.alt} active={seen && i === cur} muted={!sound} /> : <Frame src={x.src(look)} alt={x.alt} />}
+                {x.sound && <SoundButton on={sound} onToggle={() => setSound((m) => !m)} />}
               </figure>
               <div className="ab-story-copy">
                 <span className="ab-ico">
@@ -246,8 +274,9 @@ export function AltbotFeatures() {
   const items: Story[] = FEATURES.map((f) => ({
     key: f.id,
     src: (l) => `${clipBase(f.id)}-${l}.jpg`,
-    clip: (l) => `${clipBase(f.id)}-${l}.mp4`,
+    clip: (l) => (ORIVETA.has(f.id) ? `${clipBase(f.id)}-${l}-sound.mp4` : `${clipBase(f.id)}-${l}.mp4`),
     portrait: ORIVETA.has(f.id),
+    sound: ORIVETA.has(f.id),
     alt: `the app showing: ${f.title}`,
     icon: F_ICON[f.id],
     title: f.title,
@@ -286,8 +315,9 @@ export function AltbotStaffBlocks() {
     return {
       key: p.id,
       src: (l: Look) => (c ? `/work/altbot/oriveta/${c}-${l}.jpg` : shot("p", p.id, l)),
-      clip: c ? (l: Look) => `/work/altbot/oriveta/${c}-${l}.mp4` : undefined,
+      clip: c ? (l: Look) => `/work/altbot/oriveta/${c}-${l}-sound.mp4` : undefined,
       portrait: !!c,
+      sound: !!c,
       alt: `the ${p.n} page of the staff menu`, icon: p.icon, title: p.n, lead: p.what, note: p.note,
     };
   });
