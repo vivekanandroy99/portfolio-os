@@ -143,7 +143,7 @@ function Frame({ src, alt, eager }: { src: string; alt: string; eager?: boolean 
 
 /* ---------- scroll story: the screen stays put, the text scrolls past it ---------- */
 
-type Story = { key: string; src: (l: Look) => string; clip?: (l: Look) => string; alt: string; icon: LucideIcon; title: string; lead: string; note?: string };
+type Story = { key: string; src: (l: Look) => string; clip?: (l: Look) => string; alt: string; icon: LucideIcon; title: string; lead: string; note?: string; portrait?: boolean };
 
 /* a short silent loop from the film; only the clip in view plays */
 function Clip({ src, poster, label, active }: { src: string; poster: string; label: string; active: boolean }) {
@@ -180,7 +180,7 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
     <div className={`ab-story ${shape}`} aria-label={label}>
       <div className="ab-story-stage">
         <div className="ab-story-sticky">
-          <figure className="ab-story-shot">
+          <figure className={`ab-story-shot${it?.portrait ? " port" : ""}`}>
             {items.map((x, i) => (
               x.clip ? (
                 <Clip key={x.key + look} src={x.clip(look)} poster={x.src(look)} label={x.alt} active={i === cur} />
@@ -218,7 +218,7 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
               }}
             >
               {/* phones and tablets: each step carries its own screen */}
-              <figure className="ab-story-inline">
+              <figure className={`ab-story-inline${x.portrait ? " port" : ""}`}>
                 {x.clip ? <Clip src={x.clip(look)} poster={x.src(look)} label={x.alt} active={i === cur} /> : <Frame src={x.src(look)} alt={x.alt} />}
               </figure>
               <div className="ab-story-copy">
@@ -238,11 +238,16 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
   );
 }
 
+/* clips recorded with "oriveta home", a made-up company, replace the older ones where they exist */
+const ORIVETA = new Set(["talk", "gate", "hindi", "slides", "photos", "qr", "lead"]);
+const clipBase = (id: string) => (ORIVETA.has(id) ? `/work/altbot/oriveta/${id}` : `/work/altbot/clips/${id}`);
+
 export function AltbotFeatures() {
   const items: Story[] = FEATURES.map((f) => ({
     key: f.id,
-    src: (l) => `/work/altbot/clips/${f.id}-${l}.jpg`,
-    clip: (l) => `/work/altbot/clips/${f.id}-${l}.mp4`,
+    src: (l) => `${clipBase(f.id)}-${l}.jpg`,
+    clip: (l) => `${clipBase(f.id)}-${l}.mp4`,
+    portrait: ORIVETA.has(f.id),
     alt: `the app showing: ${f.title}`,
     icon: F_ICON[f.id],
     title: f.title,
@@ -273,8 +278,19 @@ const PAGES: Page[] = [
   { id: "help", n: "help & guides", icon: CircleHelp, what: "a short guide for every page, with numbered pictures.", note: "a ? on every page opens that page's own guide." },
 ];
 
+const STAFF_CLIP: Record<string, string> = { documents: "staff-documents", media: "staff-screen", learning: "staff-qa" };
+
 export function AltbotStaffBlocks() {
-  const items: Story[] = PAGES.map((p) => ({ key: p.id, src: (l) => shot("p", p.id, l), alt: `the ${p.n} page of the staff menu`, icon: p.icon, title: p.n, lead: p.what, note: p.note }));
+  const items: Story[] = PAGES.map((p) => {
+    const c = STAFF_CLIP[p.id];
+    return {
+      key: p.id,
+      src: (l: Look) => (c ? `/work/altbot/oriveta/${c}-${l}.jpg` : shot("p", p.id, l)),
+      clip: c ? (l: Look) => `/work/altbot/oriveta/${c}-${l}.mp4` : undefined,
+      portrait: !!c,
+      alt: `the ${p.n} page of the staff menu`, icon: p.icon, title: p.n, lead: p.what, note: p.note,
+    };
+  });
   return <ScrollStory items={items} shape="tall" label="the staff menu, page by page" />;
 }
 

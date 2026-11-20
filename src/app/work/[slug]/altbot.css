@@ -403,6 +403,10 @@
 .ab-story-shot{position:relative;margin:0;border-radius:18px;overflow:hidden;background:#0b0b0c;box-shadow:0 0 0 8px #0b0b0c,0 0 0 9px rgba(0,0,0,.2),0 50px 90px -40px rgba(20,22,40,.6)}
 .ab-story.wide .ab-story-shot{width:min(100%,calc((100vh - var(--top) - 120px) * 16 / 9));aspect-ratio:16/9}
 .ab-story.tall .ab-story-shot{height:min(820px,calc(100vh - var(--top) - 110px));aspect-ratio:2/3;border-radius:22px}
+/* portrait recordings (9:16): the frame turns upright, like a kiosk screen */
+.ab-story-shot{transition:width .5s cubic-bezier(.2,.8,.2,1),height .5s cubic-bezier(.2,.8,.2,1)}
+.ab-story.wide .ab-story-shot.port{width:calc((100vh - var(--top) - 120px) * 9 / 16);height:calc(100vh - var(--top) - 120px);aspect-ratio:auto;border-radius:22px}
+.ab-story.tall .ab-story-shot.port{aspect-ratio:9/16}
 .ab-story-shot>span{position:absolute;inset:0;opacity:0;transform:scale(1.02);transition:opacity .45s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
 .ab-story-shot>span.on{opacity:1;transform:none}
 .ab-story-shot img,.ab-story-shot video{width:100%;height:100%;object-fit:cover;display:block}
@@ -453,6 +457,7 @@
   .ab-story-inline{display:block;margin:0;border-radius:14px;overflow:hidden;background:#0b0b0c}
   .ab-story.wide .ab-story-inline{aspect-ratio:16/9}
   .ab-story.tall .ab-story-inline{aspect-ratio:2/3}
+  .ab-story.wide .ab-story-inline.port,.ab-story.tall .ab-story-inline.port{aspect-ratio:9/16;width:100%;max-width:320px;justify-self:center}
   .ab-story-inline img,.ab-story-inline video{width:100%;height:100%;object-fit:cover;display:block}
   .ab-story-copy{max-width:none;padding:0 4px 6px}
   .ab-story-copy h3{margin-top:14px}
