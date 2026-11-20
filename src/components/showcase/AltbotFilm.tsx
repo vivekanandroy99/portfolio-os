@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ThemeToggle } from "./AltbotBlocks";
 
 /*
   The explainer videos: the 5-minute showcase film (light + dark cuts, with chapters) and the
@@ -14,16 +15,7 @@ const POSTER: Record<Look, string> = { dark: "/work/altbot/showcase-dark.jpg", l
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
 function LookSwitch({ look, set }: { look: Look; set: (l: Look) => void }) {
-  return (
-    <div className="ab-seg" role="radiogroup" aria-label="which cut of the film">
-      <span>app theme</span>
-      {(["dark", "light"] as const).map((l) => (
-        <button key={l} role="radio" aria-checked={look === l} className={look === l ? "on" : ""} onClick={() => set(l)}>
-          {l}
-        </button>
-      ))}
-    </div>
-  );
+  return <ThemeToggle look={look} set={set} label="which cut of the film" />;
 }
 
 /* swap light/dark without losing the place */

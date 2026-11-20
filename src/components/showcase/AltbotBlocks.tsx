@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   AudioLines, Brain, Bug, ChartColumn, CircleHelp, Cloud, CloudOff, Cpu, FileSearch, FileText, Globe, GraduationCap, HardDrive, Images, Keyboard, Languages,
-  LayoutList, Lightbulb, LogIn, MessageSquareText, MessagesSquare, Mic, Monitor, MonitorPlay, PhoneCall, Presentation, Proportions, QrCode, Send, ShieldCheck, Smile, Users, UserRound, Volume2, VolumeX,
+  LayoutList, Lightbulb, LogIn, MessageSquareText, MessagesSquare, Mic, Monitor, Moon, Sun, MonitorPlay, PhoneCall, Presentation, Proportions, QrCode, Send, ShieldCheck, Smile, Users, UserRound, Volume2, VolumeX,
   type LucideIcon,
 } from "lucide-react";
 
@@ -35,18 +35,22 @@ function useAppLook(): [Look, (l: Look) => void] {
   return [useSyncExternalStore(lookStore.sub, lookStore.get, () => "dark" as Look), lookStore.set];
 }
 
-function LookSwitch() {
-  const [look, set] = useAppLook();
+/* a quiet theme toggle: two small icons, not a big pill */
+export function ThemeToggle({ look, set, label = "app theme" }: { look: Look; set: (l: Look) => void; label?: string }) {
   return (
-    <div className="ab-seg" role="radiogroup" aria-label="app theme for the screenshots">
-      <span>app theme</span>
+    <div className="ab-theme" role="radiogroup" aria-label={label}>
+      <span>app</span>
       {(["dark", "light"] as const).map((l) => (
-        <button key={l} role="radio" aria-checked={look === l} className={look === l ? "on" : ""} onClick={() => set(l)}>
-          {l}
+        <button key={l} role="radio" aria-checked={look === l} aria-label={`${l} app theme`} className={look === l ? "on" : ""} onClick={() => set(l)} data-label={l}>
+          {l === "dark" ? <Moon aria-hidden="true" /> : <Sun aria-hidden="true" />}
         </button>
       ))}
     </div>
   );
+}
+function LookSwitch() {
+  const [look, set] = useAppLook();
+  return <ThemeToggle look={look} set={set} label="app theme for the screenshots" />;
 }
 
 const shot = (kind: "f" | "p", id: string, look: Look) => `/work/altbot/shots/${kind}-${id}-${look}.webp`;
@@ -132,213 +136,121 @@ const F_ICON: Record<string, LucideIcon> = {
   talk: MessagesSquare, gate: ShieldCheck, hindi: Languages, kinds: Users, shows: MonitorPlay, slides: Presentation, web: Globe,
   photos: Images, qr: QrCode, lead: PhoneCall, cast: Smile, shapes: Proportions, debug: Bug, device: HardDrive,
 };
-const GROUPS = [
-  { id: "talks", n: "it talks", sub: "conversation", ids: ["talk", "gate", "hindi", "kinds"] },
-  { id: "shows", n: "it shows", sub: "its own screen", ids: ["shows", "slides", "web", "photos", "qr", "lead"] },
-  { id: "fits", n: "it fits in", sub: "the product", ids: ["cast", "shapes", "debug", "device"] },
-];
-const byId = (id: string) => FEATURES.find((f) => f.id === id)!;
-
 function Frame({ src, alt, eager }: { src: string; alt: string; eager?: boolean }) {
   // eslint-disable-next-line @next/next/no-img-element
   return <img src={src} alt={alt} loading={eager ? "eager" : "lazy"} decoding="async" />;
 }
 
-function FeatureDetail({ f, look }: { f: Feature; look: Look }) {
-  return (
-    <>
-      <figure className="ab-fx-shot" key={f.id + look}>
-        <Frame src={shot("f", f.id, look)} alt={`the app showing: ${f.title}`} eager />
-      </figure>
-      <div className="ab-fx-copy">
-        <ul>
-          {f.how.map((h) => (
-            <li key={h}>{h}</li>
-          ))}
-        </ul>
-        <p className="ab-note">
-          <span>design decision</span>
-          {f.design}
-        </p>
-      </div>
-    </>
-  );
-}
+/* ---------- scroll story: the screen stays put, the text scrolls past it ---------- */
 
-export function AltbotFeatures() {
-  const [look] = useAppLook();
-  const [group, setGroup] = useState(0);
-  const [cur, setCur] = useState("talk");
-  const g = GROUPS[group];
-  const f = byId(cur);
+type Story = { key: string; src: (l: Look) => string; alt: string; icon: LucideIcon; title: string; lead: string; note: string };
 
-  function pickGroup(i: number) {
-    setGroup(i);
-    setCur(GROUPS[i].ids[0]);
-  }
-
-  return (
-    <div className="ab-fx">
-      <div className="ab-fx-bar">
-        <div className="ab-tabs" role="tablist" aria-label="feature groups">
-          {GROUPS.map((gr, i) => (
-            <button key={gr.id} role="tab" aria-selected={i === group} className={i === group ? "on" : ""} onClick={() => pickGroup(i)}>
-              <b>{gr.n}</b>
-              <small>{gr.sub}</small>
-            </button>
-          ))}
-        </div>
-        <LookSwitch />
-      </div>
-
-      <div className="ab-fx-grid">
-        <ul className="ab-fx-list">
-          {g.ids.map((id) => {
-            const it = byId(id);
-            const Icon = F_ICON[id];
-            const on = id === cur;
-            return (
-              <li key={id} className={on ? "on" : ""}>
-                <button onClick={() => setCur(id)} aria-expanded={on} data-label="show">
-                  <span className="ab-ico">
-                    <Icon aria-hidden="true" />
-                  </span>
-                  <span>
-                    <b>{it.title}</b>
-                    <small>{it.line}</small>
-                  </span>
-                </button>
-                {/* phones and tablets: the screen opens right under its row */}
-                {on && (
-                  <div className="ab-fx-inline">
-                    <FeatureDetail f={it} look={look} />
-                  </div>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-        <div className="ab-fx-view" aria-live="polite">
-          <FeatureDetail f={f} look={look} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ---------- the staff menu: a scroll-driven walkthrough ---------- */
-
-type Page = { id: string; group: string; n: string; icon: LucideIcon; what: string; use: string; why: string };
-const PAGES: Page[] = [
-  { id: "signin", group: "getting in", n: "staff sign-in", icon: LogIn, what: "the menu only opens with a username and password.", use: "a curious visitor taps the menu button. they get a sign-in card and nothing else.", why: "a public screen can't have open settings. the on-screen keyboard comes up by itself, so no keyboard has to be plugged in." },
-  { id: "menu", group: "getting in", n: "the menu", icon: LayoutList, what: "everything staff can change, in one list: the bots, this bot's pages, visitors, devices, display, advanced.", use: "the front desk wants to change one thing before the doors open, and finds it without a manual.", why: "one flat list instead of nested menus. every change saves at once, so there is no save button to forget." },
-  { id: "look", group: "this bot", n: "look & voice", icon: UserRound, what: "pick the character, its english and hindi voices, and how fast it speaks.", use: "a client wants a male host on their stall. pick him, tap a few voices, keep the one that fits.", why: "tapping a voice plays it. staff choose by ear, not by a technical voice name." },
-  { id: "personality", group: "this bot", n: "personality", icon: MessageSquareText, what: "its name, its topics, who it is, its tone and how long its replies are.", use: "the brand wants a warmer host with shorter answers. two settings, and the next reply already sounds different.", why: "every text box has speak and keyboard buttons, so staff can say it out loud instead of typing on glass." },
-  { id: "documents", group: "this bot", n: "documents", icon: FileText, what: "the files the bot answers from: pdf, word, powerpoint or text.", use: "a new brochure arrives on a usb drive. add the file and the bot relearns by itself.", why: "it uses the normal windows file picker staff already know, and removed files go to the recycle bin." },
-  { id: "media", group: "this bot", n: "screen & media", icon: MonitorPlay, what: "what the bot may show beside itself: slide decks, pictures, videos, websites.", use: "marketing sends a new deck. it stays hidden until the owner allows it on the public screen.", why: "a private sales deck must never appear in front of visitors by accident, so showing is opt-in per file." },
-  { id: "lighting", group: "this bot", n: "lighting", icon: Lightbulb, what: "named looks (natural, soft, bright, dramatic, warm, cool, glow) plus brightness and direction.", use: "the stall has warm spotlights and the character looks cold next to them. pick warm, nudge the brightness.", why: "the menu sits to the side, so you watch the character change while you drag." },
-  { id: "learning", group: "visitors", n: "questions & answers", icon: GraduationCap, what: "what visitors asked that the documents couldn't answer. tap one to teach the bot the answer.", use: "people keep asking about parking and no document covers it. tap the question, write the answer once.", why: "the owner stays in charge: nothing is learnt without a person approving it." },
-  { id: "report", group: "visitors", n: "report", icon: ChartColumn, what: "how busy the kiosk was, and what share was answered from the documents, day by day.", use: "the manager asks how the weekend went. open the page, or export it to excel.", why: "plain counts and one percentage, not a dashboard someone has to decode." },
-  { id: "listening", group: "visitors", n: "listening & language", icon: Mic, what: "tap-to-talk or automatic listening, how long to wait, and a filter for background noise.", use: "the hall is loud and the bot keeps hearing the next stall. switch to tap-to-talk or raise the noise filter.", why: "with automatic listening a visitor never has to find a button. a busy floor needs the opposite, so both exist." },
-  { id: "keyboard", group: "visitors", n: "type instead of talking", icon: Keyboard, what: "visitors can type on an on-screen keyboard, and every answer is shown as text too.", use: "someone doesn't want to talk to a screen in public, or can't hear it well. they type and read.", why: "a showroom screen meets everyone, so there is always more than one way in." },
-  { id: "display", group: "this screen", n: "display & performance", icon: Monitor, what: "light or dark, background blur, edge smoothing and 3d detail.", use: "an older pc stutters. turn the 3d detail down one step and it runs smoothly again.", why: "every switch and slider has a line under it saying what it does, in plain words." },
-  { id: "sound", group: "this screen", n: "voice & sound", icon: Volume2, what: "the app's own volume, and how much speech to buffer before a sentence starts.", use: "on a busy floor nobody can hear the host. make it louder from the same menu.", why: "staff never have to leave the app for windows settings." },
-  { id: "models", group: "advanced", n: "ai models", icon: Cpu, what: "the ai parts on this pc, and the optional online brain, voice and ears, each with its own switch.", use: "a client wants more languages for one event. switch the online parts on, and off again afterwards.", why: "it arrives already set up and says so. nobody breaks it by exploring, and each online part falls back to the local one." },
-  { id: "staff", group: "advanced", n: "staff accounts", icon: Users, what: "who can open the menu. add a person, change a password.", use: "a new hire joins the showroom. the owner adds them on the kiosk itself.", why: "no it ticket, no second tool: the kiosk manages its own people." },
-  { id: "help", group: "help", n: "help & guides", icon: CircleHelp, what: "a short guide for every page, with a picture of that page and numbered markers.", use: "someone forgets what a slider does. the ? in the corner opens that page's guide.", why: "help sits where the question comes up. the pdf staff manual is made from the same screens." },
-];
-const CHAPTERS = PAGES.reduce<{ n: string; first: number }[]>((a, p, i) => (a.length && a[a.length - 1].n === p.group ? a : [...a, { n: p.group, first: i }]), []);
-
-export function AltbotStaffBlocks() {
+function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | "tall"; label: string }) {
   const [look] = useAppLook();
   const [cur, setCur] = useState(0);
   const steps = useRef<(HTMLLIElement | null)[]>([]);
 
-  // regular page scrolling drives it: the step crossing the middle of the screen is the current one
+  // ordinary page scrolling drives it: the step crossing the middle of the screen is the current one
   useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) if (e.isIntersecting) setCur(Number((e.target as HTMLElement).dataset.i));
       },
-      { rootMargin: "-48% 0px -48% 0px" },
+      { rootMargin: "-50% 0px -50% 0px" },
     );
     steps.current.forEach((el) => el && io.observe(el));
     return () => io.disconnect();
   }, []);
 
-  const page = PAGES[cur];
-  const jump = (i: number) => steps.current[i]?.scrollIntoView({ block: "center", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-
+  const it = items[cur];
   return (
-    <div className="ab-tour">
-      <div className="ab-tour-stage">
-        <div className="ab-tour-sticky">
-          <nav className="ab-tour-nav" aria-label="menu chapters">
-            {CHAPTERS.map((c) => (
-              <button key={c.n} className={page.group === c.n ? "on" : ""} onClick={() => jump(c.first)}>
-                {c.n}
-              </button>
+    <div className={`ab-story ${shape}`} aria-label={label}>
+      <div className="ab-story-stage">
+        <div className="ab-story-sticky">
+          <figure className="ab-story-shot">
+            {items.map((x, i) => (
+              <Frame key={x.key + look} src={x.src(look)} alt={i === cur ? x.alt : ""} eager={i < 2} />
+            )).map((img, i) => (
+              <span key={i} className={i === cur ? "on" : ""} aria-hidden={i !== cur}>
+                {img}
+              </span>
             ))}
-          </nav>
-          <figure className="ab-tour-panel">
-            <span key={page.id + look}>
-              <Frame src={shot("p", page.id, look)} alt={`the ${page.n} page of the staff menu`} eager />
-            </span>
           </figure>
-          <div className="ab-tour-foot">
-            <LookSwitch />
-            <span>
-              {String(cur + 1).padStart(2, "0")} / {PAGES.length}
+          <div className="ab-story-foot">
+            <span className="ab-story-count">
+              {String(cur + 1).padStart(2, "0")} <i>/ {items.length}</i>
             </span>
+            <span className="ab-story-bar" aria-hidden="true">
+              <i style={{ transform: `scaleX(${(cur + 1) / items.length})` }} />
+            </span>
+            <LookSwitch />
           </div>
-          <span className="ab-tour-bar" aria-hidden="true">
-            <i style={{ transform: `scaleX(${(cur + 1) / PAGES.length})` }} />
-          </span>
         </div>
       </div>
 
-      <ol className="ab-tour-steps">
-        {PAGES.map((p, i) => {
-          const Icon = p.icon;
+      <ol className="ab-story-steps">
+        {items.map((x, i) => {
+          const Icon = x.icon;
           return (
             <li
-              key={p.id}
+              key={x.key}
               data-i={i}
               className={i === cur ? "on" : ""}
               ref={(el) => {
                 steps.current[i] = el;
               }}
             >
-              {/* phones: each step carries its own screenshot */}
-              <figure className="ab-tour-inline">
-                <Frame src={shot("p", p.id, look)} alt={`the ${p.n} page of the staff menu`} />
+              {/* phones and tablets: each step carries its own screen */}
+              <figure className="ab-story-inline">
+                <Frame src={x.src(look)} alt={x.alt} />
               </figure>
-              <div className="ab-tour-copy">
-                <span className="ab-tour-tag">
-                  <span className="ab-ico">
-                    <Icon aria-hidden="true" />
-                  </span>
-                  {p.group}
+              <div className="ab-story-copy">
+                <span className="ab-ico">
+                  <Icon aria-hidden="true" />
                 </span>
-                <h3>{p.n}</h3>
-                <p className="what">{p.what}</p>
-                <dl>
-                  <div>
-                    <dt>when it&apos;s used</dt>
-                    <dd>{p.use}</dd>
-                  </div>
-                  <div>
-                    <dt>why it&apos;s built this way</dt>
-                    <dd>{p.why}</dd>
-                  </div>
-                </dl>
+                <h3>{x.title}</h3>
+                <p className="lead">{x.lead}</p>
+                <p className="sub">{x.note}</p>
               </div>
             </li>
           );
         })}
       </ol>
+      {it && <span className="ab-sr" aria-live="polite">{`${it.title}, ${cur + 1} of ${items.length}`}</span>}
     </div>
   );
+}
+
+export function AltbotFeatures() {
+  const items: Story[] = FEATURES.map((f) => ({ key: f.id, src: (l) => shot("f", f.id, l), alt: `the app showing: ${f.title}`, icon: F_ICON[f.id], title: f.title, lead: f.line, note: f.design }));
+  return <ScrollStory items={items} shape="wide" label="what altbot does, feature by feature" />;
+}
+
+/* ---------- the staff menu: the same scroll story, page by page ---------- */
+
+type Page = { id: string; n: string; icon: LucideIcon; what: string; note: string };
+const PAGES: Page[] = [
+  { id: "signin", n: "staff sign-in", icon: LogIn, what: "the menu only opens with a username and password.", note: "visitors only ever see a sign-in card, and the keyboard comes up by itself." },
+  { id: "menu", n: "the menu", icon: LayoutList, what: "everything staff can change, in one list.", note: "one flat list, and every change saves on its own." },
+  { id: "look", n: "look & voice", icon: UserRound, what: "the character, its two voices and how fast it speaks.", note: "tap a voice to hear it. staff choose by ear, not by a model name." },
+  { id: "personality", n: "personality", icon: MessageSquareText, what: "its name, topics, tone and reply length.", note: "every box has a speak button, so nobody has to type on glass." },
+  { id: "documents", n: "documents", icon: FileText, what: "the files it answers from: pdf, word, powerpoint or text.", note: "drop in the new brochure and it relearns by itself." },
+  { id: "media", n: "screen & media", icon: MonitorPlay, what: "the decks, pictures, videos and sites it may show.", note: "nothing reaches the public screen until the owner allows it." },
+  { id: "lighting", n: "lighting", icon: Lightbulb, what: "named looks, plus brightness and direction.", note: "the character stays in view, so every change shows as you drag." },
+  { id: "learning", n: "questions & answers", icon: GraduationCap, what: "questions the documents couldn't answer. tap one to teach it.", note: "nothing is learnt without a person approving it." },
+  { id: "report", n: "report", icon: ChartColumn, what: "how busy the kiosk was, and how much it could answer.", note: "plain counts and one percentage, with an excel export." },
+  { id: "listening", n: "listening & language", icon: Mic, what: "tap-to-talk or automatic listening, with a noise filter.", note: "automatic for quiet rooms, tap-to-talk for loud ones." },
+  { id: "keyboard", n: "type instead of talking", icon: Keyboard, what: "visitors can type, and every answer is also written.", note: "for anyone who'd rather not talk to a screen in public." },
+  { id: "display", n: "display & performance", icon: Monitor, what: "theme, blur, smoothing and 3d detail.", note: "one plain line under every switch says what it does." },
+  { id: "sound", n: "voice & sound", icon: Volume2, what: "volume, and how much speech to buffer.", note: "louder for a busy floor, without leaving the app." },
+  { id: "models", n: "ai models", icon: Cpu, what: "the ai parts on this pc, and optional online ones.", note: "already set up, and each online part falls back to the local one." },
+  { id: "staff", n: "staff accounts", icon: Users, what: "who can open the menu.", note: "the owner adds people on the kiosk itself. no it ticket." },
+  { id: "help", n: "help & guides", icon: CircleHelp, what: "a short guide for every page, with numbered pictures.", note: "a ? on every page opens that page's own guide." },
+];
+
+export function AltbotStaffBlocks() {
+  const items: Story[] = PAGES.map((p) => ({ key: p.id, src: (l) => shot("p", p.id, l), alt: `the ${p.n} page of the staff menu`, icon: p.icon, title: p.n, lead: p.what, note: p.note }));
+  return <ScrollStory items={items} shape="tall" label="the staff menu, page by page" />;
 }
 
 /* ---------- offline vs online: flip the switch ---------- */

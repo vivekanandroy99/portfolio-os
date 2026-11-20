@@ -155,7 +155,7 @@ export function AltbotShowcase() {
         <div className="ab-head">
           <span className="ab-kick">what it does</span>
           <h2>fourteen things, each one a real screen</h2>
-          <p>pick a feature to see the running app, how it works and one design decision behind it.</p>
+          <p>keep scrolling: the screen beside the text is the running app, and it changes with every feature.</p>
         </div>
         <AltbotFeatures />
       </section>
