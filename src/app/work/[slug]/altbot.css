@@ -487,7 +487,15 @@
 .ab .ab-ico{animation:ab-ico-bob 4.2s ease-in-out infinite}
 .ab li:nth-child(even) .ab-ico{animation-delay:-2.1s}
 .ab-story-steps>li:not(.on) .ab-ico,.ab-story-steps>li:not(.on) .ab-ico svg *{animation:none}
-@media (prefers-reduced-motion:reduce){.ab-ico,.ab-ico svg *,.ab-why li svg *{animation:none!important}}
+/* the six steps light up one after another: card pops, icon fills and draws, then hands over */
+.ab .ab-flow li:nth-child(n){animation:ab-flow-turn 7.2s ease-in-out infinite;animation-delay:calc(var(--i,0) * 1.2s)}
+.ab .ab-flow li:nth-child(n) .ab-ico{animation:ab-flow-ico 7.2s ease-in-out infinite;animation-delay:calc(var(--i,0) * 1.2s)}
+.ab .ab-flow li:nth-child(n) .ab-ico svg *{animation:ab-flow-draw 7.2s ease-in-out infinite;animation-delay:calc(var(--i,0) * 1.2s)}
+.ab .ab-flow li:nth-child(n):hover .ab-ico{animation:ab-flow-ico 7.2s ease-in-out infinite;animation-delay:calc(var(--i,0) * 1.2s)}
+@keyframes ab-flow-turn{0%,19%,100%{transform:none;box-shadow:inset 0 0 0 1px var(--line)}4%{transform:scale(1.07);box-shadow:inset 0 0 0 1px var(--tint-line),0 18px 40px -18px rgba(43,80,255,.7)}12%{transform:scale(1.05);box-shadow:inset 0 0 0 1px var(--tint-line),0 18px 40px -18px rgba(43,80,255,.7)}}
+@keyframes ab-flow-ico{0%,19%,100%{transform:none;background:var(--tint);color:var(--acc)}4%{transform:scale(1.18) rotate(-6deg);background:var(--grad);color:#fff}9%,14%{transform:scale(1.08) rotate(0);background:var(--grad);color:#fff}}
+@keyframes ab-flow-draw{0%{stroke-dashoffset:80}2%{stroke-dashoffset:80}11%,100%{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.ab-flow li,.ab-ico,.ab-ico svg *,.ab-why li svg *{animation:none!important}}
 /* the text snaps to the middle of the screen, only while inside a story */
 @media (min-width:901px){
 

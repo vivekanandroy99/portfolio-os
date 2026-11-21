@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {
-  ArrowDown, AudioLines, Brain, Captions, Ear, FileSearch, Hand, Keyboard, Languages, Lock, ReceiptText, ShieldCheck, SlidersHorizontal, Smile, SunMoon, Type, WifiOff,
+  ArrowDown, AudioLines, Brain, Captions, Ear, FileSearch, Hand, Keyboard, Languages, ShieldCheck, Smile, SunMoon, Type,
   type LucideIcon,
 } from "lucide-react";
 import { siDotnet, siGitlfs, siGoogle, siHuggingface, siNvidia, siOnnx, siPython, siUnity, type SimpleIcon } from "simple-icons";
@@ -40,13 +40,6 @@ const pipeline: { n: string; icon: LucideIcon; tool: string; logo?: SimpleIcon; 
   { n: "double-checks", icon: ShieldCheck, tool: "grounding check", body: "the draft is matched against the documents again before it is spoken." },
   { n: "speaks", icon: AudioLines, tool: "kokoro (onnx) · veena", logo: siOnnx, body: "english and indian hindi voices, streamed sentence by sentence." },
   { n: "lip-syncs", icon: Smile, tool: "ulipsync in unity", logo: siUnity, body: "the mouth is driven live from the audio, fed 70 ms ahead." },
-];
-
-const why: { t: string; b: string; icon: LucideIcon }[] = [
-  { icon: Lock, t: "questions stay in the building", b: "nothing is sent anywhere. no transcripts on someone else's server." },
-  { icon: WifiOff, t: "showroom wifi can't break it", b: "exhibition halls have terrible internet. altbot doesn't care." },
-  { icon: ReceiptText, t: "no bill per question", b: "a busy weekend costs the same as a quiet one." },
-  { icon: SlidersHorizontal, t: "it stays the way you tuned it", b: "no update somewhere else changes how it answers overnight." },
 ];
 
 const gate = [
@@ -180,7 +173,7 @@ export function AltbotShowcase() {
           </div>
           <ol className="ab-flow">
             {pipeline.map((s, i) => (
-              <li key={s.n}>
+              <li key={s.n} style={{ "--i": i } as React.CSSProperties}>
                 <span className="ab-flow-top">
                   <span className="ab-flow-n">step {i + 1}</span>
                   <span className="ab-ico"><s.icon aria-hidden="true" /></span>
@@ -193,19 +186,6 @@ export function AltbotShowcase() {
               </li>
             ))}
           </ol>
-          <div className="ab-numbers">
-            <div><b>~1.3 s</b><span>to the first word (english)</span></div>
-            <div><b>~3.1–3.8 s</b><span>to the first word (hindi)</span></div>
-            <div><b>~10.6 gb</b><span>graphics memory, all of it</span></div>
-          </div>
-          <ul className="ab-why">
-            {why.map((w) => (
-              <li key={w.t}>
-                <w.icon aria-hidden="true" />
-                {w.t}
-              </li>
-            ))}
-          </ul>
         </div>
       </section>
 
