@@ -491,6 +491,20 @@ figure:hover .ab-media-ctl,.ab-media-ctl:focus-within{opacity:1;transform:none}
 @keyframes ab-ico-pop{0%{transform:scale(.7) rotate(-8deg)}60%{transform:scale(1.1) rotate(3deg)}100%{transform:none}}
 @keyframes ab-ico-draw{from{stroke-dashoffset:80}to{stroke-dashoffset:0}}
 /* elsewhere on the page: a gentle hover wiggle */
+/* phones: one long vertical timeline, a line down the middle, steps alternating left and right */
+@media (max-width:640px){
+  .ab-steps{position:relative;display:flex;flex-direction:column;gap:28px;padding:8px 16px 0}
+  .ab-steps::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:2px;margin-left:-1px;background:var(--line)}
+  .ab-steps li{width:calc(50% - 22px);padding:0;border-top:0}
+  .ab-steps li:nth-child(odd){align-self:flex-start;text-align:right;justify-items:end}
+  .ab-steps li:nth-child(even){align-self:flex-end}
+  .ab-steps li::before{top:3px;left:auto;right:-29px;z-index:1}
+  .ab-steps li:nth-child(even)::before{right:auto;left:-29px}
+  .ab-steps li:nth-child(odd) .fig{justify-self:end}
+  .ab-steps li:not(:first-child){margin-top:-48px}
+  .ab-steps h3{font-size:16px;margin-top:12px}
+  .ab-steps p{font-size:13px}
+}
 .ab-flow li:hover .ab-ico,.ab-access li:hover .ab-ico,.ab-ed-grid li:hover .ab-ico{animation:ab-ico-pop .6s cubic-bezier(.2,1.6,.4,1)}
 /* icons everywhere draw themselves in a slow loop, staggered so they don't pulse together */
 .ab .ab-ico svg *,.ab-why li svg *{stroke-dasharray:80;animation:ab-ico-loop 4.2s ease-in-out infinite}
