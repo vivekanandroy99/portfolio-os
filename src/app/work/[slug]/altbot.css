@@ -302,13 +302,14 @@
 .ab-pipe p{margin:0;font-size:15px;line-height:1.55;color:var(--muted);flex:1}
 .ab-pipe code{display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:14px;border-top:1px solid var(--line);font-family:var(--f-mono);font-size:12px;color:var(--acc)}
 .ab-pipe code svg{width:15px;height:15px}
-/* the six steps as one flowing line */
-.ab-flow{position:relative;list-style:none;margin:clamp(8px,2vw,20px) 0 0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
-.ab-flow::before{content:"";position:absolute;left:calc(100% / 12);right:calc(100% / 12);top:27px;height:2px;background:linear-gradient(90deg,transparent,var(--acc) 12%,var(--acc2) 88%,transparent);opacity:.55}
-.ab-flow li{position:relative;display:grid;justify-items:center;text-align:center;gap:10px}
-.ab-flow .ab-ico{width:56px;height:56px;border-radius:18px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--tint-line),0 0 0 6px #10142a}
-.ab-flow .ab-ico svg{width:24px;height:24px}
-.ab-flow h3{font-size:19px;font-weight:700;margin-top:6px}
+/* the six steps: numbered cards, an arrow between each */
+.ab-flow{list-style:none;margin:clamp(8px,2vw,20px) 0 0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:22px;counter-reset:none}
+.ab-flow li{position:relative;display:flex;flex-direction:column;gap:6px;padding:18px 18px 20px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line)}
+.ab-flow li:not(:last-child)::after{content:"";position:absolute;top:50%;right:-17px;width:12px;height:12px;border-top:2px solid var(--acc);border-right:2px solid var(--acc);transform:translateY(-50%) rotate(45deg);opacity:.8}
+.ab-flow-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.ab-flow-n{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--acc)}
+.ab-flow .ab-ico{width:40px;height:40px;border-radius:12px}
+.ab-flow h3{font-size:20px;font-weight:700}
 .ab-flow small{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:11px;color:var(--muted);line-height:1.4}
 .ab-flow small svg{width:12px;height:12px;flex:none}
 .ab-why{list-style:none;margin:clamp(28px,4vw,40px) 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
@@ -367,7 +368,8 @@
 /* ---------- tablet ---------- */
 @media (max-width:1100px){
   .ab-steps{grid-template-columns:repeat(4,minmax(0,1fr));row-gap:40px}
-  .ab-flow{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:32px}.ab-flow::before{display:none}
+  .ab-flow{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .ab-flow li:nth-child(3n)::after{display:none}
   .ab-cast{grid-template-columns:repeat(3,minmax(0,1fr))}
   .ab-stack{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
@@ -385,7 +387,11 @@
   .ab-chips{padding:16px}
   .ab-chips button{flex:1 1 100%;font-size:14.5px}
   .ab-pipe{grid-template-columns:minmax(0,1fr)}
-  .ab-flow{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ab-flow{grid-template-columns:minmax(0,1fr);gap:20px}
+  .ab-flow li:nth-child(n)::after{display:block;top:auto;bottom:-15px;right:50%;transform:translateX(50%) rotate(135deg)}
+  .ab-flow li:last-child::after{display:none}
+  .ab-flow li{padding:14px 16px 16px}
+  .ab-flow-top{margin-bottom:4px}
   .ab-numbers{grid-template-columns:minmax(0,1fr)}
   .ab-ed-switch{display:grid;grid-template-columns:1fr 1fr;width:100%}
   .ab-ed-switch button{justify-content:center;padding:10px 8px;font-size:14px}

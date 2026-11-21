@@ -179,9 +179,12 @@ export function AltbotShowcase() {
             <p>six steps from a question to a spoken answer, all on the kiosk&apos;s own pc.</p>
           </div>
           <ol className="ab-flow">
-            {pipeline.map((s) => (
+            {pipeline.map((s, i) => (
               <li key={s.n}>
-                <span className="ab-ico"><s.icon aria-hidden="true" /></span>
+                <span className="ab-flow-top">
+                  <span className="ab-flow-n">step {i + 1}</span>
+                  <span className="ab-ico"><s.icon aria-hidden="true" /></span>
+                </span>
                 <h3>{s.n}</h3>
                 <small>
                   {s.logo && <Logo icon={s.logo} mono />}
