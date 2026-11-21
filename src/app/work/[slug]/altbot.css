@@ -302,14 +302,18 @@
 .ab-pipe p{margin:0;font-size:15px;line-height:1.55;color:var(--muted);flex:1}
 .ab-pipe code{display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:14px;border-top:1px solid var(--line);font-family:var(--f-mono);font-size:12px;color:var(--acc)}
 .ab-pipe code svg{width:15px;height:15px}
-/* the six steps: numbered cards, an arrow between each */
-.ab-flow{list-style:none;margin:clamp(8px,2vw,20px) 0 0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:22px;counter-reset:none}
-.ab-flow li{position:relative;display:flex;flex-direction:column;gap:6px;padding:18px 18px 20px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line)}
-.ab-flow li:not(:last-child)::after{content:"";position:absolute;top:50%;right:-17px;width:12px;height:12px;border-top:2px solid var(--acc);border-right:2px solid var(--acc);transform:translateY(-50%) rotate(45deg);opacity:.8}
-.ab-flow-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.ab-flow-n{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--acc)}
-.ab-flow .ab-ico{width:40px;height:40px;border-radius:12px}
-.ab-flow h3{font-size:20px;font-weight:700}
+/* the six steps: equal cards, a round arrow badge sitting in each gap */
+.ab-flow{--g:28px;list-style:none;margin:clamp(8px,2vw,20px) 0 0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:var(--g)}
+.ab-flow li{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:20px;border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,0)),var(--surface);box-shadow:inset 0 0 0 1px var(--line);transition:box-shadow .25s,transform .25s}
+.ab-flow li:hover{box-shadow:inset 0 0 0 1px var(--tint-line);transform:translateY(-2px)}
+.ab-flow li:not(:last-child)::after{content:"";position:absolute;z-index:2;top:50%;right:calc(var(--g) / -2 - 13px);width:26px;height:26px;margin-top:-13px;border-radius:50%;background:var(--grad) ;box-shadow:0 0 0 5px #10142a;
+  -webkit-mask:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E"),var(--grad);background-size:14px 14px,100% 100%;background-position:center;background-repeat:no-repeat}
+.ab-flow-top{display:flex;flex-direction:row-reverse;width:100%;justify-content:space-between;align-items:center;margin-bottom:18px}
+.ab-flow-n{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.ab-flow .ab-ico{width:44px;height:44px;border-radius:14px}
+.ab-flow .ab-ico svg{width:22px;height:22px}
+.ab-flow h3{font-size:19px;font-weight:700}
 .ab-flow small{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:11px;color:var(--muted);line-height:1.4}
 .ab-flow small svg{width:12px;height:12px;flex:none}
 .ab-why{list-style:none;margin:clamp(28px,4vw,40px) 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
@@ -370,6 +374,7 @@
   .ab-steps{grid-template-columns:repeat(4,minmax(0,1fr));row-gap:40px}
   .ab-flow{grid-template-columns:repeat(3,minmax(0,1fr))}
   .ab-flow li:nth-child(3n)::after{display:none}
+  .ab-flow{--g:30px;row-gap:20px}
   .ab-cast{grid-template-columns:repeat(3,minmax(0,1fr))}
   .ab-stack{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
@@ -388,10 +393,12 @@
   .ab-chips button{flex:1 1 100%;font-size:14.5px}
   .ab-pipe{grid-template-columns:minmax(0,1fr)}
   .ab-flow{grid-template-columns:minmax(0,1fr);gap:20px}
-  .ab-flow li:nth-child(n)::after{display:block;top:auto;bottom:-15px;right:50%;transform:translateX(50%) rotate(135deg)}
+  .ab-flow li{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:14px;row-gap:2px;align-items:center;padding:14px 16px}
+  .ab-flow-top{grid-row:span 2;width:auto;margin:0;flex-direction:row;gap:12px}
+  .ab-flow h3{align-self:end}
+  .ab-flow small{align-self:start}
+  .ab-flow li:nth-child(n)::after{display:block;top:auto;bottom:-23px;right:50%;margin:0 -13px 0 0;transform:rotate(90deg)}
   .ab-flow li:last-child::after{display:none}
-  .ab-flow li{padding:14px 16px 16px}
-  .ab-flow-top{margin-bottom:4px}
   .ab-numbers{grid-template-columns:minmax(0,1fr)}
   .ab-ed-switch{display:grid;grid-template-columns:1fr 1fr;width:100%}
   .ab-ed-switch button{justify-content:center;padding:10px 8px;font-size:14px}
@@ -470,7 +477,17 @@
 @keyframes ab-ico-draw{from{stroke-dashoffset:80}to{stroke-dashoffset:0}}
 /* elsewhere on the page: a gentle hover wiggle */
 .ab-flow li:hover .ab-ico,.ab-access li:hover .ab-ico,.ab-ed-grid li:hover .ab-ico{animation:ab-ico-pop .6s cubic-bezier(.2,1.6,.4,1)}
-@media (prefers-reduced-motion:reduce){.ab-ico,.ab-ico svg *{animation:none!important}}
+/* icons everywhere draw themselves in a slow loop, staggered so they don't pulse together */
+.ab .ab-ico svg *,.ab-why li svg *{stroke-dasharray:80;animation:ab-ico-loop 4.2s ease-in-out infinite}
+.ab li:nth-child(2) .ab-ico svg *,.ab-why li:nth-child(2) svg *{animation-delay:.5s}
+.ab li:nth-child(3) .ab-ico svg *,.ab-why li:nth-child(3) svg *{animation-delay:1s}
+.ab li:nth-child(4) .ab-ico svg *,.ab-why li:nth-child(4) svg *{animation-delay:1.5s}
+.ab li:nth-child(5) .ab-ico svg *{animation-delay:2s}
+.ab li:nth-child(6) .ab-ico svg *{animation-delay:2.5s}
+.ab .ab-ico{animation:ab-ico-bob 4.2s ease-in-out infinite}
+.ab li:nth-child(even) .ab-ico{animation-delay:-2.1s}
+.ab-story-steps>li:not(.on) .ab-ico,.ab-story-steps>li:not(.on) .ab-ico svg *{animation:none}
+@media (prefers-reduced-motion:reduce){.ab-ico,.ab-ico svg *,.ab-why li svg *{animation:none!important}}
 /* the text snaps to the middle of the screen, only while inside a story */
 @media (min-width:901px){
 
