@@ -174,6 +174,7 @@ export function AltbotShowcase() {
           <ol className="ab-flow">
             {pipeline.map((s, i) => (
               <li key={s.n} style={{ "--i": i } as React.CSSProperties}>
+                <div className="ab-flow-card">
                 <span className="ab-flow-top">
                   <span className="ab-flow-n">step {i + 1}</span>
                   <span className="ab-ico"><s.icon aria-hidden="true" /></span>
@@ -183,6 +184,7 @@ export function AltbotShowcase() {
                   {s.logo && <Logo icon={s.logo} mono />}
                   {s.tool}
                 </small>
+                </div>
               </li>
             ))}
           </ol>
