@@ -1,0 +1,44 @@
+AltBot portfolio clips - "Oriveta Home" (a MADE-UP home-appliance company), recorded 2026-11-21
+==============================================================================================
+(Renamed from "Kelvra Home", which sounded like Kelvinator. The old Kelvra clips, notes and sources are in old_kelvra/.)
+
+Bot: Maya (menu > Bots > Duplicate of Maya: same look, voices af_heart / veena_kavya, lip-sync), id bot_maya_1121000028,
+answering only from a made-up product guide + deck. Portrait 1080x1920, 30 fps, H.264 MP4 with sound, Unity Recorder
+(Game view, AltcoreBot_v8 scene, Play mode). Questions were TYPED (DialogueController.Ask) - every answer is spoken by the
+bot's own voice. Each clip exists twice: <clip>-dark.mp4 and <clip>-light.mp4 (same questions, same order).
+Every clip is 15 s or less.
+
+clip              what was asked / shown                                                          dark / light
+----              ----------------------                                                          ------------
+talk              "What does the Oriveta Breeze do?" - answered from the product guide            14.4 / 14.3 s
+                  (room size + HEPA filter, both sentences)
+gate              "Who won the cricket match yesterday?" - refused, steers back to Oriveta Home   7.0 /  7.0 s
+hindi             "Oriveta Breeze पर कितने साल की warranty मिलती है?" - spoken Hindi reply (Veena)   12.7 / 12.9 s
+                  (2-year warranty from purchase, parts and repairs at home)
+slides            "Show me the product deck and take me through it." - cover + opening line,     10.5 / 10.4 s
+                  then slide 2 (Oriveta Breeze); cut at the pause after "...our new Oriveta Breeze
+                  air purifier -"
+photos            "Show me your air purifiers" - product cards; the first card (Oriveta Breeze)  15.0 / 15.0 s
+                  talked through to the end of its sentence
+qr                "Send the contact page to my phone" - QR code of the contact page              8.2 /  7.9 s
+lead              "Can someone from your team call me back?" - the call-back form; name          14.7 / 14.5 s
+                  "Ananya Rao", phone and reason typed with the on-screen keyboard, Send,
+                  Maya thanks her (made-up visitor; the saved requests were removed afterwards)
+staff-documents   staff menu > Documents: this bot's two documents                              12.6 / 13.1 s
+staff-screen      staff menu > Screen & media: the deck (allowed), call-back switch, website    12.5 / 12.4 s
+staff-qa          staff menu > Questions & answers: made-up visitor questions for this bot      12.4 / 12.6 s
+
+full/  = the untrimmed takes of talk, slides, photos and lead (+ the recording logs with what was said). slides goes
+         on through the rest of slide 2 (~29 s), photos on to the second card (~20 s). The trimmed clips cut at a
+         sentence end or a natural pause found with ffmpeg silencedetect, with a short audio fade (source/trim_clips.sh;
+         x264 crf 17). The other 6 clips are used as recorded.
+lead was recorded a second time with quicker typing so the whole thank-you fits in 15 s.
+
+source/ = everything made for it: make_oriveta_content.py (guide .docx, 5-slide deck PDF with real text, 5 drawn
+product pictures - no real photos or logos), setup_oriveta.cs (makes/updates the bot in Play mode, removes the old
+documents, slide pictures and search index), rec_portfolio.ps1 + rec_portfolio_template.cs (records:
+rec_portfolio.ps1 -theme dark|light -scenes talk,gate,...), trim_clips.sh, bot_id.txt.
+
+All Oriveta Home content is fictional: products, prices, cities, store hours, phone number 1800 555 0199 and the website
+orivetahome.example (a reserved, never-real domain - the QR code leads nowhere). Name checked with a web search on
+2026-11-21: no company called Oriveta found. Delete it after use - see memory.txt 2026-11-20 (a) and (b).
