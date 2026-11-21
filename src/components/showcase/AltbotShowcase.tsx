@@ -176,36 +176,30 @@ export function AltbotShowcase() {
           <div className="ab-head">
             <span className="ab-kick">the highlight</span>
             <h2>everything happens on one pc. no internet, no cloud api.</h2>
-            <p>six steps between a question and a spoken answer, all local. it ships as a plug-and-play windows build with the models inside.</p>
+            <p>six steps from a question to a spoken answer, all on the kiosk&apos;s own pc.</p>
           </div>
-          <ol className="ab-pipe">
-            {pipeline.map((s, i) => (
+          <ol className="ab-flow">
+            {pipeline.map((s) => (
               <li key={s.n}>
-                <span className="ab-pipe-top">
-                  <span className="ab-ico"><s.icon aria-hidden="true" /></span>
-                  <span className="ab-pipe-n">{String(i + 1).padStart(2, "0")}</span>
-                </span>
+                <span className="ab-ico"><s.icon aria-hidden="true" /></span>
                 <h3>{s.n}</h3>
-                <p>{s.body}</p>
-                <code>
+                <small>
                   {s.logo && <Logo icon={s.logo} mono />}
                   {s.tool}
-                </code>
+                </small>
               </li>
             ))}
           </ol>
           <div className="ab-numbers">
-            <div><b>~1.3 s</b><span>english, question to first word</span></div>
-            <div><b>~3.1–3.8 s</b><span>hindi, including translation</span></div>
-            <div><b>~10.6 gb</b><span>graphics memory for everything</span></div>
-            <div><b>0.73x</b><span>real time: the hindi voice outruns playback</span></div>
+            <div><b>~1.3 s</b><span>to the first word (english)</span></div>
+            <div><b>~3.1–3.8 s</b><span>to the first word (hindi)</span></div>
+            <div><b>~10.6 gb</b><span>graphics memory, all of it</span></div>
           </div>
           <ul className="ab-why">
             {why.map((w) => (
               <li key={w.t}>
-                <span className="ab-ico"><w.icon aria-hidden="true" /></span>
-                <h3>{w.t}</h3>
-                <p>{w.b}</p>
+                <w.icon aria-hidden="true" />
+                {w.t}
               </li>
             ))}
           </ul>
