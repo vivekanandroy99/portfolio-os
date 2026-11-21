@@ -444,6 +444,21 @@
 .ab-sound.on{background:var(--grad)}
 .ab-sound:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .ab-story-inline{position:relative}
+/* media controls: sound pill always; play/pause + seek bar fade in on hover */
+.ab-media{position:absolute;left:14px;right:14px;bottom:14px;z-index:3;display:flex;align-items:center;justify-content:flex-end;gap:8px;pointer-events:none}
+.ab-media>*{pointer-events:auto}
+.ab-media .ab-sound{position:static;flex:none}
+.ab-media-ctl{flex:1;min-width:0;display:flex;align-items:center;gap:10px;height:36px;padding:0 14px 0 4px;border-radius:999px;background:rgba(12,12,14,.62);color:#fff;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 0 0 1px rgba(255,255,255,.14);opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s}
+figure:hover .ab-media-ctl,.ab-media-ctl:focus-within{opacity:1;transform:none}
+@media (hover:none){.ab-media-ctl{opacity:1;transform:none}}
+.ab-media-btn{display:grid;place-items:center;width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:#fff;cursor:pointer;flex:none}
+.ab-media-btn:hover{background:rgba(255,255,255,.14)}
+.ab-media-btn svg{width:16px;height:16px;fill:currentColor}
+.ab-media-btn:focus-visible,.ab-media-seek:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.ab-media-seek{flex:1;min-width:40px;height:4px;margin:0;-webkit-appearance:none;appearance:none;border-radius:4px;background:linear-gradient(90deg,#fff var(--p,0%),rgba(255,255,255,.28) var(--p,0%));cursor:pointer}
+.ab-media-seek::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:#fff;border:0}
+.ab-media-seek::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:#fff;border:0}
+.ab-media-time{font:500 11px/1 var(--f-mono);color:rgba(255,255,255,.8);white-space:nowrap;flex:none}
 .ab-story-shot>span{position:absolute;inset:0;opacity:0;transform:scale(1.02);transition:opacity .45s ease,transform .6s cubic-bezier(.2,.8,.2,1)}
 .ab-story-shot>span.on{opacity:1;transform:none}
 .ab-story-shot img,.ab-story-shot video{width:100%;height:100%;object-fit:cover;display:block}

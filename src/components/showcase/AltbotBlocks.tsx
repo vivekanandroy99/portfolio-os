@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   AudioLines, Brain, Bug, ChartColumn, CircleHelp, Cloud, CloudOff, Cpu, FileSearch, FileText, Globe, GraduationCap, HardDrive, Images, Keyboard, Languages,
-  LayoutList, Lightbulb, LogIn, MessageSquareText, MessagesSquare, Mic, Monitor, Moon, Sun, MonitorPlay, PhoneCall, Presentation, Proportions, QrCode, Send, ShieldCheck, Smile, Users, UserRound, Volume2, VolumeX,
+  LayoutList, Lightbulb, LogIn, MessageSquareText, MessagesSquare, Mic, Monitor, Moon, Pause, Play, Sun, MonitorPlay, PhoneCall, Presentation, Proportions, QrCode, Send, ShieldCheck, Smile, Users, UserRound, Volume2, VolumeX,
   type LucideIcon,
 } from "lucide-react";
 
@@ -160,14 +160,56 @@ function Clip({ src, poster, label, active, muted = true }: { src: string; poste
   return <video ref={v} src={src} poster={poster} muted loop playsInline preload={active ? "auto" : "none"} aria-label={label} />;
 }
 
-/* sound stays off until the visitor asks for it */
-function SoundButton({ on, onToggle }: { on: boolean; onToggle: () => void }) {
-  const Icon = on ? Volume2 : VolumeX;
+const mmss = (t: number) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
+
+/* media controls for clips with sound: the sound pill is always there (off by default);
+   hovering the screen also brings up play/pause and a seek bar */
+function MediaBar({ on, onToggle, find, track }: { on: boolean; onToggle: () => void; find: () => HTMLVideoElement | null; track: unknown }) {
+  const [t, setT] = useState(0);
+  const [d, setD] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const vid = useRef<HTMLVideoElement | null>(null);
+  useEffect(() => {
+    const v = find();
+    vid.current = v;
+    if (!v) return;
+    const sync = () => {
+      setT(v.currentTime);
+      setD(Number.isFinite(v.duration) ? v.duration : 0);
+      setPlaying(!v.paused);
+    };
+    sync();
+    const evs = ["timeupdate", "play", "pause", "loadedmetadata", "durationchange"];
+    evs.forEach((e) => v.addEventListener(e, sync));
+    return () => evs.forEach((e) => v.removeEventListener(e, sync));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [track]);
+  const Snd = on ? Volume2 : VolumeX;
+  const PP = playing ? Pause : Play;
   return (
-    <button type="button" className={`ab-sound${on ? " on" : ""}`} onClick={onToggle} aria-pressed={on} aria-label={on ? "turn the sound off" : "turn the sound on"}>
-      <Icon aria-hidden="true" />
-      <span>{on ? "sound on" : "sound off"}</span>
-    </button>
+    <div className={`ab-media${on ? " loud" : ""}`}>
+      <div className="ab-media-ctl">
+        <button type="button" className="ab-media-btn" onClick={() => { const v = vid.current; if (v) { if (v.paused) v.play().catch(() => {}); else v.pause(); } }} aria-label={playing ? "pause" : "play"}>
+          <PP aria-hidden="true" />
+        </button>
+        <input
+          type="range"
+          className="ab-media-seek"
+          min={0}
+          max={d || 1}
+          step={0.1}
+          value={Math.min(t, d || 1)}
+          onChange={(e) => { const v = vid.current; if (v) v.currentTime = Number(e.target.value); setT(Number(e.target.value)); }}
+          aria-label="seek"
+          style={{ ["--p" as string]: `${d ? (t / d) * 100 : 0}%` }}
+        />
+        <span className="ab-media-time">{mmss(t)} / {mmss(d)}</span>
+      </div>
+      <button type="button" className={`ab-sound${on ? " on" : ""}`} onClick={onToggle} aria-pressed={on} aria-label={on ? "turn the sound off" : "turn the sound on"}>
+        <Snd aria-hidden="true" />
+        <span>{on ? "sound on" : "sound off"}</span>
+      </button>
+    </div>
   );
 }
 
@@ -225,8 +267,8 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
                 .map((li) => (li.getBoundingClientRect().top + window.scrollY - top() - st.start) / span);
               return marks.reduce((a, b) => (Math.abs(b - value) < Math.abs(a - value) ? b : a), marks[0] ?? value);
             },
-            duration: { min: 0.25, max: 0.7 },
-            delay: 0.08,
+            duration: { min: 0.15, max: 0.4 },
+            delay: 0.03,
             ease: "power2.out",
           },
         });
@@ -244,7 +286,11 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
   useEffect(() => {
     const el = root.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => setSeen(e.isIntersecting), { threshold: 0.05 });
+    // leaving the section also turns the sound back off
+    const io = new IntersectionObserver(([e]) => {
+      setSeen(e.isIntersecting);
+      if (!e.isIntersecting) setSound(false);
+    }, { threshold: 0.05 });
     io.observe(el);
     return () => io.disconnect();
   }, []);
@@ -279,7 +325,7 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
                 {img}
               </span>
             ))}
-            {it?.sound && <SoundButton on={sound} onToggle={() => setSound((m) => !m)} />}
+            {it?.sound && <MediaBar on={sound} onToggle={() => setSound((m) => !m)} find={() => root.current?.querySelector<HTMLVideoElement>(".ab-story-shot>span.on video") ?? null} track={`${cur}${look}`} />}
           </figure>
           <div className="ab-story-foot">
             <span className="ab-story-count">
@@ -309,7 +355,7 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
               {/* phones and tablets: each step carries its own screen */}
               <figure className={`ab-story-inline${x.portrait ? " port" : ""}`}>
                 {x.clip ? <Clip src={x.clip(look)} poster={x.src(look)} label={x.alt} active={seen && i === cur} muted={!sound} /> : <Frame src={x.src(look)} alt={x.alt} />}
-                {x.sound && <SoundButton on={sound} onToggle={() => setSound((m) => !m)} />}
+                {x.sound && <MediaBar on={sound} onToggle={() => setSound((m) => !m)} find={() => steps.current[i]?.querySelector<HTMLVideoElement>(".ab-story-inline video") ?? null} track={`${i}${look}`} />}
               </figure>
               <div className="ab-story-copy">
                 <span className="ab-ico">

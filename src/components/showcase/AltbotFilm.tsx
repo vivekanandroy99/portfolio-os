@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePauseOffscreen } from "./usePauseOffscreen";
 import { ThemeToggle } from "./AltbotBlocks";
 
 /*
@@ -79,6 +80,8 @@ const CHAPTERS = [
 ];
 
 export function AltbotFilm() {
+  const box = useRef<HTMLDivElement | null>(null);
+  usePauseOffscreen(box);
   const video = useRef<HTMLVideoElement | null>(null);
   const [t, setT] = useState(0);
   const { look, set, onLoaded } = useLook(video, CHAPTERS, setT);
@@ -93,7 +96,7 @@ export function AltbotFilm() {
   }
 
   return (
-    <div className="ab-film">
+    <div className="ab-film" ref={box}>
       <div className="ab-film-bar">
         <div className="ab-seg" role="radiogroup" aria-label="which video">
           <span>watch</span>
