@@ -197,47 +197,46 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
     return () => window.removeEventListener("resize", measure);
   }, []);
 
-  // snapping: when scrolling stops, the nearest step glides to the middle of the screen
+  // snapping (gsap scrolltrigger): once scrolling stops, the nearest step settles with its text
+  // in the middle of the screen, level with the screen beside it. big screens only.
   useEffect(() => {
     const el = root.current;
     if (!el) return;
-    let t = 0;
-    let gliding = false;
-    const settle = () => {
-      if (window.innerWidth <= 900) return;
-      const mid = 56 + (window.innerHeight - 56) / 2;
-      const box = el.getBoundingClientRect();
-      if (box.top > mid || box.bottom < mid) return;
-      let best = 0;
-      let bestD = Infinity;
-      steps.current.forEach((li) => {
-        if (!li) return;
-        const r = li.getBoundingClientRect();
-        const d = r.top + r.height / 2 - mid;
-        if (Math.abs(d) < Math.abs(bestD)) {
-          bestD = d;
-          best = 1;
-        }
+    let off = false;
+    let cleanup = () => {};
+    (async () => {
+      const { gsap } = await import("gsap");
+      const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+      if (off) return;
+      gsap.registerPlugin(ScrollTrigger);
+      const mm = gsap.matchMedia();
+      mm.add("(min-width: 901px) and (prefers-reduced-motion: no-preference)", () => {
+        const top = () => 56;
+        const st = ScrollTrigger.create({
+          trigger: el,
+          start: () => `top ${top()}px`,
+          end: () => `bottom bottom`,
+          snap: {
+            snapTo: (value: number) => {
+              const span = st.end - st.start;
+              if (span <= 0) return value;
+              const marks = steps.current
+                .filter((li): li is HTMLLIElement => !!li)
+                .map((li) => (li.getBoundingClientRect().top + window.scrollY - top() - st.start) / span);
+              return marks.reduce((a, b) => (Math.abs(b - value) < Math.abs(a - value) ? b : a), marks[0] ?? value);
+            },
+            duration: { min: 0.25, max: 0.7 },
+            delay: 0.08,
+            ease: "power2.out",
+          },
+        });
+        return () => st.kill();
       });
-      if (!best || Math.abs(bestD) < 3 || Math.abs(bestD) > window.innerHeight * 0.6) return;
-      gliding = true;
-      const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      window.scrollBy({ top: bestD, behavior: smooth ? "smooth" : "auto" });
-    };
-    const onScroll = () => {
-      window.clearTimeout(t);
-      t = window.setTimeout(() => {
-        if (gliding) {
-          gliding = false;
-          return;
-        }
-        settle();
-      }, 160);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
+      cleanup = () => mm.revert();
+    })();
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.clearTimeout(t);
+      off = true;
+      cleanup();
     };
   }, []);
 
@@ -267,6 +266,7 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
     <div ref={root} className={`ab-story ${shape}`} aria-label={label}>
       <div className="ab-story-stage">
         <div className="ab-story-sticky">
+          <div className="ab-story-frame">
           <figure className={`ab-story-shot${it?.portrait ? " port" : ""}`}>
             {items.map((x, i) => (
               x.clip ? (
@@ -289,6 +289,7 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
               <i style={{ transform: `scaleX(${(cur + 1) / items.length})` }} />
             </span>
             <LookSwitch />
+          </div>
           </div>
         </div>
       </div>

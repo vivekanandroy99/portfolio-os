@@ -453,7 +453,7 @@
 .ab-story-bar{flex:1;height:2px;border-radius:2px;background:var(--line);overflow:hidden}
 .ab-story-bar i{display:block;height:100%;background:var(--grad);transform-origin:left;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
 .ab-story-steps{list-style:none;margin:0;padding:0}
-.ab-story-steps>li{min-height:calc(100vh - var(--top));display:flex;align-items:center;scroll-snap-align:center;opacity:.18;transition:opacity .45s}
+.ab-story-steps>li{min-height:calc(100vh - var(--top));display:flex;align-items:center;opacity:.18;transition:opacity .45s}
 .ab-story-steps>li.on{opacity:1}
 .ab-story-inline{display:none}
 .ab-story-copy{max-width:480px}
@@ -496,9 +496,11 @@
 @keyframes ab-flow-ico{0%,19%,100%{transform:none;background:var(--tint);color:var(--acc)}4%{transform:scale(1.18) rotate(-6deg);background:var(--grad);color:#fff}9%,14%{transform:scale(1.08) rotate(0);background:var(--grad);color:#fff}}
 @keyframes ab-flow-draw{0%{stroke-dashoffset:80}2%{stroke-dashoffset:80}11%,100%{stroke-dashoffset:0}}
 @media (prefers-reduced-motion:reduce){.ab-flow li,.ab-ico,.ab-ico svg *,.ab-why li svg *{animation:none!important}}
-/* the text snaps to the middle of the screen, only while inside a story */
+/* big screens: the screen itself sits dead centre (the counter hangs below it), so the snapped text lines up with it */
 @media (min-width:901px){
-
+  html:has(.ab-story){scroll-behavior:auto}
+  .ab-story-frame{position:relative;display:flex;justify-content:center;width:100%}
+  .ab-story-foot{position:absolute;left:50%;top:calc(100% + 22px);transform:translateX(-50%)}
 }
 @media (max-width:1100px) and (min-width:901px){
   .ab-story,.ab-story.tall{gap:36px}
