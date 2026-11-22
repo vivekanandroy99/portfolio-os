@@ -236,7 +236,7 @@
 .ab-film-chapters button.on{background:var(--grad);color:#fff;box-shadow:none}
 .ab-film-chapters button.on small{color:rgba(255,255,255,.8)}
 
-.ab-staff-sec{margin-top:clamp(80px,11vw,140px);padding:clamp(64px,9vw,110px) 0;background:linear-gradient(180deg,var(--tint),transparent 70%),#fbfaf7;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.ab-staff-sec{margin-top:clamp(80px,11vw,140px);padding:clamp(64px,9vw,110px) 0;--tone:#f2edff;background:radial-gradient(60rem 30rem at 85% 0%,rgba(122,60,255,.10),transparent 70%),var(--tone);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .ab-staff-sec.ab-sec{padding-top:clamp(64px,9vw,110px)}
 @media (max-width:980px){
 }
@@ -563,3 +563,16 @@ figure:hover .ab-media-ctl,.ab-media-ctl:focus-within{opacity:1;transform:none}
   .ab-story-copy .lead{font-size:17px}
 }
 @media (prefers-reduced-motion:reduce){.ab-story-steps>li{opacity:1}.ab-story-shot>span{transition:none}}
+
+/* ---------- section colours: each big section gets its own soft tone from the page's blue/violet family ---------- */
+.ab-tone{position:relative;margin-top:clamp(80px,11vw,140px);padding-top:clamp(64px,9vw,110px);padding-bottom:clamp(64px,9vw,110px);
+  background:var(--tone);box-shadow:0 0 0 100vmax var(--tone);clip-path:inset(0 -100vmax);border:0}
+.ab-tone::before{content:"";position:absolute;inset:0 -100vmax;pointer-events:none;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.ab-tone-blue{--tone:#eaeeff}
+.ab-tone-ice{--tone:#e6f2f6;--acc:#1f6fd6;--tint:rgba(31,111,214,.08);--tint-line:rgba(31,111,214,.3)}
+.ab-tone-sand{--tone:#f8f3ea}
+.ab-tone+.ab-tone,.ab-tone+.ab-staff-sec,.ab-staff-sec+.ab-tone{margin-top:0}
+/* which section a step belongs to: shown on every step, so the parent topic is never lost */
+.ab-story-topic{display:inline-flex;align-items:center;gap:8px;margin-bottom:18px;padding:6px 12px 6px 10px;border-radius:99px;background:var(--surface);box-shadow:0 0 0 1px var(--line);font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.ab-story-topic i{width:8px;height:8px;border-radius:50%;background:var(--grad)}
+.ab-story-topic em{font-style:normal;color:var(--muted);letter-spacing:.04em;padding-left:8px;border-left:1px solid var(--line)}

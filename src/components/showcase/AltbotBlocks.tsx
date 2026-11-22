@@ -213,7 +213,7 @@ function MediaBar({ on, onToggle, find, track }: { on: boolean; onToggle: () => 
   );
 }
 
-function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | "tall"; label: string }) {
+function ScrollStory({ items, shape, label, topic }: { items: Story[]; shape: "wide" | "tall"; label: string; topic: string }) {
   const [look] = useAppLook();
   const [cur, setCur] = useState(0);
   const [sound, setSound] = useState(false);
@@ -358,6 +358,13 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
                 {x.sound && <MediaBar on={sound} onToggle={() => setSound((m) => !m)} find={() => steps.current[i]?.querySelector<HTMLVideoElement>(".ab-story-inline video") ?? null} track={`${i}${look}`} />}
               </figure>
               <div className="ab-story-copy">
+                <span className="ab-story-topic">
+                  <i aria-hidden="true" />
+                  {topic}
+                  <em>
+                    {String(i + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
+                  </em>
+                </span>
                 <span className="ab-ico">
                   <Icon aria-hidden="true" />
                 </span>
@@ -396,7 +403,7 @@ export function AltbotFeatures() {
     title: f.title,
     lead: f.line,
   }));
-  return <ScrollStory items={items} shape="wide" label="what altbot does, feature by feature" />;
+  return <ScrollStory items={items} shape="wide" label="what altbot does, feature by feature" topic="what it does" />;
 }
 
 /* ---------- universal design: one clip per way in, same scroll story ---------- */
@@ -461,7 +468,7 @@ export function AltbotAccess() {
     note: a.note,
     look: a.look,
   }));
-  return <ScrollStory items={items} shape="wide" label="universal design, one way in at a time" />;
+  return <ScrollStory items={items} shape="wide" label="universal design, one way in at a time" topic="universal design" />;
 }
 
 /* ---------- the staff menu: the same scroll story, page by page ---------- */
@@ -500,7 +507,7 @@ export function AltbotStaffBlocks() {
       alt: `the ${p.n} page of the staff menu`, icon: p.icon, title: p.n, lead: p.what, note: p.note,
     };
   });
-  return <ScrollStory items={items} shape="tall" label="the staff menu, page by page" />;
+  return <ScrollStory items={items} shape="tall" label="the staff menu, page by page" topic="the staff menu" />;
 }
 
 /* ---------- offline vs online: flip the switch ---------- */

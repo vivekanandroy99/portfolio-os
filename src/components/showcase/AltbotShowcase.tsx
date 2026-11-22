@@ -135,7 +135,7 @@ export function AltbotShowcase() {
       </section>
 
       {/* what it does */}
-      <section id="features" className="ab-wrap ab-sec">
+      <section id="features" className="ab-wrap ab-sec ab-tone ab-tone-blue">
         <div className="ab-head">
           <span className="ab-kick">what it does</span>
           <h2>fourteen things, each one a real screen</h2>
@@ -145,7 +145,7 @@ export function AltbotShowcase() {
       </section>
 
       {/* demo */}
-      <section id="demo" className="ab-wrap ab-sec">
+      <section id="demo" className="ab-wrap ab-sec ab-tone ab-tone-sand">
         <div className="ab-head">
           <span className="ab-kick">try it</span>
           <h2>meet maya, working at lumen living</h2>
@@ -225,7 +225,7 @@ export function AltbotShowcase() {
       </section>
 
       {/* access */}
-      <section id="universal" className="ab-wrap ab-sec">
+      <section id="universal" className="ab-wrap ab-sec ab-tone ab-tone-ice">
         <div className="ab-head">
           <span className="ab-kick">universal design</span>
           <h2>talk, tap, type or read</h2>
@@ -258,7 +258,7 @@ export function AltbotShowcase() {
       </section>
 
       {/* the explainer */}
-      <section id="film" className="ab-wrap ab-sec">
+      <section id="film" className="ab-wrap ab-sec ab-tone ab-tone-sand">
         <div className="ab-head">
           <span className="ab-kick">the explainer</span>
           <h2>or just watch it</h2>
