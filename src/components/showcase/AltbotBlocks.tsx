@@ -523,17 +523,17 @@ const EDITION: { k: string; icon: LucideIcon; off: string; on: string }[] = [
 ];
 
 export function AltbotEditions() {
-  const [online, setOnline] = useState(false);
+  const [online, setOnline] = useState(true);
   return (
     <div className={`ab-ed${online ? " online" : ""}`}>
       <div className="ab-ed-switch" role="radiogroup" aria-label="edition">
-        <button role="radio" aria-checked={!online} className={online ? "" : "on"} onClick={() => setOnline(false)}>
-          <CloudOff aria-hidden="true" />
-          offline, the default
-        </button>
         <button role="radio" aria-checked={online} className={online ? "on" : ""} onClick={() => setOnline(true)}>
           <Cloud aria-hidden="true" />
           online edition
+        </button>
+        <button role="radio" aria-checked={!online} className={online ? "" : "on"} onClick={() => setOnline(false)}>
+          <CloudOff aria-hidden="true" />
+          offline
         </button>
       </div>
       <ul className="ab-ed-grid" aria-live="polite">
