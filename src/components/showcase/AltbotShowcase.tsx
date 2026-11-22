@@ -24,13 +24,12 @@ function Logo({ icon, mono }: { icon: SimpleIcon; mono?: boolean }) {
 }
 
 const process = [
-  { fig: "2", unit: "languages", t: "the brief", b: "a realistic 3d host for showrooms. hindi and english, on-brand only, fully offline." },
-  { fig: "3", unit: "checks", t: "text first", b: "proved in a plain text box that the brain stays on topic, before any audio existed." },
-  { fig: "25", unit: "questions", t: "test, don't guess", b: "two model families side by side. gemma 3 4b: every answer right, best hindi, fastest." },
-  { fig: "13 → 0", unit: "of 24 sentences", t: "listen like a machine", b: "a phoneme checker caught the hindi voice flipping gender mid-sentence. a fixed voice sample fixed it." },
-  { fig: "105 → 20", unit: "ms lip-sync lag", t: "measure the mouth", b: "a per-frame trace of the mouth against the voice, tuned until they land together." },
-  { fig: "46 → 30", unit: "% of the screen", t: "design with the owner", b: "a round portrait was rejected for a full-screen character with a slim glass card." },
-  { fig: "3x", unit: "slower, then fixed", t: "chase the slow bits", b: "one soft shadow was slowing the hindi voice. it became a 1 px edge." },
+  { fig: "2", unit: "languages", t: "the brief", b: "a life-size 3d host for showrooms. it speaks hindi and english, only talks about the company, and works with no internet." },
+  { fig: "3", unit: "safety checks", t: "make it honest first", b: "before it had a voice or a face, i tested it by typing questions, to prove it never makes things up about the brand." },
+  { fig: "25", unit: "test questions", t: "test, don't guess", b: "i asked several ai models the same 25 questions. one got every answer right, spoke the best hindi and was the fastest, so it won." },
+  { fig: "13 → 0", unit: "glitches in 24 sentences", t: "fix what people hear", b: "the hindi voice sometimes slipped from a woman's voice to a man's mid-sentence. i built a checker to catch it, then fixed it." },
+  { fig: "105 → 20", unit: "milliseconds", t: "lips in time with the voice", b: "her lips moved a tenth of a second late. i measured it frame by frame and tuned it until lips and voice land together." },
+  { fig: "3x", unit: "slower, then fixed", t: "hunt down the slowdowns", b: "one blurry shadow in the menu was making the hindi voice three times slower and choppy. a thin line in its place fixed it." },
 ];
 
 const pipeline: { n: string; icon: LucideIcon; tool: string; logo?: SimpleIcon; body: string }[] = [
