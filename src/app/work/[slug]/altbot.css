@@ -576,3 +576,49 @@ figure:hover .ab-media-ctl,.ab-media-ctl:focus-within{opacity:1;transform:none}
 .ab-story-topic{display:inline-flex;align-items:center;gap:8px;margin-bottom:18px;padding:6px 12px 6px 10px;border-radius:99px;background:var(--surface);box-shadow:0 0 0 1px var(--line);font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
 .ab-story-topic i{width:8px;height:8px;border-radius:50%;background:var(--grad)}
 .ab-story-topic em{font-style:normal;color:var(--muted);letter-spacing:.04em;padding-left:8px;border-left:1px solid var(--line)}
+
+/* ---------- problem solving: a question walking past three checks ---------- */
+.ab-tone-slate{--tone:#eceff6}
+.ab-gate-head{position:sticky;top:96px}
+.ab-gate-aside{margin-top:18px!important;padding:12px 16px;border-radius:14px;background:var(--surface);box-shadow:0 0 0 1px var(--line);font-size:14px!important}
+.ab-gflow{--pass:#0f9d63;--fail:#d9342b;list-style:none;margin:0;padding:0;position:relative;display:grid;gap:18px}
+/* the spine, with a pulse travelling down it */
+.ab-gflow::before{content:"";position:absolute;left:21px;top:22px;bottom:0;width:2px;background:linear-gradient(var(--acc),var(--acc2));opacity:.35}
+.ab-gflow::after{content:"";position:absolute;left:17px;top:22px;width:10px;height:10px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 4px rgba(43,80,255,.18),0 0 14px rgba(43,80,255,.6);animation:ab-gflow-pulse 4.5s cubic-bezier(.5,0,.5,1) infinite}
+@keyframes ab-gflow-pulse{0%{top:22px;opacity:0}8%{opacity:1}85%{opacity:1}100%{top:100%;opacity:0}}
+.ab-gflow li{position:relative;display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;align-items:start}
+.ab-gflow-dot{position:relative;z-index:1;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--grad);color:#fff;font-family:var(--ab-head);font-weight:700;font-size:19px;box-shadow:0 0 0 5px var(--tone,var(--bg))}
+.ab-gflow-dot svg{width:20px;height:20px}
+.ab-gflow small{display:block;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ab-gflow q{display:block;margin-top:6px;font-size:16px;line-height:1.45;color:var(--ink);quotes:"\201C" "\201D"}
+.ab-gflow-end>div{padding:12px 16px;border-radius:16px;background:var(--surface);box-shadow:0 0 0 1px var(--line)}
+.ab-gflow-end.start .ab-gflow-dot{background:var(--surface);color:var(--acc);box-shadow:0 0 0 5px var(--tone),inset 0 0 0 1.5px var(--tint-line)}
+.ab-gflow-end.done .ab-gflow-dot{background:var(--pass)}
+.ab-gflow-end.done>div{box-shadow:0 0 0 1px rgba(15,157,99,.35);background:linear-gradient(180deg,rgba(15,157,99,.06),transparent),var(--surface)}
+.ab-gflow-card{padding:18px 20px;border-radius:20px;background:var(--surface);box-shadow:0 0 0 1px var(--line)}
+.ab-gflow-card h3{margin-top:8px;font-size:20px}
+.ab-gflow-card p{margin:6px 0 0;font-size:15px;line-height:1.6;color:var(--muted)}
+.ab-gflow-ways{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.ab-gflow-ways span{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:99px;font-size:12.5px;font-weight:600}
+.ab-gflow-ways svg{width:14px;height:14px;stroke-width:2.6}
+.ab-gflow-ways .pass{color:var(--pass);background:rgba(15,157,99,.1)}
+.ab-gflow-ways .fail{color:var(--fail);background:rgba(217,52,43,.09)}
+/* the refusal branch sits apart, dashed, at the end */
+.ab-gflow-end.done::after{content:"";position:absolute;z-index:1;left:0;top:30px;bottom:-2px;width:44px;background:var(--tone)}
+.ab-gflow .ab-gflow-dot{z-index:2}
+.ab-gflow-no{display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;align-items:start;margin-top:28px}
+.ab-gflow-no small{display:block;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ab-gflow-no q{display:block;margin-top:6px;font-size:16px;line-height:1.45;color:var(--ink);quotes:"\201C" "\201D"}
+.ab-gflow-no .ab-gflow-dot{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--surface);color:var(--fail);box-shadow:0 0 0 5px var(--tone),inset 0 0 0 1.5px rgba(217,52,43,.45)}
+.ab-gflow-no>div{padding:12px 16px;border-radius:16px;border:1.5px dashed rgba(217,52,43,.45);background:rgba(217,52,43,.04)}
+.ab-gflow-no em{display:block;margin-top:6px;font-style:normal;font-size:13px;color:var(--muted)}
+@media (max-width:900px){.ab-gate-head{position:static}}
+@media (max-width:640px){
+  .ab-gflow li,.ab-gflow-no{grid-template-columns:36px minmax(0,1fr);gap:12px}
+  .ab-gflow-no .ab-gflow-dot{width:36px;height:36px}
+  .ab-gflow-end.done::after{width:36px}
+  .ab-gflow-dot{width:36px;height:36px;border-radius:12px;font-size:16px}
+  .ab-gflow::before{left:17px}.ab-gflow::after{left:13px}
+  .ab-gflow-card{padding:16px}
+}
+@media (prefers-reduced-motion:reduce){.ab-gflow::after{display:none}}

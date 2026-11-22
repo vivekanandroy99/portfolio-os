@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {
-  ArrowDown, AudioLines, Brain, Ear, FileSearch, ShieldCheck, Smile,
+  ArrowDown, Check, MessageCircleQuestion, Volume2, X, AudioLines, Brain, Ear, FileSearch, ShieldCheck, Smile,
   type LucideIcon,
 } from "lucide-react";
 import { siDotnet, siGitlfs, siGoogle, siHuggingface, siNvidia, siOnnx, siPython, siUnity, type SimpleIcon } from "simple-icons";
@@ -43,9 +43,9 @@ const pipeline: { n: string; icon: LucideIcon; tool: string; logo?: SimpleIcon; 
 ];
 
 const gate = [
-  { t: "before the brain", b: "the question is matched against the documents. too far off topic and the ai is never called: a written, in-character refusal steers back." },
-  { t: "while it thinks", b: "the brain only sees the matching passages and must answer from them. partial answers say what isn't known." },
-  { t: "before it speaks", b: "the reply is matched against the documents again. if it drifted, a refusal is spoken instead." },
+  { t: "before the brain", h: "is it even about us?", b: "the question is matched against the bot's own documents. the ai isn't called yet.", pass: "close enough: go on", fail: "far off topic: stop here" },
+  { t: "while it thinks", h: "answer only from the pages", b: "the ai sees just the passages that matched and must answer from them, or say it doesn't know. partial answers say what's missing.", pass: "answered from the passages", fail: "nothing there: stop here" },
+  { t: "before it speaks", h: "did the answer drift?", b: "the finished reply is matched against the documents again, before a single word is spoken.", pass: "still grounded: speak it", fail: "drifted: stop here" },
 ];
 
 const cast = [
@@ -183,23 +183,53 @@ export function AltbotShowcase() {
       </section>
 
       {/* gate */}
-      <section className="ab-wrap ab-sec ab-split">
-        <div className="ab-head">
+      <section id="gate" className="ab-wrap ab-sec ab-split ab-tone ab-tone-slate">
+        <div className="ab-head ab-gate-head">
           <span className="ab-kick">problem solving</span>
           <h2>an ai that doesn&apos;t make things up about your brand</h2>
-          <p>a bot that invents a price is worse than no bot. a prompt alone wasn&apos;t trusted, so three checks sit around the ai, and greetings and refusals are written lines, never generated.</p>
+          <p>a bot that invents a price is worse than no bot. a prompt alone wasn&apos;t trusted, so every question walks past three checks. fail any one and the visitor hears a friendly, written no instead of a guess.</p>
+          <p className="ab-gate-aside">greetings, thanks and &ldquo;who are you?&rdquo; never reach the ai either: they&apos;re answered from written lines.</p>
         </div>
-        <ol className="ab-gate">
+        <div className="ab-gflow-wrap">
+        <ol className="ab-gflow" aria-label="what happens to a question, step by step">
+          <li className="ab-gflow-end start">
+            <span className="ab-gflow-dot"><MessageCircleQuestion aria-hidden="true" /></span>
+            <div>
+              <small>a visitor asks</small>
+              <q>what does the oriveta breeze do?</q>
+            </div>
+          </li>
           {gate.map((g, i) => (
-            <li key={g.t}>
-              <span>{i + 1}</span>
-              <div>
-                <h3>{g.t}</h3>
+            <li key={g.t} className="ab-gflow-check">
+              <span className="ab-gflow-dot">{i + 1}</span>
+              <div className="ab-gflow-card">
+                <small>check {i + 1} · {g.t}</small>
+                <h3>{g.h}</h3>
                 <p>{g.b}</p>
+                <div className="ab-gflow-ways">
+                  <span className="pass"><Check aria-hidden="true" />{g.pass}</span>
+                  <span className="fail"><X aria-hidden="true" />{g.fail}</span>
+                </div>
               </div>
             </li>
           ))}
+          <li className="ab-gflow-end done">
+            <span className="ab-gflow-dot"><Volume2 aria-hidden="true" /></span>
+            <div>
+              <small>only then is it spoken</small>
+              <q>the oriveta breeze is our air purifier; it cleans the air in a room of up to 40 square metres&hellip;</q>
+            </div>
+          </li>
         </ol>
+          <div className="ab-gflow-no" aria-label="what a failed check sounds like">
+            <span className="ab-gflow-dot"><X aria-hidden="true" /></span>
+            <div>
+              <small>any check fails: a written, in-character line</small>
+              <q>that&apos;s out of syllabus for me. try me on oriveta home instead!</q>
+              <em>asked: &ldquo;who won the cricket match yesterday?&rdquo;</em>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* online */}
