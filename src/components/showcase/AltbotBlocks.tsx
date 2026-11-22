@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   AudioLines, Brain, Bug, ChartColumn, CircleHelp, Cloud, CloudOff, Cpu, FileSearch, FileText, Globe, GraduationCap, HardDrive, Images, Keyboard, Languages,
-  LayoutList, Lightbulb, LogIn, MessageSquareText, MessagesSquare, Mic, Monitor, Moon, Pause, Play, Sun, MonitorPlay, PhoneCall, Presentation, Proportions, QrCode, Send, ShieldCheck, Smile, Users, UserRound, Volume2, VolumeX,
+  LayoutList, Lightbulb, LogIn, MessageSquareText, MessagesSquare, Mic, Captions, Eye, Hand, Monitor, Moon, SunMoon, Type, Pause, Play, Sun, MonitorPlay, PhoneCall, Presentation, Proportions, QrCode, Send, ShieldCheck, Smile, Users, UserRound, Volume2, VolumeX,
   type LucideIcon,
 } from "lucide-react";
 
@@ -142,7 +142,7 @@ function Frame({ src, alt, eager }: { src: string; alt: string; eager?: boolean 
 
 /* ---------- scroll story: the screen stays put, the text scrolls past it ---------- */
 
-type Story = { key: string; src: (l: Look) => string; clip?: (l: Look) => string; alt: string; icon: LucideIcon; title: string; lead: string; note?: string; portrait?: boolean; sound?: boolean };
+type Story = { key: string; src: (l: Look) => string; clip?: (l: Look) => string; alt: string; icon: LucideIcon; title: string; lead: string; note?: string; look?: string; portrait?: boolean; sound?: boolean };
 
 /* a short silent loop from the film; only the clip in view plays */
 function Clip({ src, poster, label, active, muted = true }: { src: string; poster: string; label: string; active: boolean; muted?: boolean }) {
@@ -364,6 +364,12 @@ function ScrollStory({ items, shape, label }: { items: Story[]; shape: "wide" | 
                 <h3>{x.title}</h3>
                 <p className="lead">{x.lead}</p>
                 {x.note && <p className="sub">{x.note}</p>}
+                {x.look && (
+                  <p className="ab-look-for">
+                    <Eye aria-hidden="true" />
+                    <span><b>look for</b> {x.look}</span>
+                  </p>
+                )}
               </div>
             </li>
           );
@@ -391,6 +397,71 @@ export function AltbotFeatures() {
     lead: f.line,
   }));
   return <ScrollStory items={items} shape="wide" label="what altbot does, feature by feature" />;
+}
+
+/* ---------- universal design: one clip per way in, same scroll story ---------- */
+
+type Access = { id: string; base: string; icon: LucideIcon; title: string; lead: string; note: string; look: string; sound?: boolean };
+const ACCESS: Access[] = [
+  {
+    id: "type", base: "/work/altbot/universal/type", icon: Mic, sound: true,
+    title: "talk, tap or type",
+    lead: "three ways to ask: tap the mic, just start talking, or type on the screen's own keyboard.",
+    note: "automatic listening waits until the bot has finished speaking. the keyboard is for anyone who'd rather not talk to a screen in public.",
+    look: "the keyboard button next to the mic, and the status line under it.",
+  },
+  {
+    id: "captions", base: "/work/altbot/oriveta/talk", icon: Captions, sound: true,
+    title: "every answer is written too",
+    lead: "the question and the reply show as text, filling in sentence by sentence as she speaks.",
+    note: "a status line always says what's happening: listening, thinking, speaking. the text clears a few seconds later, so the next visitor starts fresh.",
+    look: "the reply growing in the glass card while it's spoken.",
+  },
+  {
+    id: "size", base: "/work/altbot/universal/size", icon: Type,
+    title: "text & button size",
+    lead: "everything on screen, from 0.6x to 1.6x, resized live while the slider moves.",
+    note: "staff set it once for the screen and the room. buttons, menus and the chat all grow together.",
+    look: "the whole menu growing as the size slider goes up.",
+  },
+  {
+    id: "theme", base: "/work/altbot/universal/theme", icon: SunMoon,
+    title: "light or dark",
+    lead: "dark by default, light one tap away. the 3d stage behind the character changes with it.",
+    note: "the frosted glass can also be turned off for the plainest, highest-contrast panel.",
+    look: "the backdrop and the card switching together.",
+  },
+  {
+    id: "touch", base: "/work/altbot/universal/touch", icon: Hand,
+    title: "built for touch",
+    lead: "swipe to scroll, wide touch scrollbars, and nothing that only works on hover.",
+    note: "a press only turns into a drag after it moves a little, so a wobbly tap still counts as a tap. buttons are big enough for a finger.",
+    look: "the scrollbar thumb that grows while it's dragged.",
+  },
+  {
+    id: "hindi", base: "/work/altbot/oriveta/hindi", icon: Languages, sound: true,
+    title: "hindi, english or mixed",
+    lead: "ask in hindi and the answer is spoken in hindi. ask in english, it's english. spoken hinglish works too.",
+    note: "english words inside a hindi reply stay in english letters, the way people actually talk.",
+    look: "the question: half hindi, half english.",
+  },
+];
+
+export function AltbotAccess() {
+  const items: Story[] = ACCESS.map((a) => ({
+    key: a.id,
+    src: (l) => `${a.base}-${l}.jpg`,
+    clip: (l) => (a.sound ? `${a.base}-${l}-sound.mp4` : `${a.base}-${l}.mp4`),
+    portrait: true,
+    sound: a.sound,
+    alt: `the app showing: ${a.title}`,
+    icon: a.icon,
+    title: a.title,
+    lead: a.lead,
+    note: a.note,
+    look: a.look,
+  }));
+  return <ScrollStory items={items} shape="wide" label="universal design, one way in at a time" />;
 }
 
 /* ---------- the staff menu: the same scroll story, page by page ---------- */

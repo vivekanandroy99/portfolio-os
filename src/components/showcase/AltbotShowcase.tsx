@@ -1,11 +1,11 @@
 import Link from "next/link";
 import {
-  ArrowDown, AudioLines, Brain, Captions, Ear, FileSearch, Hand, Keyboard, Languages, ShieldCheck, Smile, SunMoon, Type,
+  ArrowDown, AudioLines, Brain, Ear, FileSearch, ShieldCheck, Smile,
   type LucideIcon,
 } from "lucide-react";
 import { siDotnet, siGitlfs, siGoogle, siHuggingface, siNvidia, siOnnx, siPython, siUnity, type SimpleIcon } from "simple-icons";
 import { AltbotDemo } from "./AltbotDemo";
-import { AltbotCastClip, AltbotEditions, AltbotFeatures, AltbotPromo, AltbotStaffBlocks } from "./AltbotBlocks";
+import { AltbotAccess, AltbotCastClip, AltbotEditions, AltbotFeatures, AltbotPromo, AltbotStaffBlocks } from "./AltbotBlocks";
 import { AltbotFilm } from "./AltbotFilm";
 import { MoreWork } from "./MoreWork";
 
@@ -46,15 +46,6 @@ const gate = [
   { t: "before the brain", b: "the question is matched against the documents. too far off topic and the ai is never called: a written, in-character refusal steers back." },
   { t: "while it thinks", b: "the brain only sees the matching passages and must answer from them. partial answers say what isn't known." },
   { t: "before it speaks", b: "the reply is matched against the documents again. if it drifted, a refusal is spoken instead." },
-];
-
-const access: { t: string; b: string; icon: LucideIcon }[] = [
-  { icon: Hand, t: "talk, tap or type", b: "automatic listening, tap-to-talk, or the on-screen keyboard." },
-  { icon: Captions, t: "every word is also written", b: "the reply is always on screen as text." },
-  { icon: Type, t: "text & button size", b: "everything from 0.6x to 1.6x, live." },
-  { icon: SunMoon, t: "light or dark", b: "dark by default, light one tap away." },
-  { icon: Keyboard, t: "built for touch", b: "swipe scrolling, touch scrollbars, no hover-only controls." },
-  { icon: Languages, t: "hindi, english, or mixed", b: "it answers in the language it heard." },
 ];
 
 const cast = [
@@ -234,29 +225,13 @@ export function AltbotShowcase() {
       </section>
 
       {/* access */}
-      <section className="ab-wrap ab-sec ab-access-sec">
-        <figure className="ab-access-shot">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/work/altbot/shots/f-lead-dark.webp" alt="the app's call-back form with its own on-screen keyboard" loading="lazy" decoding="async" />
-        </figure>
-        <div>
-          <div className="ab-head">
-            <span className="ab-kick">universal design</span>
-            <h2>talk, tap, type or read</h2>
-            <p>a showroom screen meets everyone, so there is always more than one way in.</p>
-          </div>
-          <ul className="ab-access">
-            {access.map((a) => (
-              <li key={a.t}>
-                <span className="ab-ico"><a.icon aria-hidden="true" /></span>
-                <div>
-                  <h3>{a.t}</h3>
-                  <p>{a.b}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
+      <section id="universal" className="ab-wrap ab-sec">
+        <div className="ab-head">
+          <span className="ab-kick">universal design</span>
+          <h2>talk, tap, type or read</h2>
+          <p>a showroom screen meets everyone: people who&apos;d rather type, people who read better than they listen, hindi speakers, and staff on a touch screen with no keyboard. so there&apos;s always more than one way in.</p>
         </div>
+        <AltbotAccess />
       </section>
 
       {/* cast */}

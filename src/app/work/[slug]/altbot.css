@@ -478,6 +478,9 @@ figure:hover .ab-media-ctl,.ab-media-ctl:focus-within{opacity:1;transform:none}
 .ab-story-copy{max-width:480px}
 .ab-story-copy h3{font-size:clamp(30px,3.2vw,46px);line-height:1.02;margin-top:20px}
 .ab-story-copy .lead{margin:14px 0 0;font-size:20px;line-height:1.5;color:var(--ink)}
+.ab-look-for{display:flex;gap:9px;align-items:flex-start;margin:18px 0 0;padding:10px 14px;border-radius:14px;background:var(--tint);box-shadow:inset 0 0 0 1px var(--tint-line);font-size:13.5px;line-height:1.5;color:var(--ink);max-width:44ch}
+.ab-look-for svg{width:16px;height:16px;flex:none;margin-top:2px;color:var(--acc)}
+.ab-look-for b{font-family:var(--f-mono);font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--acc);margin-right:4px}
 .ab-story-copy .sub{margin:14px 0 0;font-size:14.5px;line-height:1.6;color:var(--muted);max-width:40ch}
 /* features: the screen is the hero, so the story runs wider than the text column */
 @media (min-width:901px){
