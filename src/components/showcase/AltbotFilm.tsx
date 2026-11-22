@@ -86,7 +86,6 @@ export function AltbotFilm() {
   const [t, setT] = useState(0);
   const { look, set, onLoaded } = useLook(video, CHAPTERS, setT);
   const cur = idx(CHAPTERS, look, t);
-  const [cut, setCut] = useState<"full" | "promo">("full");
 
   function go(at: number) {
     const v = video.current;
@@ -98,36 +97,21 @@ export function AltbotFilm() {
   return (
     <div className="ab-film" ref={box}>
       <div className="ab-film-bar">
-        <div className="ab-seg" role="radiogroup" aria-label="which video">
-          <span>watch</span>
-          <button role="radio" aria-checked={cut === "full"} className={cut === "full" ? "on" : ""} onClick={() => setCut("full")}>
-            5-minute walkthrough
-          </button>
-          <button role="radio" aria-checked={cut === "promo"} className={cut === "promo" ? "on" : ""} onClick={() => setCut("promo")}>
-            the promo
-          </button>
-        </div>
-        {cut === "full" && <LookSwitch look={look} set={set} />}
+        <LookSwitch look={look} set={set} />
       </div>
       <div className="ab-film-frame">
-        {cut === "full" ? (
-          <video ref={video} key={look} src={SRC[look]} poster={POSTER[look]} controls playsInline preload="none" onLoadedMetadata={onLoaded} onTimeUpdate={(e) => setT(e.currentTarget.currentTime)} />
-        ) : (
-          <video key="promo" src="/work/altbot/promo-landscape.mp4" poster="/work/altbot/promo-landscape.jpg" controls playsInline preload="none" />
-        )}
+        <video ref={video} key={look} src={SRC[look]} poster={POSTER[look]} controls playsInline preload="none" onLoadedMetadata={onLoaded} onTimeUpdate={(e) => setT(e.currentTarget.currentTime)} />
       </div>
-      {cut === "full" && (
-        <ol className="ab-film-chapters" aria-label="chapters">
-          {CHAPTERS.map((c, i) => (
-            <li key={c.n}>
-              <button className={i === cur && t > 0 ? "on" : ""} onClick={() => go(c.at[look])}>
-                <small>{fmt(c.at[look])}</small>
-                {c.n}
-              </button>
-            </li>
-          ))}
-        </ol>
-      )}
+      <ol className="ab-film-chapters" aria-label="chapters">
+        {CHAPTERS.map((c, i) => (
+          <li key={c.n}>
+            <button className={i === cur && t > 0 ? "on" : ""} onClick={() => go(c.at[look])}>
+              <small>{fmt(c.at[look])}</small>
+              {c.n}
+            </button>
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }

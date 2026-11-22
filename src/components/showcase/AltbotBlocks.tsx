@@ -60,12 +60,12 @@ type Feature = { id: string; n: string; title: string; line: string; how: string
 
 const FEATURES: Feature[] = [
   {
-    id: "talk", n: "01", title: "natural conversation", line: "ask anything about the company out loud. answered in seconds.", size: "wide",
+    id: "talk", n: "01", title: "natural conversation", line: "just ask out loud, the way you'd ask a person. it starts answering in a second or two.", size: "wide",
     how: ["tap the mic, or switch on automatic listening and just talk.", "the answer is spoken sentence by sentence as it's written, so the first words start early.", "the question and the answer also show as text in the glass card."],
     design: "the card has a fixed height and the text scrolls inside it. an earlier version grew with the text and felt jumpy on a big screen.",
   },
   {
-    id: "gate", n: "02", title: "a topic gate, not just a prompt", line: "off-topic? a friendly no. never an invented answer.",
+    id: "gate", n: "02", title: "it stays on topic", line: "ask about something else and you get a friendly no, never a made-up answer.",
     how: ["the question is matched against the bot's own documents before the ai is even called.", "the ai only sees the matching passages, and must answer from them or say it doesn't know.", "the reply is checked against the documents again before it's spoken."],
     design: "refusals are written lines in the character's voice that steer back to its topics. the ai never improvises a no.",
   },
@@ -75,12 +75,12 @@ const FEATURES: Feature[] = [
     design: "hindi is everyday spoken hindi, not textbook hindi. bookish words are swapped for the ones people use.",
   },
   {
-    id: "kinds", n: "04", title: "two kinds of bot", line: "strict company experts, or free-chat characters.", size: "tall", focus: "30% 30%",
+    id: "kinds", n: "04", title: "two kinds of bot", line: "some only talk about the company. others will happily chat about anything.", size: "tall", focus: "30% 30%",
     how: ["knowledge-only bots answer from documents and refuse the rest.", "open-chat bots talk about anything, in character, and remember the conversation.", "the memory clears when a new visitor walks up."],
     design: "the menu warns before a company bot is switched to open chat, because that's when it could start making things up.",
   },
   {
-    id: "shows", n: "05", title: "it shows, not just tells", line: "slides, websites, photos and qr codes on its own screen.", size: "wide", focus: "20% 40%",
+    id: "shows", n: "05", title: "it shows, not just tells", line: "it pulls up slides, websites, photos and qr codes on a screen beside itself.", size: "wide", focus: "20% 40%",
     how: ["a panel opens beside the character and the character steps aside to make room.", "“what can you show me?” lists everything as cards to tap.", "show requests are matched without the ai, in english or hindi, so the panel opens at once."],
     design: "only things the owner switched on can ever be shown.",
   },
@@ -90,42 +90,42 @@ const FEATURES: Feature[] = [
     design: "a deck is hidden until the owner allows it, so a private sales deck never ends up on a public screen.",
   },
   {
-    id: "web", n: "07", title: "live websites", line: "a locked-down browser inside the kiosk.", focus: "25% 50%",
+    id: "web", n: "07", title: "live websites", line: "it opens the company's real website, and visitors can't wander off it.", focus: "25% 50%",
     how: ["“show me your website” opens the real page next to the character.", "only that site: no address bar, no downloads, no wandering off.", "cookies are cleared when it closes, so nothing carries over to the next visitor."],
     design: "the browser is its own small window laid exactly over the panel, so it looks like part of the app.",
   },
   {
-    id: "photos", n: "08", title: "instant photo presentations", line: "built from the company's own website.", size: "wide", focus: "25% 45%",
+    id: "photos", n: "08", title: "instant photo presentations", line: "it turns the company's website into photo slideshows and talks you through them.", size: "wide", focus: "25% 45%",
     how: ["a one-time crawl collects the site's projects, with titles and photos.", "“show me your museum projects” becomes a set of photo cards it talks through.", "it only states facts found in the bot's documents. otherwise it reads the caption."],
     design: "no one has to make a presentation. the website the company already has is the content.",
   },
   {
-    id: "qr", n: "09", title: "take it home", line: "qr codes for any page, or a whatsapp chat.", focus: "30% 50%",
+    id: "qr", n: "09", title: "take it home", line: "scan a qr code and take the page, or a whatsapp chat, home on your phone.", focus: "30% 50%",
     how: ["“send it to my phone” or “do you have whatsapp?” shows a qr code.", "the visitor scans it and carries on from their own phone.", "the qr code is drawn by the app itself, with no outside service."],
     design: "a kiosk conversation ends when the visitor walks away. this lets it continue.",
   },
   {
-    id: "lead", n: "10", title: "lead capture", line: "a call-back form with its own touch keyboard.", focus: "25% 50%",
+    id: "lead", n: "10", title: "lead capture", line: "ask for a call back and a short form pops up, keyboard included.", focus: "25% 50%",
     how: ["“can someone call me back?” opens a short form.", "the on-screen keyboard comes with it. no hardware keyboard needed.", "staff see the requests in the menu, with the number the visitor left."],
     design: "three fields and one button. it only shows on bots where the owner switched it on.",
   },
   {
-    id: "cast", n: "11", title: "multiple characters", line: "each with its own look, voice and personality.", size: "tall", focus: "20% 30%",
+    id: "cast", n: "11", title: "multiple characters", line: "six of them, each with their own look, voice and personality.", size: "tall", focus: "20% 30%",
     how: ["two company experts, two free-chat characters, two for a second company.", "each speaks with one voice in both languages, so it sounds like one person.", "staff can make new bots in the app from an existing look."],
     design: "nods, smiles, brow raises and glances at the screen panel are driven by code, so they fit what's being said.",
   },
   {
-    id: "shapes", n: "12", title: "every screen shape", line: "portrait kiosks, tvs, tablets and ultrawides.", size: "wide", focus: "50% 55%",
+    id: "shapes", n: "12", title: "every screen shape", line: "it rearranges itself for tall kiosks, tvs, tablets and ultrawide screens.", size: "wide", focus: "50% 55%",
     how: ["tall screens get the chat card along the bottom; wide screens get it beside the character.", "text is sized from the screen's width, so a 4k portrait tv doesn't get giant letters.", "the camera reframes by itself when the shape changes."],
     design: "the main target is a portrait 2k or 4k tv. every layout was checked there first.",
   },
   {
-    id: "debug", n: "13", title: "built-in diagnostics", line: "live timings and knowledge-gate scores.", focus: "15% 40%",
+    id: "debug", n: "13", title: "built-in diagnostics", line: "one tap shows what it heard, how well the question matched the documents, and how long each step took.", focus: "15% 40%",
     how: ["one tap shows what it heard, what it asked the documents, and how each check scored.", "timings for reply ready, first sound and done.", "live lip-sync levels and the brain's own log lines."],
     design: "when a client says “it answered wrong yesterday”, the reason is on screen, not in a log file on someone's laptop.",
   },
   {
-    id: "device", n: "14", title: "runs entirely on-device", line: "no cloud, no api keys, no data leaving the building.",
+    id: "device", n: "14", title: "runs entirely on-device", line: "no internet needed, and nothing a visitor says leaves the building.",
     how: ["hearing, thinking, speaking and lip-sync all run on the kiosk's own pc.", "it keeps working when the showroom wifi doesn't.", "an online edition exists for when a client wants more languages."],
     design: "offline came first. online is a set of separate switches, each with a local fallback.",
   },
@@ -572,8 +572,11 @@ export function AltbotPromo() {
     video.current?.play().catch(() => {});
   }, []);
   return (
-    <figure className="ab-tv" aria-label="the altbot promo, on a portrait screen">
-      <video ref={video} src="/work/altbot/promo-portrait.mp4" poster="/work/altbot/promo-portrait.jpg" muted loop playsInline preload="metadata" onClick={sound} />
+    <figure className="ab-tv" aria-label="the altbot promo, on a phone">
+      <div className="ab-tv-screen">
+        <span className="ab-tv-island" aria-hidden="true" />
+        <video ref={video} src="/work/altbot/promo-portrait.mp4" poster="/work/altbot/promo-portrait.jpg" muted loop playsInline preload="metadata" onClick={sound} />
+      </div>
       <button className="ab-tv-sound" onClick={sound} data-label={muted ? "sound on" : "mute"}>
         {muted ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}
         {muted ? "play with sound" : "sound on"}

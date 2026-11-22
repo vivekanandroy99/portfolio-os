@@ -57,17 +57,17 @@ const cast = [
 ];
 
 const stack: { n: string; use: string; logo?: SimpleIcon; mono?: boolean; icon?: LucideIcon }[] = [
-  { n: "unity 6", use: "engine · urp · ui toolkit", logo: siUnity, mono: true },
-  { n: "c# / .net", use: "all app code", logo: siDotnet },
-  { n: "python", use: "the voice + search sidecar", logo: siPython },
-  { n: "gemma 3 4b", use: "the brain, via llama.cpp", logo: siGoogle },
-  { n: "whisper", use: "the ears, via whisper.unity", icon: Ear },
-  { n: "kokoro + veena", use: "english and hindi voices", icon: AudioLines },
-  { n: "onnx runtime", use: "runs kokoro on the gpu", logo: siOnnx, mono: true },
-  { n: "hugging face", use: "bge-m3 search + reranker", logo: siHuggingface },
-  { n: "nvidia cuda", use: "everything on one gpu", logo: siNvidia },
-  { n: "ulipsync", use: "live lip-sync from audio", icon: Smile },
-  { n: "git lfs", use: "art and models in the repo", logo: siGitlfs },
+  { n: "unity 6", use: "the 3d world, the character and the screens", logo: siUnity, mono: true },
+  { n: "c# / .net", use: "the language the app is written in", logo: siDotnet },
+  { n: "python", use: "a helper for the voices and document search", logo: siPython },
+  { n: "gemma 3 4b", use: "the brain that writes the answers", logo: siGoogle },
+  { n: "whisper", use: "the ears: turns speech into text", icon: Ear },
+  { n: "kokoro + veena", use: "the english and hindi voices", icon: AudioLines },
+  { n: "onnx runtime", use: "keeps the english voice quick", logo: siOnnx, mono: true },
+  { n: "hugging face", use: "the models that search the documents", logo: siHuggingface },
+  { n: "nvidia cuda", use: "lets it all share one graphics card", logo: siNvidia },
+  { n: "ulipsync", use: "moves the lips in time with the voice", icon: Smile },
+  { n: "git lfs", use: "keeps the big 3d and ai files versioned", logo: siGitlfs },
 ];
 
 export function AltbotShowcase() {
@@ -86,7 +86,7 @@ export function AltbotShowcase() {
             a 3d host that listens, talks back and <em>never needs the internet.</em>
           </h1>
           <p className="ab-lede">
-            a life-size character for showroom screens. visitors ask out loud in hindi or english, and it answers only from the company&apos;s own documents. all on one pc.
+            i built a life-size character for showroom screens. you walk up, ask something out loud in hindi or english, and it answers using only what the company has written down. the whole thing runs on one pc.
           </p>
           <div className="ab-hero-cta">
             <a href="#features" className="ab-btn" data-label="explore">
@@ -105,10 +105,10 @@ export function AltbotShowcase() {
 
       <div className="ab-wrap">
         <dl className="ab-facts">
-          <div><dt>0</dt><dd>cloud calls in the offline edition</dd></div>
-          <div><dt>~1.3 s</dt><dd>to the first spoken word (english)</dd></div>
-          <div><dt>2 → 44</dt><dd>languages: offline → online edition</dd></div>
-          <div><dt>6</dt><dd>bots, each with its own face and voice</dd></div>
+          <div><dt>0</dt><dd>trips to the cloud when it runs offline</dd></div>
+          <div><dt>~1.3 s</dt><dd>before it starts talking back (english)</dd></div>
+          <div><dt>2 → 44</dt><dd>languages offline, 44 with the online version</dd></div>
+          <div><dt>6</dt><dd>characters, each with their own face and voice</dd></div>
         </dl>
       </div>
 
@@ -137,8 +137,8 @@ export function AltbotShowcase() {
       <section id="features" className="ab-wrap ab-sec ab-tone ab-tone-blue">
         <div className="ab-head">
           <span className="ab-kick">what it does</span>
-          <h2>fourteen things, each one a real screen</h2>
-          <p>keep scrolling: the screen beside the text is the running app, and it changes with every feature.</p>
+          <h2>fourteen things it can do, shown in the real app</h2>
+          <p>keep scrolling. every clip beside the text was recorded from the actual app, not a mock-up.</p>
         </div>
         <AltbotFeatures />
       </section>
@@ -147,8 +147,8 @@ export function AltbotShowcase() {
       <section id="demo" className="ab-wrap ab-sec ab-tone ab-tone-sand">
         <div className="ab-head">
           <span className="ab-kick">try it</span>
-          <h2>meet maya, working at lumen living</h2>
-          <p>lumen living is a made-up furniture brand i wrote documents for. pick a question and watch what happens behind the scenes.</p>
+          <h2>say hi to maya, the host at lumen living</h2>
+          <p>lumen living isn&apos;t real. i made it up and wrote its documents so you can try maya right here. pick a question and see what goes on behind the scenes.</p>
         </div>
         <AltbotDemo />
       </section>
@@ -158,8 +158,8 @@ export function AltbotShowcase() {
         <div className="ab-wrap">
           <div className="ab-head">
             <span className="ab-kick">the highlight</span>
-            <h2>everything happens on one pc. no internet, no cloud api.</h2>
-            <p>six steps from a question to a spoken answer, all on the kiosk&apos;s own pc.</p>
+            <h2>it all runs on one computer. no internet needed.</h2>
+            <p>here&apos;s what happens between your question and her answer. every step runs on the kiosk&apos;s own pc.</p>
           </div>
           <ol className="ab-flow">
             {pipeline.map((s, i) => (
@@ -186,7 +186,7 @@ export function AltbotShowcase() {
         <div className="ab-head ab-gate-head">
           <span className="ab-kick">problem solving</span>
           <h2>an ai that doesn&apos;t make things up about your brand</h2>
-          <p>a bot that invents a price is worse than no bot. a prompt alone wasn&apos;t trusted, so every question walks past three checks. fail any one and the visitor hears a friendly, written no instead of a guess.</p>
+          <p>a bot that makes up a price is worse than no bot at all. just telling the ai to behave wasn&apos;t enough, so every question has to pass three checks. if it fails any of them, the visitor gets a friendly no instead of a guess.</p>
           <p className="ab-gate-aside">greetings, thanks and &ldquo;who are you?&rdquo; never reach the ai either: they&apos;re answered from written lines.</p>
         </div>
         <div className="ab-gflow-wrap">
@@ -234,9 +234,9 @@ export function AltbotShowcase() {
       {/* online */}
       <section className="ab-wrap ab-sec">
         <div className="ab-head">
-          <span className="ab-kick">and when you want it</span>
-          <h2>the online edition</h2>
-          <p>same app, same bots. flip the switch to see what changes, and what never leaves the pc.</p>
+          <span className="ab-kick">the online edition</span>
+          <h2>need more languages? there&apos;s an online version</h2>
+          <p>it&apos;s the same app with the same characters. flip the switch to see what changes, and what stays on the pc either way.</p>
         </div>
         <AltbotEditions />
       </section>
@@ -267,8 +267,8 @@ export function AltbotShowcase() {
       <section className="ab-wrap ab-sec">
         <div className="ab-head">
           <span className="ab-kick">the cast</span>
-          <h2>multiple bots, one app</h2>
-          <p>each has its own face, voice and brief. eyes glance and blink, and the mouth follows the voice live.</p>
+          <h2>six characters, one app</h2>
+          <p>each one has its own face, voice and job. they blink, glance around and nod, and their lips follow the voice as they speak.</p>
         </div>
         <AltbotCastClip />
         <ul className="ab-cast">
@@ -286,21 +286,12 @@ export function AltbotShowcase() {
         </ul>
       </section>
 
-      {/* the explainer */}
-      <section id="film" className="ab-wrap ab-sec ab-tone ab-tone-sand">
-        <div className="ab-head">
-          <span className="ab-kick">the explainer</span>
-          <h2>or just watch it</h2>
-          <p>the whole app in five minutes, recorded from the real build, or the short promo.</p>
-        </div>
-        <AltbotFilm />
-      </section>
-
       {/* stack */}
       <section className="ab-wrap ab-sec">
         <div className="ab-head">
-          <span className="ab-kick">stack</span>
-          <h2>under the hood</h2>
+          <span className="ab-kick">the tools</span>
+          <h2>what it&apos;s built with</h2>
+          <p>the main pieces behind it, and the job each one does.</p>
         </div>
         <ul className="ab-stack">
           {stack.map((s) => (
@@ -311,6 +302,16 @@ export function AltbotShowcase() {
             </li>
           ))}
         </ul>
+      </section>
+
+      {/* the walkthrough */}
+      <section id="film" className="ab-wrap ab-sec ab-tone ab-tone-sand">
+        <div className="ab-head">
+          <span className="ab-kick">the walkthrough</span>
+          <h2>rather watch? here&apos;s the whole tour</h2>
+          <p>five minutes, recorded from the real app. tap a chapter to jump straight to it.</p>
+        </div>
+        <AltbotFilm />
       </section>
 
       <div className="ab-wrap">
