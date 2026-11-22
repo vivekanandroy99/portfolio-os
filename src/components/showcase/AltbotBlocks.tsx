@@ -556,31 +556,38 @@ export function AltbotEditions() {
 /* ---------- hero: the 1-minute promo on the portrait screen ---------- */
 
 export function AltbotPromo() {
+  const box = useRef<HTMLElement | null>(null);
   const video = useRef<HTMLVideoElement | null>(null);
-  const [muted, setMuted] = useState(true);
-  function sound() {
+  const [sound, setSound] = useState(false);
+  function toggle() {
     const v = video.current;
     if (!v) return;
-    const next = !muted;
-    v.muted = next;
-    if (!next) v.currentTime = 0;
+    const on = !sound;
+    v.muted = !on;
+    if (on && v.currentTime > 2 && v.paused) v.currentTime = 0;
     v.play().catch(() => {});
-    setMuted(next);
+    setSound(on);
   }
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    video.current?.play().catch(() => {});
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) video.current?.play().catch(() => {});
+    // scrolled away: the sound goes off, like the other clips on the page
+    const el = box.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting && video.current) {
+        video.current.muted = true;
+        setSound(false);
+      }
+    }, { threshold: 0.15 });
+    io.observe(el);
+    return () => io.disconnect();
   }, []);
   return (
-    <figure className="ab-tv" aria-label="the altbot promo, on a phone">
+    <figure ref={box} className="ab-tv" aria-label="the altbot promo, vertical cut">
       <div className="ab-tv-screen">
-        <span className="ab-tv-island" aria-hidden="true" />
-        <video ref={video} src="/work/altbot/promo-portrait.mp4" poster="/work/altbot/promo-portrait.jpg" muted loop playsInline preload="metadata" onClick={sound} />
+        <video ref={video} src="/work/altbot/promo-portrait.mp4" poster="/work/altbot/promo-portrait.jpg" muted loop playsInline preload="metadata" />
       </div>
-      <button className="ab-tv-sound" onClick={sound} data-label={muted ? "sound on" : "mute"}>
-        {muted ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}
-        {muted ? "play with sound" : "sound on"}
-      </button>
+      <MediaBar on={sound} onToggle={toggle} find={() => video.current} track="promo" />
     </figure>
   );
 }
