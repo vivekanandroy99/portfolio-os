@@ -1,0 +1,108 @@
+AltBot - universal design / accessibility facts, checked against the code on 2026-11-23
+=======================================================================================
+Paths are relative to Assets/Scripts (USS = Assets/UI/Companion/Companion.uss). "CONFIRMED" = the code does what the
+portfolio says; "CORRECTED" = the code says something slightly different - use the corrected wording.
+
+(a) WAYS TO ASK - CONFIRMED, three ways
+  - Tap to talk (default): tap the mic, talk, tap again. Listening mode saved in PlayerPrefs, default TapToTalk.
+      Audio/SpeechInputController.cs:70-83 (enum ListenMode { TapToTalk, Automatic }, default 0)
+      UI/CompanionUI.cs:677 (main button: Ready -> StartListening, Listening -> StopListening)
+  - Space = push-to-talk (hold Space, release to finish; ignored while typing in a text box or with the menu open).
+      UI/CompanionUI.cs:49 (pushToTalkKey = Key.Space), :694-716 (HandleKeys); buttons are non-focusable so Space
+      doesn't also press them: :293
+  - Automatic listening (menu > Visitors > Listening & language > Listening: "Tap the button" / "Automatic"): the bot
+    listens whenever it is idle; a short pause ends the question. It does NOT listen while it speaks, while the menu,
+    sign-in, keyboard or a form is open, or within 1 s after it spoke.
+      UI/CompanionMenu.cs:883-891, UI/CompanionUI.cs:321-323 (AutoAllowed), Audio/SpeechInputController.cs:64-68
+      (how loud a voice must be, pause that ends a question - both adjustable)
+  - On-screen keyboard in the chat: menu > Display > "Show keyboard" adds a keyboard button next to the mic; it opens a
+    text box with an in-app touch keyboard (letters, numbers/symbols page incl. ₹, shift, space, backspace, Enter
+    sends). OFF by default.
+      UI/CompanionUI.cs:38-39 (showKeyboardByDefault = false), :119-129 (ShowKeyboard), :346 (chat keyboard),
+      :718-738 (ToggleTyping / SendTyped); UI/CompanionMenu.cs:305-306; UI/CompanionControls.cs:242-300 (OnScreenKeyboard)
+  - Extra: the staff menu's text boxes have a "Speak" button (dictation) as well as the keyboard.
+      UI/CompanionMenu.cs:2407-2422, Audio/SpeechInputController.cs:374 (Dictate)
+
+(b) THE REPLY IS SHOWN AS TEXT - CORRECTED: "shown as text by default", not "always"
+  - The question ("YOU") and the reply appear in the panel; the reply fills in sentence by sentence as it is spoken.
+      UI/CompanionUI.cs:777-804 (ShowQuestion, AddReplySentence, ShowReply)
+  - Staff CAN switch it off: Advanced > Display & performance > "Show the conversation text" (default on; off = only the
+    buttons show, the answer is just heard).  UI/CompanionUI.cs:36-37, :137, :336
+  - Panel commands ("next" -> "Slide 4 of 12") are shown, not spoken.  UI/CompanionUI.cs:806-816
+  - The text clears 6 s after the bot finishes (adjustable 0-120 s, 0 = never), so the next visitor starts clean.
+      UI/CompanionUI.cs:86-88, :520-526
+  - Status line under the button says what is happening: "Tap to talk" / "Just start talking" / "Listening… · tap to
+    finish" / "Thinking…" / "Speaking · tap to stop"; nothing heard -> "Didn't catch that - try again."
+      UI/CompanionUI.cs:604-634, :532
+
+(c) TEXT & BUTTON SIZE - CONFIRMED 0.6x to 1.6x, live (step 0.05, default 1.0)
+  - [Tunable("Display & performance", "Text & button size", 0.6f, 1.6f, 0.05f)]  UI/CompanionUI.cs:25-26
+  - Where: menu > ADVANCED > "Display & performance" > Text & button size (first row).  UI/CompanionMenu.cs:310-320
+    (each Tunable page is a row under Advanced), :1856-1901 (BuildTunables / slider rows)
+  - Live: every slider move re-fits the whole screen on the next frame (menu, chat panel, buttons - everything).
+      UI/CompanionUI.cs:135 (TunableChanged -> tallLayout = null), :642-656 (FitToScreenShape: fewer reference units =
+      bigger); Tunable.cs:101-113 (Set calls the listener while dragging, saves on release)
+  - Speaking speed per bot: 0.7x-1.3x (menu > the bot > Look & voice).  UI/CompanionMenu.cs:538-539
+    NOTE: the Veena voice (Hindi, and Maya's English if set to a Veena voice) ignores it (CLAUDE.md, Veena section).
+
+(d) LIGHT / DARK THEME - CONFIRMED, dark is the default
+  - menu > DISPLAY > Appearance: Light / Dark.  UI/CompanionMenu.cs:304
+  - Default dark: PlayerPrefs "companion/dark" defaults to 1.  UI/CompanionUI.cs:297; setter :105-116 (also switches
+    the 3D stage backdrop). Theme tokens: Companion.uss .theme-light (line 9) / .theme-dark (line 39).
+
+(e) TOUCH - CONFIRMED (target: large touch screens, no mouse/keyboard)
+  - Swipe scrolling: DragScroll (Unity's ScrollView didn't move on a finger swipe). A press becomes a drag after 14 UI
+    units so a wobbly tap still taps; sliders, scrollbars and text boxes keep their own drags. Follows the finger
+    (no fling/momentum).  UI/CompanionControls.cs:543-603; used on the menu (UI/CompanionMenu.cs:80), the conversation
+    (UI/CompanionUI.cs:215) and the debug card.
+  - Touch scrollbars: TouchScrollbar - 28-unit-wide touch strip with a slim thumb (grows while dragged), drag the thumb
+    or tap the track to jump; hidden when everything fits; thumb at least 56 units tall.
+      UI/CompanionControls.cs:473-541; USS .scrollbar 952-958, .scrollbar__thumb 978-994
+  - No hover-only controls: hover highlights exist only under .pointer-mouse, which is switched off as soon as a finger
+    touches (a tapped button stayed lit on touch screens). Nothing is reachable only by hovering.
+      UI/CompanionUI.cs:196-201; USS: all 7 :hover rules for controls are under .pointer-mouse (lines 153, 382, 391,
+      429, 535, 765, 1042); the other 3 only cancel hover on a busy main button (461-463).
+  - Large touch targets (UI units; on a portrait screen the UI is 720 units wide, so 1 unit = 1.5 px at 1080 wide, 3 px
+    on a 4K portrait TV): main mic button 72x72, round/icon buttons 44x44, menu rows min 46 tall, keyboard keys 46 tall
+    (up to 44 wide), scrollbar touch strip 28 wide - all scaled further by Text & button size.
+      USS .main-button 395, .round-button 371, .icon-button 139, .row 1014, .osk__key 1354
+  - The menu's text boxes open the on-screen keyboard by themselves on a touch screen.  UI/CompanionMenu.cs:41-42, :86-90
+  - Simulated touches can be tested in Play mode (PointerDownEvent.GetPooled(Touch), panel position, root.SendEvent).
+
+(f) HINDI / ENGLISH / MIXED (HINGLISH) - CONFIRMED with a nuance
+  - Hearing: Whisper picks English vs Hindi itself; Hindi is counted together with the languages Whisper confuses
+    spoken Hindi/Hinglish with (Urdu, Marathi, Nepali, Punjabi, Gujarati, Bengali, Sanskrit), then transcribed as Hindi.
+      Audio/WhisperLanguageDetector.cs:28-31
+  - Replies: "Replies in: Same as asked" is the default -> a Hindi (or Hinglish) question gets a spoken Hindi reply, an
+    English one English.  Dialogue/DialogueController.cs:190-201, :410-416; menu > Listening & language > "Listens for"
+    Auto/English/Hindi and "Replies in" Same as asked/English/Hindi (UI/CompanionMenu.cs:896, :902).
+  - Mixed: the Hindi reply is everyday Hinglish-style Hindi - English words the model wrote in Devanagari are put back
+    into English letters (TTSServer/hinglish.py:131 restore_english); the router translates "Hindi, Hinglish or
+    English" questions (Dialogue/DialogueController.cs:90).
+  - NUANCE: Hinglish TYPED in English letters (no Devanagari) counts as English and gets an English reply
+    (RefusalBank.IsHindi = contains Devanagari, Dialogue/RefusalBank.cs:12). Spoken Hinglish is fine.
+  - Optional online add-on (off by default, offline stays the default): more reply languages via the online brain +
+    online voice (DialogueController.cs:413-422).
+
+OTHER GENUINE ACCESSIBILITY-RELATED THINGS FOUND
+  - Background noise filter: ignores recordings with no clear voice (Whisper used to turn room noise into "Thank you
+    very much."); adjustable.  Audio/SpeechInputController.cs:16-17, :58-63, :383+
+  - Listening state is shown three ways: red mic button with a spreading ripple, status text, and the bot's listening
+    pose.  UI/CompanionUI.cs:511-518, :612-617
+  - Tap the same button to stop the bot mid-reply (also pauses a slide presentation).  UI/CompanionUI.cs:678-683
+  - Loading screen: opaque from the first frame with a percentage, a bar and a chip per part (Brain / Listening /
+    Voice: waiting / loading / ready); a plain-language "Check this PC" note if e.g. no microphone.
+      UI/CompanionUI.cs:226-249, :540-583
+  - Frosted glass "Auto": full blur up to ~1440p, lighter above 4.2 MP (4K), or Off = solid panel - keeps answers fast
+    on 4K screens; Off also gives the plainest, highest-contrast panel.  UI/CompanionUI.cs:29-35, :661-670
+  - Sign-in card has its own on-screen keyboard (toggle button), username Enter -> password; wrong password = a shake +
+    message; lockout after repeated tries.  UI/CompanionUI.cs:341-400, :418-445
+  - Help & guides: a short guide per menu page with a screenshot whose options are outlined and numbered like the steps
+    ("? " on every page). This is for STAFF (the menu), not visitors.  UI/HelpGuides.cs:8-11, :32-40;
+    UI/CompanionMenu.cs:224
+  - Tall/wide layouts: portrait TV = panel along the bottom scaled to the screen's width; 16:9 = card beside the bot.
+      UI/CompanionUI.cs:640-656
+  - Devanagari is shaped correctly (advanced text generator) - CLAUDE.md "App screen".
+
+Not found / don't claim: screen-reader support, captions burned into video, high-contrast mode beyond light/dark,
+a visitor-facing text-size button (text size is a staff setting), fling/momentum scrolling.
