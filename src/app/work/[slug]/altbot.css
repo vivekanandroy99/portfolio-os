@@ -43,10 +43,25 @@
 @keyframes ab-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 
 .ab-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0;border-radius:22px;background:var(--surface);box-shadow:0 0 0 1px var(--line);overflow:hidden}
-.ab-facts div{padding:22px 24px;border-right:1px solid var(--line)}
+.ab-facts div{position:relative;display:grid;align-content:center;min-height:132px;padding:20px 24px;border-right:1px solid var(--line);outline:0;cursor:default;transition:background .25s}
 .ab-facts div:last-child{border-right:0}
-.ab-facts dt{font-family:var(--ab-head);font-weight:700;font-size:clamp(28px,3vw,40px);letter-spacing:-.04em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.ab-facts dd{margin:6px 0 0;font-size:14px;line-height:1.4;color:var(--muted)}
+.ab-facts dt{display:flex;align-items:center;gap:12px;font-family:var(--ab-head);font-weight:700;font-size:clamp(19px,1.7vw,23px);letter-spacing:-.03em;color:var(--ink);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.ab-facts dt .ab-ico{background:var(--grad);color:#fff;box-shadow:none}
+.ab-facts dd{position:absolute;left:24px;right:24px;bottom:16px;margin:0;font-size:13.5px;line-height:1.4;color:var(--muted);opacity:0;transform:translateY(6px);transition:opacity .25s,transform .3s}
+@media (hover:hover){
+  .ab-facts div:hover,.ab-facts div:focus-visible{background:var(--surface2)}
+  .ab-facts div:hover dt,.ab-facts div:focus-visible dt{transform:translateY(-24px)}
+  .ab-facts div:hover dd,.ab-facts div:focus-visible dd{opacity:1;transform:none}
+}
+@media (hover:none){
+  .ab-facts div{align-content:start;gap:8px}
+  .ab-facts dd{position:static;opacity:1;transform:none}
+}
+@media (max-width:640px){
+  .ab-facts div{padding:18px}
+  .ab-facts dt{flex-direction:column;align-items:flex-start;gap:10px;font-size:18px}
+  .ab-facts dd{left:18px;right:18px}
+}
 .ab-meta{display:flex;flex-wrap:wrap;gap:10px 36px;margin:20px 4px 0;font-size:14px}
 .ab-meta dt{font-family:var(--f-mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
 .ab-meta dd{margin:3px 0 0;font-weight:600}

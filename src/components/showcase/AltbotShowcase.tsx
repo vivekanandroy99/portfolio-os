@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {
-  ArrowDown, Check, MessageCircleQuestion, Volume2, X, AudioLines, Brain, Ear, FileSearch, ShieldCheck, Smile,
+  ArrowDown, Check, Languages, Users, WifiOff, Zap, MessageCircleQuestion, Volume2, X, AudioLines, Brain, Ear, FileSearch, ShieldCheck, Smile,
   type LucideIcon,
 } from "lucide-react";
 import { siDotnet, siGitlfs, siGoogle, siHuggingface, siNvidia, siOnnx, siPython, siUnity, type SimpleIcon } from "simple-icons";
@@ -45,6 +45,13 @@ const gate = [
   { t: "before the brain", h: "is it even about us?", b: "the question is matched against the bot's own documents. the ai isn't called yet.", pass: "close enough: go on", fail: "far off topic: stop here" },
   { t: "while it thinks", h: "answer only from the pages", b: "the ai sees just the passages that matched and must answer from them, or say it doesn't know. partial answers say what's missing.", pass: "answered from the passages", fail: "nothing there: stop here" },
   { t: "before it speaks", h: "did the answer drift?", b: "the finished reply is matched against the documents again, before a single word is spoken.", pass: "still grounded: speak it", fail: "drifted: stop here" },
+];
+
+const facts: { icon: LucideIcon; t: string; d: string }[] = [
+  { icon: WifiOff, t: "fully offline", d: "no internet needed. nothing a visitor says leaves the pc." },
+  { icon: Zap, t: "instant replies", d: "it starts talking about 1.3 seconds after you finish asking (english)." },
+  { icon: Languages, t: "many languages", d: "hindi and english offline. 44 with the online version." },
+  { icon: Users, t: "multiple bots", d: "six characters, each with their own face, voice and job." },
 ];
 
 const cast = [
@@ -105,10 +112,15 @@ export function AltbotShowcase() {
 
       <div className="ab-wrap">
         <dl className="ab-facts">
-          <div><dt>0</dt><dd>trips to the cloud when it runs offline</dd></div>
-          <div><dt>~1.3 s</dt><dd>before it starts talking back (english)</dd></div>
-          <div><dt>2 → 44</dt><dd>languages offline, 44 with the online version</dd></div>
-          <div><dt>6</dt><dd>characters, each with their own face and voice</dd></div>
+          {facts.map((f) => (
+            <div key={f.t} tabIndex={0}>
+              <dt>
+                <span className="ab-ico"><f.icon aria-hidden="true" /></span>
+                {f.t}
+              </dt>
+              <dd>{f.d}</dd>
+            </div>
+          ))}
         </dl>
       </div>
 
