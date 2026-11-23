@@ -79,6 +79,7 @@ export const projects: Project[] = [
     featured: true,
     isNew: true,
     accent: { kind: "kiosk" },
+    media: { type: "video", src: "/work/kiosk-launcher-thumb.mp4", poster: "/work/kiosk-launcher-thumb.jpg", alt: "the launcher's library of apps, from its trailer" },
   },
   {
     slug: "xros",

@@ -142,7 +142,7 @@ function Frame({ src, alt, eager }: { src: string; alt: string; eager?: boolean 
 
 /* ---------- scroll story: the screen stays put, the text scrolls past it ---------- */
 
-type Story = { key: string; src: (l: Look) => string; clip?: (l: Look) => string; alt: string; icon: LucideIcon; title: string; lead: string; note?: string; look?: string; portrait?: boolean; sound?: boolean };
+export type Story = { key: string; src: (l: Look) => string; clip?: (l: Look) => string; alt: string; icon: LucideIcon; title: string; lead: string; note?: string; look?: string; portrait?: boolean; sound?: boolean };
 
 /* a short silent loop from the film; only the clip in view plays */
 function Clip({ src, poster, label, active, muted = true }: { src: string; poster: string; label: string; active: boolean; muted?: boolean }) {
@@ -164,7 +164,7 @@ const mmss = (t: number) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).
 
 /* media controls for clips with sound: the sound pill is always there (off by default);
    hovering the screen also brings up play/pause and a seek bar */
-function MediaBar({ on, onToggle, find, track }: { on: boolean; onToggle: () => void; find: () => HTMLVideoElement | null; track: unknown }) {
+export function MediaBar({ on, onToggle, find, track }: { on: boolean; onToggle: () => void; find: () => HTMLVideoElement | null; track: unknown }) {
   const [t, setT] = useState(0);
   const [d, setD] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -213,7 +213,8 @@ function MediaBar({ on, onToggle, find, track }: { on: boolean; onToggle: () => 
   );
 }
 
-function ScrollStory({ items, shape, label, topic }: { items: Story[]; shape: "wide" | "tall"; label: string; topic: string }) {
+/* shared with the launcher page: looks={false} drops the app-theme toggle */
+export function ScrollStory({ items, shape, label, topic, looks = true }: { items: Story[]; shape: "wide" | "tall"; label: string; topic: string; looks?: boolean }) {
   const [look] = useAppLook();
   const [cur, setCur] = useState(0);
   const [sound, setSound] = useState(false);
@@ -334,7 +335,7 @@ function ScrollStory({ items, shape, label, topic }: { items: Story[]; shape: "w
             <span className="ab-story-bar" aria-hidden="true">
               <i style={{ transform: `scaleX(${(cur + 1) / items.length})` }} />
             </span>
-            <LookSwitch />
+            {looks && <LookSwitch />}
           </div>
           </div>
         </div>
