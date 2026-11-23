@@ -1,98 +1,80 @@
 import Link from "next/link";
+import {
+  ArrowDown, Check, Languages, Users, WifiOff, Zap, MessageCircleQuestion, Volume2, X, AudioLines, Brain, Ear, FileSearch, ShieldCheck, Smile,
+  type LucideIcon,
+} from "lucide-react";
+import { siDotnet, siGitlfs, siGoogle, siHuggingface, siNvidia, siOnnx, siPython, siUnity, type SimpleIcon } from "simple-icons";
 import { AltbotDemo } from "./AltbotDemo";
+import { AltbotAccess, AltbotCastClip, AltbotEditions, AltbotFeatures, AltbotPromo, AltbotStaffBlocks } from "./AltbotBlocks";
+import { AltbotFilm } from "./AltbotFilm";
 import { MoreWork } from "./MoreWork";
 
 /*
   altbot's own showcase page. Facts come from the ChatbotAI repo (CLAUDE.md + memory.txt);
   the live demo uses a made-up brand, "lumen living".
+  Icons: lucide (ISC). Tech logos: simple-icons (CC0); tools without a logo there get a plain icon.
 */
 
-const pipeline = [
-  { n: "hears", tool: "whisper large-v3 turbo", body: "runs inside unity. tells english from hindi by itself, then transcribes in that language, never urdu script." },
-  { n: "checks", tool: "bge-m3 + a reranker", body: "matches the question against the bot's own documents before anything else happens." },
-  { n: "thinks", tool: "gemma 3 4b · llama.cpp", body: "answers only from the passages it was handed, or says it doesn't know." },
-  { n: "double-checks", tool: "grounding check", body: "the draft reply is matched against the documents again before it's allowed out loud." },
-  { n: "speaks", tool: "kokoro · veena", body: "english and indian hindi voices, streamed sentence by sentence so the first words start early." },
-  { n: "lip-syncs", tool: "ulipsync · per-voice profiles", body: "the mouth is driven live from the audio, fed 70 ms ahead so lips and voice land together." },
+function Logo({ icon, mono }: { icon: SimpleIcon; mono?: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" role="img" aria-label={`${icon.title} logo`} fill={mono ? "currentColor" : `#${icon.hex}`}>
+      <path d={icon.path} />
+    </svg>
+  );
+}
+
+const process = [
+  { fig: "2", unit: "languages", t: "the brief", b: "a life-size 3d host for showrooms. it speaks hindi and english, only talks about the company, and works with no internet." },
+  { fig: "3", unit: "safety checks", t: "make it honest first", b: "before it had a voice or a face, i tested it by typing questions, to prove it never makes things up about the brand." },
+  { fig: "25", unit: "test questions", t: "test, don't guess", b: "i asked several ai models the same 25 questions. one got every answer right, spoke the best hindi and was the fastest, so it won." },
+  { fig: "13 → 0", unit: "glitches in 24 sentences", t: "fix what people hear", b: "the hindi voice sometimes slipped from a woman's voice to a man's mid-sentence. i built a checker to catch it, then fixed it." },
+  { fig: "105 → 20", unit: "milliseconds", t: "lips in time with the voice", b: "her lips moved a tenth of a second late. i measured it frame by frame and tuned it until lips and voice land together." },
+  { fig: "3x", unit: "slower, then fixed", t: "hunt down the slowdowns", b: "one blurry shadow in the menu was making the hindi voice three times slower and choppy. a thin line in its place fixed it." },
 ];
 
-const why = [
-  { t: "visitor questions stay in the building", b: "nothing is sent anywhere. no transcripts on someone else's server, no privacy form to sign." },
-  { t: "showroom wifi can't break it", b: "exhibition halls and sales galleries have terrible internet. altbot doesn't care." },
-  { t: "no bill per question", b: "a busy weekend costs the same as a quiet one: the pc's electricity." },
-  { t: "it stays the way you tuned it", b: "no model update somewhere else can change how it answers overnight." },
+const pipeline: { n: string; icon: LucideIcon; tool: string; logo?: SimpleIcon; body: string }[] = [
+  { n: "hears", icon: Ear, tool: "whisper large-v3 turbo", body: "tells english from hindi by itself, then transcribes in that language." },
+  { n: "checks", icon: FileSearch, tool: "bge-m3 + a reranker", logo: siHuggingface, body: "matches the question against the bot's own documents first." },
+  { n: "thinks", icon: Brain, tool: "gemma 3 4b · llama.cpp", logo: siGoogle, body: "answers only from the passages it was handed, or says it doesn't know." },
+  { n: "double-checks", icon: ShieldCheck, tool: "grounding check", body: "the draft is matched against the documents again before it is spoken." },
+  { n: "speaks", icon: AudioLines, tool: "kokoro (onnx) · veena", logo: siOnnx, body: "english and indian hindi voices, streamed sentence by sentence." },
+  { n: "lip-syncs", icon: Smile, tool: "ulipsync in unity", logo: siUnity, body: "the mouth is driven live from the audio, fed 70 ms ahead." },
 ];
 
 const gate = [
-  { t: "before the brain", b: "the question is matched against the documents. too far off topic and the ai is never even called: a written, in-character refusal steers back to what it knows." },
-  { t: "while it thinks", b: "the brain only sees the matching passages and must answer from them. partial answers say what isn't known instead of guessing." },
-  { t: "before it speaks", b: "the reply is matched against the documents again. if it drifted, a refusal is spoken instead." },
+  { t: "before the brain", h: "is it even about us?", b: "the question is matched against the bot's own documents. the ai isn't called yet.", pass: "close enough: go on", fail: "far off topic: stop here" },
+  { t: "while it thinks", h: "answer only from the pages", b: "the ai sees just the passages that matched and must answer from them, or say it doesn't know. partial answers say what's missing.", pass: "answered from the passages", fail: "nothing there: stop here" },
+  { t: "before it speaks", h: "did the answer drift?", b: "the finished reply is matched against the documents again, before a single word is spoken.", pass: "still grounded: speak it", fail: "drifted: stop here" },
 ];
 
-const offlineOnline = [
-  ["brain", "gemma 3 4b on the pc's gpu", "an online model, local brain as backup"],
-  ["ears", "whisper on the pc", "online speech-to-text, whisper as backup"],
-  ["voice", "kokoro + veena on the pc", "online voices, local voice as backup"],
-  ["languages", "english + hindi (incl. hinglish)", "44: 12 indian, english and 30 world"],
-  ["document search", "on the pc", "still on the pc"],
-  ["what leaves the pc", "nothing", "only the question, the matching passages and the persona"],
-  ["hardware", "a gaming-class gpu (~10.6 gb vram)", "an ordinary pc: the online build ships without the local models"],
-];
-
-const actions = [
-  { t: "presents slides", b: "“walk me through the brochure” and it presents each slide, talking through it, then moves on by itself." },
-  { t: "pictures + videos", b: "the video pauses while the bot talks and carries on after." },
-  { t: "web pages", b: "a locked-down in-app browser: only that site, no downloads, cookies cleared on close." },
-  { t: "qr codes", b: "“send it to my phone” shows a qr code for the page or a whatsapp chat." },
-  { t: "project cards", b: "“show me your museum projects” pulls cards from the company's own website, with photos." },
-  { t: "call me back", b: "a short form with its own on-screen keyboard. numbers never go into the app's logs." },
-];
-
-const process = [
-  { t: "the brief", b: "a customer-service host for showrooms: a realistic 3d person who listens and answers out loud in hindi and english, including indian-accented english, and only talks about the brand. fully offline." },
-  { t: "prove the brain in text first", b: "before any audio, i built the brain with a text box to show it really stays on topic. a system prompt alone wasn't trusted, so the topic gate became three checks around the ai." },
-  { t: "test, don't guess", b: "i put two model families side by side on 25 questions plus a fixed hindi translation set. gemma 3 4b got every answer right, wrote the best hindi, was the fastest and used the least graphics memory." },
-  { t: "listen like a machine", b: "i can't hear audio, so the app records every sentence it speaks and a phoneme checker scores how clearly each word came through. that caught the hindi voice flipping from female to male mid-sentence in 7 to 13 of 24 sentences. continuing from a fixed voice sample took it to 0 of 24." },
-  { t: "measure the mouth", b: "a per-frame trace of the lip-sync: the mouth went from 105 ms behind the voice to about 20 ms, and from open in 60% of silences to 19%." },
-  { t: "design the screen with the owner", b: "a round portrait of the bot got rejected for a full-screen character with a frosted glass card. the card got a fixed height (growing with the text felt weird), and portrait tvs now scale to their width so the card takes 30% of the screen instead of 46%." },
-  { t: "chase the slow bits", b: "a big soft shadow on the settings sheet was redrawn every frame and made the hindi voice 3x slower than real time. it's a 1 px edge now, and unity is capped at 60 fps so the voice gets the gpu." },
-];
-
-const staff = [
-  { t: "make a new bot in a minute", b: "say or type a name, pick a look and whether it answers from documents or chats freely. that's it." },
-  { t: "add documents from a usb", b: "pdf, word, powerpoint, text. dropped in from the menu, searchable a moment later." },
-  { t: "the owner teaches, the bot doesn't self-learn", b: "a learning page lists questions it couldn't fully answer. staff type or speak the right answer once and every bot sharing those documents knows it." },
-  { t: "reports in excel", b: "today, 7 or 30 days: what got asked, what got answered, what didn't. exported as a real .xlsx to the desktop or a usb stick." },
-  { t: "help on every page", b: "a ? on every menu page opens a guide with pictures, plus a full staff manual as a pdf." },
-  { t: "staff sign-in", b: "the menu sits behind a sign-in card, with staff accounts managed in the app." },
-];
-
-const access = [
-  { t: "text & button size", b: "everything on screen from 0.6x to 1.6x, live." },
-  { t: "light or dark", b: "dark by default, a light appearance one tap away." },
-  { t: "talk, tap or type", b: "automatic listening (just start talking) with a noise filter, tap-to-talk for busy rooms, or the on-screen keyboard." },
-  { t: "every word is also written", b: "the reply is always on screen as text, so it works for people who can't hear it too." },
-  { t: "built for touch", b: "large touch screens with no mouse or keyboard: swipe scrolling, touch scrollbars, no hover-only controls." },
-  { t: "hindi or english, mixed", b: "it detects the language itself and answers in the same one. hinglish works." },
+const facts: { icon: LucideIcon; t: string; d: string }[] = [
+  { icon: WifiOff, t: "fully offline", d: "no internet needed. nothing a visitor says leaves the pc." },
+  { icon: Zap, t: "instant replies", d: "it starts talking about 1.3 seconds after you finish asking (english)." },
+  { icon: Languages, t: "many languages", d: "hindi and english offline. 44 with the online version." },
+  { icon: Users, t: "multiple bots", d: "six characters, each with their own face, voice and job." },
 ];
 
 const cast = [
-  ["maya", "knowledge only", "af_heart / veena kavya"],
-  ["ethan", "knowledge only", "am_michael / veena vinaya"],
-  ["iris", "open chat", "af_bella / hf_alpha"],
-  ["leo", "open chat", "am_fenrir / veena vinaya"],
-  ["pearl", "knowledge only (p&i)", "af_heart / veena kavya"],
-  ["peter", "knowledge only (p&i)", "am_michael / veena vinaya"],
+  { id: "maya", mode: "company expert", voices: "af_heart · veena kavya" },
+  { id: "ethan", mode: "company expert", voices: "am_michael · veena vinaya" },
+  { id: "iris", mode: "open chat", voices: "af_bella · hf_alpha" },
+  { id: "leo", mode: "open chat", voices: "am_fenrir · veena vinaya" },
+  { id: "pearl", mode: "company expert", voices: "af_heart · veena kavya" },
+  { id: "peter", mode: "company expert", voices: "am_michael · veena vinaya" },
 ];
 
-const shots = [
-  { src: "/work/altbot/bots.webp", t: "the menu: bots + their pages" },
-  { src: "/work/altbot/conversation.webp", t: "conversation: strictness + checking" },
-  { src: "/work/altbot/look-voice.webp", t: "look & voice" },
-  { src: "/work/altbot/listening.webp", t: "listening & language" },
-  { src: "/work/altbot/lighting.webp", t: "lighting looks per bot" },
-  { src: "/work/altbot/new-bot.webp", t: "making a new bot" },
-  { src: "/work/altbot/models.webp", t: "ai models, swappable" },
+const stack: { n: string; use: string; logo?: SimpleIcon; mono?: boolean; icon?: LucideIcon }[] = [
+  { n: "unity 6", use: "the 3d world, the character and the screens", logo: siUnity, mono: true },
+  { n: "c# / .net", use: "the language the app is written in", logo: siDotnet },
+  { n: "python", use: "a helper for the voices and document search", logo: siPython },
+  { n: "gemma 3 4b", use: "the brain that writes the answers", logo: siGoogle },
+  { n: "whisper", use: "the ears: turns speech into text", icon: Ear },
+  { n: "kokoro + veena", use: "the english and hindi voices", icon: AudioLines },
+  { n: "onnx runtime", use: "keeps the english voice quick", logo: siOnnx, mono: true },
+  { n: "hugging face", use: "the models that search the documents", logo: siHuggingface },
+  { n: "nvidia cuda", use: "lets it all share one graphics card", logo: siNvidia },
+  { n: "ulipsync", use: "moves the lips in time with the voice", icon: Smile },
+  { n: "git lfs", use: "keeps the big 3d and ai files versioned", logo: siGitlfs },
 ];
 
 export function AltbotShowcase() {
@@ -111,42 +93,74 @@ export function AltbotShowcase() {
             a 3d host that listens, talks back and <em>never needs the internet.</em>
           </h1>
           <p className="ab-lede">
-            a life-size character for showroom screens. visitors ask out loud in hindi or english, it answers out loud with a lip-synced face, and it only talks about what&apos;s in the company&apos;s own documents. the whole thing runs on one pc.
+            i built a life-size character for showroom screens. you walk up, ask something out loud in hindi or english, and it answers using only what the company has written down. the whole thing runs on one pc.
           </p>
           <div className="ab-hero-cta">
-            <a href="#demo" className="ab-btn" data-label="try it">try the demo ↓</a>
-            <a href="#offline" className="ab-btn ghost" data-label="why offline">why offline?</a>
+            <a href="#features" className="ab-btn" data-label="explore">
+              explore it <ArrowDown aria-hidden="true" />
+            </a>
+            <a href="#demo" className="ab-btn ghost" data-label="try it">try the demo</a>
           </div>
+          <dl className="ab-meta">
+            <div><dt>role</dt><dd>design, 3d, ai pipeline, unity</dd></div>
+            <div><dt>for</dt><dd>altcore showrooms</dd></div>
+            <div><dt>runs on</dt><dd>windows (+ a mac version)</dd></div>
+          </dl>
         </div>
-        <figure className="ab-tv" aria-label="altbot on a portrait screen">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/work/altbot/kiosk.webp" alt="maya, the altbot character, standing on a portrait screen with a glass chat card" />
-          <span className="ab-bubble b1">do you deliver to pune?</span>
-          <span className="ab-bubble b2 bot">yes! 7 to 10 days, free above ₹25,000.</span>
-          <span className="ab-bubble b3">क्या Oslo sofa हरे रंग में मिलता है?</span>
-        </figure>
+        <AltbotPromo />
       </header>
 
       <div className="ab-wrap">
         <dl className="ab-facts">
-          <div><dt>0</dt><dd>cloud calls in the offline edition</dd></div>
-          <div><dt>~1.3 s</dt><dd>to the first spoken word (english)</dd></div>
-          <div><dt>2 → 44</dt><dd>languages: offline → online edition</dd></div>
-          <div><dt>6</dt><dd>bots, each with its own face, voice and brief</dd></div>
-        </dl>
-        <dl className="ab-meta">
-          <div><dt>role</dt><dd>design, 3d, ai pipeline, unity development</dd></div>
-          <div><dt>for</dt><dd>altcore showrooms</dd></div>
-          <div><dt>runs on</dt><dd>windows (+ a mac version)</dd></div>
+          {facts.map((f) => (
+            <div key={f.t} tabIndex={0}>
+              <dt>
+                <span className="ab-ico"><f.icon aria-hidden="true" /></span>
+                {f.t}
+              </dt>
+              <dd>{f.d}</dd>
+            </div>
+          ))}
         </dl>
       </div>
 
+      {/* process, early and short */}
+      <section className="ab-sec ab-process">
+        <div className="ab-wrap">
+          <div className="ab-head">
+            <span className="ab-kick">design process</span>
+            <h2>how it got good</h2>
+          </div>
+        </div>
+        <ol className="ab-steps">
+          {process.map((p, i) => (
+            <li key={p.t}>
+              <span className="n">{String(i + 1).padStart(2, "0")}</span>
+              <b className="fig">{p.fig}</b>
+              <small>{p.unit}</small>
+              <h3>{p.t}</h3>
+              <p>{p.b}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* what it does */}
+      <section id="features" className="ab-wrap ab-sec ab-tone ab-tone-blue">
+        <div className="ab-head">
+          <span className="ab-kick">what it does</span>
+          <h2>fourteen things it can do, shown in the real app</h2>
+          <p>keep scrolling. every clip beside the text was recorded from the actual app, not a mock-up.</p>
+        </div>
+        <AltbotFeatures />
+      </section>
+
       {/* demo */}
-      <section id="demo" className="ab-wrap ab-sec">
+      <section id="demo" className="ab-wrap ab-sec ab-tone ab-tone-sand">
         <div className="ab-head">
           <span className="ab-kick">try it</span>
-          <h2>meet maya, working at lumen living</h2>
-          <p>lumen living is a made-up furniture brand i wrote documents for. ask her about delivery, a sofa, the catalogue, or something she shouldn&apos;t answer. switch to hindi, or to the online edition, and watch what changes behind the scenes.</p>
+          <h2>say hi to maya, the host at lumen living</h2>
+          <p>lumen living isn&apos;t real. i made it up and wrote its documents so you can try maya right here. pick a question and see what goes on behind the scenes.</p>
         </div>
         <AltbotDemo />
       </section>
@@ -156,199 +170,160 @@ export function AltbotShowcase() {
         <div className="ab-wrap">
           <div className="ab-head">
             <span className="ab-kick">the highlight</span>
-            <h2>everything happens on one pc. no internet, no cloud api.</h2>
-            <p>ears, brain, document search, voice and face all run locally. it&apos;s shipped as a plug-and-play windows build with its own python runtime and models inside, so a new showroom pc just needs the folder.</p>
+            <h2>it all runs on one computer. no internet needed.</h2>
+            <p>here&apos;s what happens between your question and her answer. every step runs on the kiosk&apos;s own pc.</p>
           </div>
-          <ol className="ab-pipe">
+          <ol className="ab-flow">
             {pipeline.map((s, i) => (
-              <li key={s.n} style={{ ["--i" as string]: i }}>
-                <span className="ab-pipe-n">{String(i + 1).padStart(2, "0")}</span>
+              <li key={s.n} style={{ "--i": i } as React.CSSProperties}>
+                <div className="ab-flow-card">
+                <span className="ab-flow-top">
+                  <span className="ab-flow-n">step {i + 1}</span>
+                  <span className="ab-ico"><s.icon aria-hidden="true" /></span>
+                </span>
                 <h3>{s.n}</h3>
-                <code>{s.tool}</code>
-                <p>{s.body}</p>
+                <small>
+                  {s.logo && <Logo icon={s.logo} mono />}
+                  {s.tool}
+                </small>
+                </div>
               </li>
             ))}
           </ol>
-          <div className="ab-why">
-            {why.map((w) => (
-              <div key={w.t}>
-                <h3>{w.t}</h3>
-                <p>{w.b}</p>
-              </div>
-            ))}
-          </div>
-          <div className="ab-numbers">
-            <div><b>~1.3 s</b><span>english, question to first word</span></div>
-            <div><b>~3.1–3.8 s</b><span>hindi, including translation</span></div>
-            <div><b>~10.6 gb</b><span>graphics memory for everything</span></div>
-            <div><b>0.73x</b><span>real time: the hindi voice outruns playback</span></div>
-          </div>
         </div>
       </section>
 
       {/* gate */}
-      <section className="ab-wrap ab-sec ab-split">
-        <div className="ab-head">
+      <section id="gate" className="ab-wrap ab-sec ab-split ab-tone ab-tone-slate">
+        <div className="ab-head ab-gate-head">
           <span className="ab-kick">problem solving</span>
           <h2>an ai that doesn&apos;t make things up about your brand</h2>
-          <p>a customer-service bot that invents a price is worse than no bot. a system prompt alone wasn&apos;t trusted, so there&apos;s no topic list to maintain: each bot&apos;s knowledge is just its documents, and three checks sit around the ai. greetings and refusals come from written lines, never from the ai, since it once &ldquo;answered&rdquo; a brand question as small talk with an invented fact.</p>
+          <p>a bot that makes up a price is worse than no bot at all. just telling the ai to behave wasn&apos;t enough, so every question has to pass three checks. if it fails any of them, the visitor gets a friendly no instead of a guess.</p>
+          <p className="ab-gate-aside">greetings, thanks and &ldquo;who are you?&rdquo; never reach the ai either: they&apos;re answered from written lines.</p>
         </div>
-        <ol className="ab-gate">
+        <div className="ab-gflow-wrap">
+        <ol className="ab-gflow" aria-label="what happens to a question, step by step">
+          <li className="ab-gflow-end start">
+            <span className="ab-gflow-dot"><MessageCircleQuestion aria-hidden="true" /></span>
+            <div>
+              <small>a visitor asks</small>
+              <q>what does the oriveta breeze do?</q>
+            </div>
+          </li>
           {gate.map((g, i) => (
-            <li key={g.t}>
-              <span>{i + 1}</span>
-              <div>
-                <h3>{g.t}</h3>
+            <li key={g.t} className="ab-gflow-check">
+              <span className="ab-gflow-dot">{i + 1}</span>
+              <div className="ab-gflow-card">
+                <small>check {i + 1} · {g.t}</small>
+                <h3>{g.h}</h3>
                 <p>{g.b}</p>
+                <div className="ab-gflow-ways">
+                  <span className="pass"><Check aria-hidden="true" />{g.pass}</span>
+                  <span className="fail"><X aria-hidden="true" />{g.fail}</span>
+                </div>
               </div>
             </li>
           ))}
+          <li className="ab-gflow-end done">
+            <span className="ab-gflow-dot"><Volume2 aria-hidden="true" /></span>
+            <div>
+              <small>only then is it spoken</small>
+              <q>the oriveta breeze is our air purifier; it cleans the air in a room of up to 40 square metres&hellip;</q>
+            </div>
+          </li>
         </ol>
+          <div className="ab-gflow-no" aria-label="what a failed check sounds like">
+            <span className="ab-gflow-dot"><X aria-hidden="true" /></span>
+            <div>
+              <small>any check fails: a written, in-character line</small>
+              <q>that&apos;s out of syllabus for me. try me on oriveta home instead!</q>
+              <em>asked: &ldquo;who won the cricket match yesterday?&rdquo;</em>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* online */}
       <section className="ab-wrap ab-sec">
         <div className="ab-head">
-          <span className="ab-kick">and when you want it</span>
-          <h2>the online edition</h2>
-          <p>same app, same bots. the brain, the ears and the voice each get their own online switch, and each falls back to the local one if the connection drops. there&apos;s also a separate online build that leaves the big local models out, for ordinary pcs. api keys live in a secret store and never travel with a build.</p>
+          <span className="ab-kick">the online edition</span>
+          <h2>need more languages? there&apos;s an online version</h2>
+          <p>it&apos;s the same app with the same characters. flip the switch to see what changes, and what stays on the pc either way.</p>
         </div>
-        <div className="ab-table" role="table" aria-label="offline vs online">
-          <div className="row head" role="row">
-            <span role="columnheader" />
-            <span role="columnheader">offline (default)</span>
-            <span role="columnheader">online</span>
-          </div>
-          {offlineOnline.map(([k, a, b]) => (
-            <div className="row" role="row" key={k}>
-              <span role="rowheader">{k}</span>
-              <span role="cell">{a}</span>
-              <span role="cell">{b}</span>
-            </div>
-          ))}
-        </div>
+        <AltbotEditions />
       </section>
 
-      {/* actions */}
-      <section className="ab-wrap ab-sec">
-        <div className="ab-head">
-          <span className="ab-kick">bot actions</span>
-          <h2>it shows things, not just talks about them</h2>
-          <p>a screen panel opens beside the character and the character steps aside to make room. show requests are matched without the ai, in english or hindi (“मुझे brochure दिखाओ”), and only things the owner switched on can be shown.</p>
-        </div>
-        <div className="ab-cards">
-          {actions.map((a) => (
-            <div className="ab-card" key={a.t}>
-              <h3>{a.t}</h3>
-              <p>{a.b}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* process */}
-      <section className="ab-wrap ab-sec ab-process">
-        <div className="ab-head">
-          <span className="ab-kick">design process</span>
-          <h2>how it got good</h2>
-        </div>
-        <ol>
-          {process.map((p, i) => (
-            <li key={p.t}>
-              <span className="n">{String(i + 1).padStart(2, "0")}</span>
-              <div>
-                <h3>{p.t}</h3>
-                <p>{p.b}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      {/* ui */}
-      <section className="ab-sec ab-ui">
+      {/* the staff menu */}
+      <section id="staff" className="ab-sec ab-staff-sec">
         <div className="ab-wrap">
           <div className="ab-head">
-            <span className="ab-kick">the design</span>
-            <h2>an apple-calm menu for people who aren&apos;t technical</h2>
-            <p>dark by default, one orange accent, one line of plain english under every setting. the menu floats over the full-screen 3d scene; the conversation sits in a frosted card beside the character on wide screens, or along the bottom on portrait tvs. the mic button turns red with a ripple while it listens. icons and controls are drawn in code, with no image files.</p>
+            <span className="ab-kick">the staff menu · accessibility</span>
+            <h2>run by showroom staff, not engineers</h2>
+            <p>the people who look after a kiosk are sales and front-desk staff, standing at a touch screen with no keyboard. scroll through the real menu, page by page: what each page does, when it gets used, and why it&apos;s built that way.</p>
           </div>
-        </div>
-        <div className="ab-strip" tabIndex={0} aria-label="menu screens, scroll sideways">
-          {shots.map((s) => (
-            <figure key={s.src}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={s.src} alt={s.t} />
-              <figcaption>{s.t}</figcaption>
-            </figure>
-          ))}
+          <AltbotStaffBlocks />
         </div>
       </section>
 
-      {/* staff + access */}
+      {/* access */}
+      <section id="universal" className="ab-wrap ab-sec ab-tone ab-tone-ice">
+        <div className="ab-head">
+          <span className="ab-kick">universal design</span>
+          <h2>talk, tap, type or read</h2>
+          <p>a showroom screen meets everyone: people who&apos;d rather type, people who read better than they listen, hindi speakers, and staff on a touch screen with no keyboard. so there&apos;s always more than one way in.</p>
+        </div>
+        <AltbotAccess />
+      </section>
+
+      {/* cast */}
       <section className="ab-wrap ab-sec">
         <div className="ab-head">
-          <span className="ab-kick">ease of use</span>
-          <h2>run by showroom staff, not engineers</h2>
+          <span className="ab-kick">the cast</span>
+          <h2>multiple characters, one app</h2>
+          <p>each one has its own face, voice and job. they blink, glance around and nod, and their lips follow the voice as they speak.</p>
         </div>
-        <div className="ab-cards">
-          {staff.map((a) => (
-            <div className="ab-card" key={a.t}>
-              <h3>{a.t}</h3>
-              <p>{a.b}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="ab-wrap ab-sec ab-split">
-        <div className="ab-head">
-          <span className="ab-kick">accessibility + universal design</span>
-          <h2>talk, tap, type or read</h2>
-          <p>a showroom screen meets everyone: people who&apos;d rather not speak to a machine, people who can&apos;t hear it well, people more at home in hindi. so there&apos;s always more than one way in, and the settings for it sit in the menu, not in a config file.</p>
-        </div>
-        <ul className="ab-access">
-          {access.map((a) => (
-            <li key={a.t}>
-              <h3>{a.t}</h3>
-              <p>{a.b}</p>
+        <AltbotCastClip />
+        <ul className="ab-cast">
+          {cast.map((c) => (
+            <li key={c.id}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={`/work/altbot/cast/${c.id}.webp`} alt={`${c.id}, one of the bots`} loading="lazy" decoding="async" />
+              <div>
+                <b>{c.id}</b>
+                <span className={c.mode === "open chat" ? "open" : ""}>{c.mode}</span>
+                <small>{c.voices}</small>
+              </div>
             </li>
           ))}
         </ul>
       </section>
 
-      {/* cast + stack */}
-      <section className="ab-wrap ab-sec ab-two">
-        <div>
-          <div className="ab-head">
-            <span className="ab-kick">the cast</span>
-            <h2>six bots, one app</h2>
-            <p>character creator 4 actors with 150+ face shapes, idle and talk motions per gender, eyes that glance and blink, and lighting looks per bot.</p>
-          </div>
-          <div className="ab-cast" role="table" aria-label="bots">
-            {cast.map(([n, m, v]) => (
-              <div role="row" key={n}>
-                <b role="cell">{n}</b>
-                <span role="cell">{m}</span>
-                <small role="cell">{v}</small>
-              </div>
-            ))}
-          </div>
+      {/* stack */}
+      <section className="ab-wrap ab-sec">
+        <div className="ab-head">
+          <span className="ab-kick">the tools</span>
+          <h2>what it&apos;s built with</h2>
+          <p>the main pieces behind it, and the job each one does.</p>
         </div>
-        <div>
-          <div className="ab-head">
-            <span className="ab-kick">stack</span>
-            <h2>under the hood</h2>
-          </div>
-          <dl className="ab-stack">
-            <div><dt>engine</dt><dd>unity 6 · urp · ui toolkit</dd></div>
-            <div><dt>ai, local</dt><dd>llmunity / llama.cpp · gemma 3 4b · whisper.unity · bge-m3 + bge-reranker</dd></div>
-            <div><dt>voice</dt><dd>python sidecar · kokoro-82m (onnx) · veena 3b (gguf)</dd></div>
-            <div><dt>face + body</dt><dd>reallusion cc4 · ulipsync · playables api</dd></div>
-            <div><dt>online</dt><dd>swappable providers for brain, ears and voice</dd></div>
-            <div><dt>ships as</dt><dd>portable windows build · mac setup script</dd></div>
-          </dl>
+        <ul className="ab-stack">
+          {stack.map((s) => (
+            <li key={s.n}>
+              <span className="ab-logo">{s.logo ? <Logo icon={s.logo} mono={s.mono} /> : s.icon ? <s.icon aria-hidden="true" /> : null}</span>
+              <b>{s.n}</b>
+              <small>{s.use}</small>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* the walkthrough */}
+      <section id="film" className="ab-wrap ab-sec ab-tone ab-tone-sand">
+        <div className="ab-head">
+          <span className="ab-kick">the walkthrough</span>
+          <h2>rather watch? here&apos;s the whole tour</h2>
+          <p>five minutes, recorded from the real app. tap a chapter to jump straight to it.</p>
         </div>
+        <AltbotFilm />
       </section>
 
       <div className="ab-wrap">

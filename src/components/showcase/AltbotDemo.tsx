@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { MousePointerClick } from "lucide-react";
 
 /*
   A scripted stand-in for the real altbot running at a made-up brand, "lumen living".
@@ -326,6 +327,29 @@ export function AltbotDemo() {
       <div className="ab-demo-grid">
         <span className="ab-col-tag app">the app · a showroom screen</span>
         <span className="ab-col-tag site">what's going on inside</span>
+        <div className={`ab-chips${touched ? "" : " hint"}`} role="group" aria-label="questions to ask">
+          <p className="ab-chips-lead">
+            <MousePointerClick aria-hidden="true" />
+            <b>pick a question for maya</b>
+            <span>blue shows something, red is off-topic on purpose.</span>
+          </p>
+          {TURNS.map((t) => (
+            <button key={t.id} onClick={() => ask(t)} disabled={!!busy} className={`k-${t.kind}`} lang={lang === "hi" ? "hi" : "en"} data-label="ask">
+              {t.q[lang]}
+            </button>
+          ))}
+          <button
+            onClick={() => ask(TAMIL, "ta")}
+            disabled={!!busy || mode === "offline"}
+            className="k-online"
+            lang="ta"
+            title={mode === "offline" ? "switch to the online edition to try this" : undefined}
+            data-label={mode === "offline" ? "online only" : "ask in tamil"}
+          >
+            {TAMIL.q.en}
+            <small>{mode === "offline" ? "online only 🔒" : "tamil"}</small>
+          </button>
+        </div>
         {/* the kiosk screen */}
         <div className={`ab-stage ${panel ? "room" : ""} st-${state}`}>
           <div className="ab-stage-bg" aria-hidden="true" />
@@ -376,7 +400,7 @@ export function AltbotDemo() {
 
           <div className="ab-dock">
             <div className="ab-chat" ref={scroller} aria-live="polite">
-              {msgs.length === 0 && <p className="ab-empty">ask maya anything about {BRAND}. tap a question below, or the mic.</p>}
+              {msgs.length === 0 && <p className="ab-empty">ask maya anything about {BRAND}. pick a question above.</p>}
               {msgs.map((m) => {
                 const isLast = m === lastBot;
                 const text = isLast && busy === "speaking" ? m.text.split(" ").slice(0, shown).join(" ") : m.text;
@@ -400,14 +424,8 @@ export function AltbotDemo() {
                   <path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-2.1A7 7 0 0 0 19 12h-2Z" fill="currentColor" />
                 </svg>
               </button>
-              {!touched && (
-                <span className="ab-finger" aria-hidden="true">
-                  <b>👇</b>
-                  <small>tap to talk</small>
-                </span>
-              )}
               <span className="ab-state">
-                {busy === "listening" ? "listening…" : busy === "thinking" ? "thinking…" : busy === "speaking" ? "speaking" : "tap to talk"}
+                {busy === "listening" ? "listening…" : busy === "thinking" ? "thinking…" : busy === "speaking" ? "speaking" : "or tap for the next one"}
               </span>
               <span className={`ab-wave ${busy === "speaking" ? "on" : ""}`} aria-hidden="true">
                 {Array.from({ length: 9 }).map((_, i) => (
@@ -447,29 +465,8 @@ export function AltbotDemo() {
         </aside>
       </div>
 
-      <div className={`ab-chips${touched ? "" : " hint"}`} role="group" aria-label="questions to ask">
-        <span className="ab-chips-lead" aria-hidden="true">
-          {touched ? "ask:" : "👉 tap a question"}
-        </span>
-        {TURNS.map((t) => (
-          <button key={t.id} onClick={() => ask(t)} disabled={!!busy} className={`k-${t.kind}`} lang={lang === "hi" ? "hi" : "en"} data-label="ask">
-            {t.q[lang]}
-          </button>
-        ))}
-        <button
-          onClick={() => ask(TAMIL, "ta")}
-          disabled={!!busy || mode === "offline"}
-          className="k-online"
-          lang="ta"
-          title={mode === "offline" ? "switch to the online edition to try this" : undefined}
-          data-label={mode === "offline" ? "online only" : "ask in tamil"}
-        >
-          {TAMIL.q.en}
-          <small>{mode === "offline" ? "online only 🔒" : "tamil"}</small>
-        </button>
-      </div>
       <form className="ab-type" onSubmit={submitTyped}>
-        <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="or type a question (this demo knows a handful)" aria-label="type a question" />
+        <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="or type one (this demo knows a handful)" aria-label="type a question" />
         <button type="submit" disabled={!!busy || !input.trim()}>
           ask
         </button>

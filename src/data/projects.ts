@@ -63,6 +63,7 @@ export const projects: Project[] = [
     featured: true,
     isNew: true,
     accent: { kind: "chat", text: "hey altbot, what can you do?" },
+    media: { type: "video", src: "/work/altbot-thumb.mp4", poster: "/work/altbot-thumb.jpg", alt: "altbot talking, presenting slides, a website, photos, the characters and a qr code" },
   },
   {
     slug: "kiosk-launcher",

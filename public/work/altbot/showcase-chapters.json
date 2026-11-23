@@ -1,0 +1,156 @@
+{
+  "dark": [
+    {
+      "n": "01",
+      "title": "Natural conversation",
+      "at": 46.2
+    },
+    {
+      "n": "02",
+      "title": "A topic gate, not just a prompt",
+      "at": 58.0
+    },
+    {
+      "n": "03",
+      "title": "Hindi and English",
+      "at": 65.2
+    },
+    {
+      "n": "04",
+      "title": "Two kinds of bot",
+      "at": 73.5
+    },
+    {
+      "n": "05",
+      "title": "It shows, not just tells",
+      "at": 83.6
+    },
+    {
+      "n": "06",
+      "title": "Presents slide decks",
+      "at": 88.0
+    },
+    {
+      "n": "07",
+      "title": "Live websites",
+      "at": 97.4
+    },
+    {
+      "n": "08",
+      "title": "Instant photo presentations",
+      "at": 104.9
+    },
+    {
+      "n": "09",
+      "title": "Take it home",
+      "at": 116.0
+    },
+    {
+      "n": "10",
+      "title": "Lead capture",
+      "at": 121.4
+    },
+    {
+      "n": "11",
+      "title": "Multiple AI characters",
+      "at": 127.4
+    },
+    {
+      "n": "12",
+      "title": "Every screen shape",
+      "at": 139.0
+    },
+    {
+      "n": "13",
+      "title": "A complete admin panel",
+      "at": 145.0
+    },
+    {
+      "n": "14",
+      "title": "Built-in diagnostics",
+      "at": 229.6
+    },
+    {
+      "n": "15",
+      "title": "Runs entirely on-device",
+      "at": 267.0
+    }
+  ],
+  "light": [
+    {
+      "n": "01",
+      "title": "Natural conversation",
+      "at": 46.7
+    },
+    {
+      "n": "02",
+      "title": "A topic gate, not just a prompt",
+      "at": 64.5
+    },
+    {
+      "n": "03",
+      "title": "Hindi and English",
+      "at": 71.4
+    },
+    {
+      "n": "04",
+      "title": "Two kinds of bot",
+      "at": 79.8
+    },
+    {
+      "n": "05",
+      "title": "It shows, not just tells",
+      "at": 93.6
+    },
+    {
+      "n": "06",
+      "title": "Presents slide decks",
+      "at": 98.4
+    },
+    {
+      "n": "07",
+      "title": "Live websites",
+      "at": 111.6
+    },
+    {
+      "n": "08",
+      "title": "Instant photo presentations",
+      "at": 119.0
+    },
+    {
+      "n": "09",
+      "title": "Take it home",
+      "at": 130.4
+    },
+    {
+      "n": "10",
+      "title": "Lead capture",
+      "at": 136.1
+    },
+    {
+      "n": "11",
+      "title": "Multiple AI characters",
+      "at": 142.5
+    },
+    {
+      "n": "12",
+      "title": "Every screen shape",
+      "at": 154.0
+    },
+    {
+      "n": "13",
+      "title": "A complete admin panel",
+      "at": 160.0
+    },
+    {
+      "n": "14",
+      "title": "Built-in diagnostics",
+      "at": 245.4
+    },
+    {
+      "n": "15",
+      "title": "Runs entirely on-device",
+      "at": 291.5
+    }
+  ]
+}
