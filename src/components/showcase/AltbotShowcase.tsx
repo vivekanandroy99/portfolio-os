@@ -279,7 +279,7 @@ export function AltbotShowcase() {
       <section className="ab-wrap ab-sec">
         <div className="ab-head">
           <span className="ab-kick">the cast</span>
-          <h2>six characters, one app</h2>
+          <h2>multiple characters, one app</h2>
           <p>each one has its own face, voice and job. they blink, glance around and nod, and their lips follow the voice as they speak.</p>
         </div>
         <AltbotCastClip />
