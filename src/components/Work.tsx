@@ -27,6 +27,13 @@ export function Accent({ p }: { p: Project }) {
           x <b data-axis="0">0.00</b> y <b data-axis="1.6">1.60</b> z <b data-axis="-2">-2.00</b>
         </div>
       );
+    case "rev":
+      return (
+        <div className="acc acc-rev" aria-hidden="true">
+          <span className="bars">{Array.from({ length: 10 }, (_, i) => <i key={i} />)}</span>
+          rpm
+        </div>
+      );
     case "compass":
       return (
         <div className="acc acc-compass" aria-hidden="true">
