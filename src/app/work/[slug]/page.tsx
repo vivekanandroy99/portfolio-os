@@ -5,9 +5,11 @@ import { caseStudies } from "@/data/case-studies";
 import { ProjectPage } from "@/components/ProjectPage";
 import { AltbotShowcase } from "@/components/showcase/AltbotShowcase";
 import { LauncherShowcase } from "@/components/showcase/LauncherShowcase";
+import { XrShowcase } from "@/components/showcase/XrShowcase";
 import "./project.css";
 import "./altbot.css";
 import "./launcher.css";
+import "./xr.css";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -31,5 +33,6 @@ export default async function Page({ params }: Props) {
   // the altcore products get their own hand-built showcase pages
   if (slug === "altbot") return <AltbotShowcase />;
   if (slug === "kiosk-launcher") return <LauncherShowcase />;
+  if (slug === "xr-bike-showroom") return <XrShowcase />;
   return <ProjectPage p={p} cs={caseStudies[slug]} />;
 }

@@ -8,6 +8,7 @@ export type Accent =
   | { kind: "chat"; text: string }
   | { kind: "kiosk" }
   | { kind: "xyz" }
+  | { kind: "rev" }
   | { kind: "compass"; text: string }
   | { kind: "none" };
 
@@ -80,6 +81,22 @@ export const projects: Project[] = [
     isNew: true,
     accent: { kind: "kiosk" },
     media: { type: "video", src: "/work/kiosk-launcher-thumb.mp4", poster: "/work/kiosk-launcher-thumb.jpg", alt: "the launcher's library of apps, from its trailer" },
+  },
+  {
+    slug: "xr-bike-showroom",
+    name: "xr bike showroom",
+    file: "bike-showroom.apk",
+    word: "xr",
+    tint: "t3",
+    blurb: "a mixed reality showroom for meta quest 3. life-size motorbikes stand in your real room: rev them with your hand, take them apart, and see what every part does.",
+    short: "life-size mixed reality bikes you rev and take apart by hand.",
+    tags: ["xr design", "xr development", "unity", "meta quest 3"],
+    categories: ["xr", "ui"],
+    cursorLabel: "rev it",
+    featured: true,
+    isNew: true,
+    accent: { kind: "rev" },
+    media: { type: "video", src: "/work/xr-bike-showroom-thumb.mp4", poster: "/work/xr-bike-showroom-thumb.jpg", alt: "a motorbike coming apart into its parts in a real office, seen through the headset" },
   },
   {
     slug: "xros",
