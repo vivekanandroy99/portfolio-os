@@ -2,8 +2,9 @@ import Link from "next/link";
 import { ArrowDown, ArrowRight, Box, Check, Gauge, Glasses, Hand, Layers, Puzzle, Ruler, Wrench, X, type LucideIcon } from "lucide-react";
 import { siAndroid, siDotnet, siFfmpeg, siMeta, siPython, siUnity, type SimpleIcon } from "simple-icons";
 import {
-  XrApart, XrDashes, XrEngines, XrExplode, XrFilm, XrFirst, XrHands, XrMaking, XrMenus, XrPromo, XrRev, XrRoom,
+  XrApart, XrDashes, XrEngines, XrFilm, XrFirst, XrHands, XrMaking, XrMenus, XrPromo, XrRev, XrRoom,
 } from "./XrBlocks";
+import { XrViewer } from "./XrViewer";
 import { MoreWork } from "./MoreWork";
 
 /*
@@ -249,7 +250,7 @@ export function XrShowcase() {
         </div>
         <XrApart />
         <div className="xr-sub">
-          <XrExplode />
+          <XrViewer />
         </div>
       </section>
 

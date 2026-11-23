@@ -226,30 +226,6 @@ export function XrDashes() {
   );
 }
 
-/* ---------- the explode slider ---------- */
-
-const STAGES = ["assembled", "coming apart", "exploded"];
-
-export function XrExplode() {
-  const [v, setV] = useState(0);
-  return (
-    <figure className="xr-explode">
-      <div className="xr-explode-frame">
-        {STAGES.map((s, i) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img key={s} src={`${BASE}/explode-${i}.webp`} alt={i === 0 ? "the yamaha r1, assembled, then taken apart" : ""} style={{ opacity: Math.max(0, 1 - Math.abs(v - i)) }} loading="lazy" decoding="async" />
-        ))}
-        <span className="xr-explode-tag">{STAGES[Math.round(v)]}</span>
-      </div>
-      <figcaption>
-        <label htmlFor="xr-explode-range">drag to take the r1 apart</label>
-        <input id="xr-explode-range" type="range" min={0} max={2} step={0.01} value={v} onChange={(e) => setV(Number(e.target.value))} style={{ ["--p" as string]: `${(v / 2) * 100}%` }} />
-        <small>parts move as real assemblies, from part maps checked by hand: the calipers ride with their wheel, the grip and dash with the handlebars.</small>
-      </figcaption>
-    </figure>
-  );
-}
-
 /* ---------- the menu, round by round ---------- */
 
 const MENUS = [
