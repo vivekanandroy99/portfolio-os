@@ -447,7 +447,7 @@
 .ab-story.tall{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 .ab-story-sticky{position:sticky;top:var(--top);height:calc(100vh - var(--top));display:flex;flex-direction:column;justify-content:center;align-items:center;gap:18px}
 .ab-story-shot{position:relative;margin:0;border-radius:18px;overflow:hidden;background:#0b0b0c;box-shadow:0 0 0 8px #0b0b0c,0 0 0 9px rgba(0,0,0,.2),0 50px 90px -40px rgba(20,22,40,.6)}
-.ab-story.wide .ab-story-shot{width:min(90%,calc((100vh - var(--top) - 190px) * 16 / 9));aspect-ratio:16/9}
+.ab-story.wide .ab-story-shot{width:min(97%,calc((100vh - var(--top) - 150px) * 16 / 9));aspect-ratio:16/9}
 .ab-story.tall .ab-story-shot{height:min(820px,calc(100vh - var(--top) - 110px));aspect-ratio:2/3;border-radius:22px}
 /* portrait recordings (9:16): the frame turns upright, like a kiosk screen */
 .ab-story-shot{transition:width .5s cubic-bezier(.2,.8,.2,1),height .5s cubic-bezier(.2,.8,.2,1)}
@@ -500,7 +500,7 @@ figure:hover .ab-media-ctl,.ab-media-ctl:focus-within{opacity:1;transform:none}
 .ab-story-copy .sub{margin:14px 0 0;font-size:14.5px;line-height:1.6;color:var(--muted);max-width:40ch}
 /* features: the screen is the hero, so the story runs wider than the text column */
 @media (min-width:901px){
-  .ab-story.wide{width:min(1480px,calc(100vw - 48px));margin-left:calc(50% - min(740px,50vw - 24px))}
+  .ab-story.wide{width:min(1800px,calc(100vw - 48px));margin-left:calc(50% - min(900px,50vw - 24px));grid-template-columns:minmax(0,2.9fr) minmax(0,1fr)}
   .ab-story.wide .ab-story-copy h3{font-size:clamp(26px,2.4vw,36px)}
   .ab-story.wide .ab-story-copy .lead{font-size:17px}
 }
