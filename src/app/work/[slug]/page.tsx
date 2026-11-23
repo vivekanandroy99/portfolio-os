@@ -6,10 +6,12 @@ import { ProjectPage } from "@/components/ProjectPage";
 import { AltbotShowcase } from "@/components/showcase/AltbotShowcase";
 import { LauncherShowcase } from "@/components/showcase/LauncherShowcase";
 import { XrShowcase } from "@/components/showcase/XrShowcase";
+import { WorkspaceShowcase } from "@/components/showcase/WorkspaceShowcase";
 import "./project.css";
 import "./altbot.css";
 import "./launcher.css";
 import "./xr.css";
+import "./workspace.css";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -34,5 +36,6 @@ export default async function Page({ params }: Props) {
   if (slug === "altbot") return <AltbotShowcase />;
   if (slug === "kiosk-launcher") return <LauncherShowcase />;
   if (slug === "xr-bike-showroom") return <XrShowcase />;
+  if (slug === "altcore-workspace") return <WorkspaceShowcase />;
   return <ProjectPage p={p} cs={caseStudies[slug]} />;
 }

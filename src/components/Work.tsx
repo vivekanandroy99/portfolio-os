@@ -34,6 +34,14 @@ export function Accent({ p }: { p: Project }) {
           rpm
         </div>
       );
+    case "review":
+      return (
+        <div className="acc acc-review" aria-hidden="true">
+          <span className="st">in review</span>
+          <span className="ar">→</span>
+          <span className="ok">✓ approved</span>
+        </div>
+      );
     case "compass":
       return (
         <div className="acc acc-compass" aria-hidden="true">

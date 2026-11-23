@@ -10,6 +10,7 @@ export type Accent =
   | { kind: "xyz" }
   | { kind: "rev" }
   | { kind: "compass"; text: string }
+  | { kind: "review" }
   | { kind: "none" };
 
 export type Project = {
@@ -97,6 +98,22 @@ export const projects: Project[] = [
     isNew: true,
     accent: { kind: "rev" },
     media: { type: "video", src: "/work/xr-bike-showroom-thumb.mp4", poster: "/work/xr-bike-showroom-thumb.jpg", alt: "a motorbike coming apart into its parts in a real office, seen through the headset" },
+  },
+  {
+    slug: "altcore-workspace",
+    name: "altcore workspace",
+    file: "altcore.app",
+    word: "work",
+    tint: "t2",
+    blurb: "the office app a creative studio runs on: tasks with reviews, chat, calendar, people, sales and estimates. each person gets a home built around their job, on web, desktop and phone.",
+    short: "office management app: tasks, reviews, chat, people and money.",
+    tags: ["product design", "web app", "react", "design system"],
+    categories: ["ui"],
+    cursorLabel: "send for review",
+    featured: true,
+    isNew: true,
+    accent: { kind: "review" },
+    media: { type: "video", src: "/work/altcore-workspace-thumb.mp4", poster: "/work/altcore-workspace-thumb.jpg", alt: "moving around the app: home, projects and a project page" },
   },
   {
     slug: "xros",
