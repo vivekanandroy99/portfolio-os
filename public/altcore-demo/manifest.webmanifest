@@ -1,0 +1,12 @@
+{
+  "name": "Altcore",
+  "short_name": "Altcore",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#EAF3F7",
+  "theme_color": "#EAF3F7",
+  "icons": [
+    { "src": "/altcore-icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/altcore-icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

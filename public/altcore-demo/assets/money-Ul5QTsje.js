@@ -1,0 +1,1 @@
+function e(e,n=!1){return n||Math.abs(e)<1e5?`₹${Math.round(e).toLocaleString(`en-IN`)}`:Math.abs(e)<1e7?`₹${t(e/1e5)} L`:`₹${t(e/1e7)} Cr`}function t(e){return e.toFixed(e>=100?0:e>=10?1:2).replace(/\.?0+$/,``)}export{e as t};

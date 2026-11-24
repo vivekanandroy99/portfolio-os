@@ -105,7 +105,7 @@ export const projects: Project[] = [
     file: "altcore.app",
     word: "work",
     tint: "t2",
-    blurb: "the office app a creative studio runs on: tasks with reviews, chat, calendar, people, sales and estimates. each person gets a home built around their job, on web, desktop and phone.",
+    blurb: "the office app a creative studio runs on: tasks with reviews, chat and calls, calendar, sales and estimates, plus an ai assistant for the busywork. on web, desktop and phone, with a sample version you can try.",
     short: "office management app: tasks, reviews, chat, people and money.",
     tags: ["product design", "web app", "react", "design system"],
     categories: ["ui"],
