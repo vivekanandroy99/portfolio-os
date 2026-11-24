@@ -6,7 +6,7 @@ import {
   siExpo, siHono, siPostgresql, siReact, siSupabase, siTailwindcss, siTauri, siTypescript, type SimpleIcon,
 } from "simple-icons";
 import {
-  LoopClip, WorkspaceAdminClip, WorkspaceAi, WorkspaceBusiness, WorkspaceCreate, WorkspaceDay, WorkspacePhones, WorkspaceProjects,
+  WorkspaceAdmin, WorkspaceAi, WorkspaceBusiness, WorkspaceCreate, WorkspaceDay, WorkspacePhones, WorkspaceProjects,
   WorkspacePromo, WorkspaceReviewDemo, WorkspaceRoles, WorkspaceTalk, WorkspaceTasks,
 } from "./WorkspaceBlocks";
 import { WorkspaceAiDemo } from "./WorkspaceAiDemo";
@@ -14,7 +14,7 @@ import { MoreWork } from "./MoreWork";
 
 /*
   The altcore workspace showcase page (the AltManage repo, new web ui only). Same bones as the
-  altbot and launcher pages (the .ab layout, scroll stories, steps, stack), dressed in the product's
+  altbot and launcher pages (the .ab layout, steps, stack), with keynote-style films per section, dressed in the product's
   own look: cool light grey, white cards, open sans, altcore orange, status pills as labels.
   Every clip is the real app running a made-up sample studio. No real names anywhere.
 */
@@ -185,7 +185,7 @@ export function WorkspaceShowcase() {
         <div className="ab-head">
           <span className="ws-pill"><i aria-hidden="true" />the day</span>
           <h2>a working day, from check in to the last call</h2>
-          <p>keep scrolling. every clip is the real app, recorded in the browser.</p>
+          <p>every film is the real app running a made-up sample studio, recorded in the browser. tap a card to jump to it.</p>
         </div>
         <WorkspaceDay />
       </section>
@@ -242,8 +242,8 @@ export function WorkspaceShowcase() {
         <WorkspaceAiDemo />
         <p className="ws-ai-note">the answers here are written from the sample studio&apos;s data, in the same shape as the real assistant&apos;s.</p>
         <div className="ab-head ws-ai-more">
-          <h3>and in the app</h3>
-          <p>the same five jobs, recorded in the real app.</p>
+          <h3>and in the real app</h3>
+          <p>the assistant sits on the side of every screen. these are recorded in the app, with staged answers from the sample studio.</p>
         </div>
         <WorkspaceAi />
       </section>
@@ -265,11 +265,6 @@ export function WorkspaceShowcase() {
         </div>
         <WorkspacePhones />
         <div className="ws-every">
-          <LoopClip
-            id="settings-look"
-            label="settings: switching between light, dark and high contrast"
-            caption="light, dark and high contrast. every screen works in all three, from one set of design tokens."
-          />
           <ul>
             {every.map((b) => (
               <li key={b.t}>
@@ -288,8 +283,8 @@ export function WorkspaceShowcase() {
           <h2>admins in control, and data that stays put</h2>
           <p>a company decides what its people see. every change is checked and written down.</p>
         </div>
+        <WorkspaceAdmin />
         <div className="ws-behind">
-          <WorkspaceAdminClip />
           <ul>
             {behind.map((b) => (
               <li key={b.t}>
