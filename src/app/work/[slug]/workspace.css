@@ -42,7 +42,7 @@
 .ws-promo-bar i{width:11px;height:11px;border-radius:50%;background:#d4d4d8}
 .ws-promo-bar i:first-child{background:#ff5f57}.ws-promo-bar i:nth-child(2){background:#febc2e}.ws-promo-bar i:nth-child(3){background:#28c840}
 .ws-promo-bar span{margin-left:10px;font-size:12px;color:var(--muted)}
-.ws-promo video{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;background:#f5f5f7}
+.ws-promo video{display:block;width:100%;aspect-ratio:16/9;object-fit:contain;background:#eaf2f6}
 .ws-promo-pp{position:absolute;right:14px;bottom:14px;width:40px;height:40px;border-radius:12px;border:0;display:grid;place-items:center;background:rgba(29,29,31,.72);color:#fff;cursor:pointer;backdrop-filter:blur(8px)}
 .ws-promo-pp svg{width:18px;height:18px}
 @media (min-width:1400px){
@@ -163,11 +163,11 @@
 @keyframes ws-ring{0%,100%{transform:rotate(0)}20%{transform:rotate(14deg)}40%{transform:rotate(-12deg)}60%{transform:rotate(8deg)}80%{transform:rotate(-4deg)}}
 
 /* behind the scenes */
-.ws-behind{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:clamp(18px,2.6vw,36px);align-items:start}
+.ws-behind{margin-top:clamp(28px,4vw,48px);display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(18px,2.6vw,36px);align-items:start}
 .ws-admin{margin:0;display:grid;gap:12px}
 .ws-admin video{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:16px;background:#202125;box-shadow:0 0 0 1px rgba(255,255,255,.1),0 50px 90px -45px rgba(0,0,0,.8)}
 .ws-admin figcaption{font-size:14px;line-height:1.5;color:var(--muted)}
-.ws-behind ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ws-behind ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
 .ws-behind li{display:grid;grid-template-columns:40px minmax(0,1fr);gap:2px 14px;padding:16px;border-radius:16px;background:var(--surface);box-shadow:0 0 0 1px var(--line)}
 .ws-behind li .ab-ico{grid-row:span 2}
 .ws-behind li b{font-size:15.5px;font-weight:700}
@@ -250,9 +250,9 @@
 .ws-phone figcaption b{font-size:15px;color:var(--ink)}
 
 /* everyone: the look clip and the list beside it */
-.ws-every{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:clamp(18px,2.6vw,36px);align-items:start;margin-top:clamp(36px,5vw,64px)}
+.ws-every{display:block;gap:clamp(18px,2.6vw,36px);align-items:start;margin-top:clamp(36px,5vw,64px)}
 .ws-every .ws-admin video{background:var(--surface2);box-shadow:0 0 0 1px var(--line),0 40px 80px -40px rgba(60,30,10,.4)}
-.ws-every ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ws-every ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
 .ws-every li{display:grid;grid-template-columns:40px minmax(0,1fr);gap:2px 14px;padding:16px;border-radius:16px;background:var(--surface);box-shadow:0 0 0 1px var(--line)}
 .ws-every li .ab-ico{grid-row:span 2}
 .ws-every li b{font-size:15.5px;font-weight:700}
@@ -307,3 +307,40 @@
 .ws-ai-note{margin:14px 0 0;font-size:13.5px;color:var(--muted)}
 .ws-ai-more{margin-top:clamp(40px,6vw,80px)}
 .ws-ai-more h3{margin:0;font-size:clamp(22px,2.2vw,30px)}
+
+/* keynote-style films: a big player, a chapter track, and a card per feature underneath */
+.ws-film{display:grid;gap:clamp(18px,2.4vw,28px)}
+.ws-film-player{position:relative;margin:0;border-radius:clamp(14px,1.6vw,22px);overflow:hidden;background:#eaf2f6;box-shadow:0 0 0 1px var(--line),0 50px 100px -50px rgba(30,30,60,.45)}
+.ws-film-player video{display:block;width:100%;aspect-ratio:16/9;object-fit:contain;background:#eaf2f6}
+.ws-film-bar{position:absolute;left:12px;right:12px;bottom:12px;display:flex;align-items:center;gap:10px;padding:6px 12px 6px 6px;border-radius:14px;background:rgba(22,22,26,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;transition:opacity .25s}
+.ws-film-player:hover .ws-film-bar,.ws-film-player:focus-within .ws-film-bar{opacity:1}
+@media (hover:none){.ws-film-bar{opacity:1;position:static;margin:0;border-radius:0;background:#1d1d22}}
+.ws-film-bar button{flex:none;width:34px;height:34px;border:0;border-radius:10px;display:grid;place-items:center;background:rgba(255,255,255,.14);color:#fff;cursor:pointer}
+.ws-film-bar button svg{width:16px;height:16px}
+.ws-film-track{flex:1;display:flex;gap:4px;align-items:center;height:34px}
+.ws-film-track span{position:relative;flex-basis:0;height:5px;border-radius:9px;background:rgba(255,255,255,.25);overflow:hidden;cursor:pointer}
+.ws-film-track i{position:absolute;inset:0;background:#fff;transform-origin:left;transform:scaleX(0)}
+.ws-film-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:12px}
+.ws-film-steps>li{position:relative;display:flex;flex-direction:column;gap:8px;padding:18px 18px 20px;border-radius:18px;background:var(--surface);box-shadow:0 0 0 1px var(--line);transition:box-shadow .25s,transform .25s}
+.ws-film-steps>li.on{box-shadow:0 0 0 2px var(--ink),0 18px 40px -22px rgba(0,0,0,.35);transform:translateY(-2px)}
+.ws-film-steps>li>button{all:unset;cursor:pointer;display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.ws-film-steps>li>button::after{content:"";position:absolute;inset:0;border-radius:18px}
+.ws-film-steps>li>button:focus-visible::after{outline:2px solid var(--acc);outline-offset:2px}
+.ws-film-steps .n{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.ws-film-steps>li.on .n{color:var(--ink)}
+.ws-film-steps h3{margin:0;font-size:17px;line-height:1.3}
+.ws-film-steps p{margin:0;font-size:14.5px;line-height:1.55;color:var(--muted)}
+.ws-film-steps ul{list-style:none;margin:2px 0 0;padding:0;display:grid;gap:6px}
+.ws-film-steps ul li{position:relative;padding-left:18px;font-size:13.5px;line-height:1.45;color:var(--ink)}
+.ws-film-steps ul li::before{content:"";position:absolute;left:3px;top:.55em;width:7px;height:7px;border-radius:50%;background:var(--acc)}
+.ws-film-steps small{margin-top:auto;padding-top:8px;border-top:1px dashed var(--line);font-size:13px;line-height:1.45;color:var(--muted)}
+@media (min-width:1400px){
+  .ws-film-player{width:min(1500px,calc(100vw - 64px));margin-left:calc(50% - min(750px,50vw - 32px))}
+}
+@media (min-width:1100px){
+  .ws-film-steps{grid-template-columns:repeat(var(--n,4),minmax(0,1fr))}
+}
+/* on a phone the film stays pinned at the top while the cards scroll under it */
+@media (max-width:899px){
+  .ws-film-player{position:sticky;top:46px;z-index:3}
+}
