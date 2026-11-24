@@ -113,7 +113,7 @@ export const projects: Project[] = [
     featured: true,
     isNew: true,
     accent: { kind: "review" },
-    media: { type: "video", src: "/work/altcore-workspace-thumb.mp4", poster: "/work/altcore-workspace-thumb.jpg", alt: "moving around the app: home, projects and a project page" },
+    media: { type: "video", src: "/work/altcore-workspace-thumb.mp4", poster: "/work/altcore-workspace-thumb.jpg", alt: "a project page in the app, from overview to show day" },
   },
   {
     slug: "xros",

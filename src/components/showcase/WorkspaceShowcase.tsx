@@ -1,12 +1,12 @@
 import Link from "next/link";
 import {
-  ArrowDown, Check, Eye, History, KeyRound, Laptop, LayoutDashboard, MonitorSmartphone, ShieldCheck, Users, X, type LucideIcon,
+  ArrowDown, Check, Eye, History, KeyRound, Laptop, LayoutDashboard, MonitorSmartphone, ShieldCheck, Sparkles, X, type LucideIcon,
 } from "lucide-react";
 import {
   siExpo, siHono, siPostgresql, siReact, siSupabase, siTailwindcss, siTauri, siTypescript, type SimpleIcon,
 } from "simple-icons";
 import {
-  WorkspaceAdminClip, WorkspaceBusiness, WorkspaceEveryone, WorkspacePromo, WorkspaceReviewDemo, WorkspaceRoles, WorkspaceTalk, WorkspaceWork,
+  WorkspaceAdminClip, WorkspaceAi, WorkspaceBusiness, WorkspaceEveryone, WorkspacePromo, WorkspaceReviewDemo, WorkspaceRoles, WorkspaceTalk, WorkspaceWork,
 } from "./WorkspaceBlocks";
 import { MoreWork } from "./MoreWork";
 
@@ -14,7 +14,7 @@ import { MoreWork } from "./MoreWork";
   The altcore workspace showcase page (the AltManage repo, new web ui only). Same bones as the
   altbot and launcher pages (the .ab layout, scroll stories, steps, stack), dressed in the product's
   own look: cool light grey, white cards, open sans, altcore orange, status pills as labels.
-  Every clip is the real app running its sample workspace.
+  Every clip is the real app running a made-up sample studio. No real names anywhere.
 */
 
 function Logo({ icon, mono }: { icon: SimpleIcon; mono?: boolean }) {
@@ -28,7 +28,7 @@ function Logo({ icon, mono }: { icon: SimpleIcon; mono?: boolean }) {
 const facts: { icon: LucideIcon; t: string; d: string }[] = [
   { icon: LayoutDashboard, t: "one place for the day", d: "tasks, reviews, chat, calendar, people and money in one app." },
   { icon: Eye, t: "work gets checked", d: "send work for review. it comes back approved, or with notes, round by round." },
-  { icon: Users, t: "everyone sees their part", d: "a founder, a designer and a sales manager each get a home that fits them." },
+  { icon: Sparkles, t: "ai for the busywork", d: "briefs, task lists, call notes and tidy writing, always checked by a person first." },
   { icon: MonitorSmartphone, t: "on every screen", d: "browser, windows and mac app, phones and tablets. one codebase." },
 ];
 
@@ -167,7 +167,7 @@ export function WorkspaceShowcase() {
         <div className="ab-head">
           <span className="ws-pill"><i aria-hidden="true" />one app, five people</span>
           <h2>the same app looks different for each job</h2>
-          <p>pick a person. their home page and menu are built around what they do all day. these are the real screens from the sample workspace.</p>
+          <p>pick a job. each one lives in a different part of the app, and their menu is built around what they do all day. the screens are from a made-up sample studio.</p>
         </div>
         <WorkspaceRoles />
       </section>
@@ -193,9 +193,18 @@ export function WorkspaceShowcase() {
       <section className="ab-wrap ab-sec ab-tone ws-tone-sky">
         <div className="ab-head">
           <span className="ws-pill"><i aria-hidden="true" />talking and planning</span>
-          <h2>chat, calendar and search that know about the work</h2>
+          <h2>chat, calls, calendar and search that know about the work</h2>
         </div>
         <WorkspaceTalk />
+      </section>
+
+      <section className="ab-wrap ab-sec ab-tone ws-tone-lilac">
+        <div className="ab-head">
+          <span className="ws-pill"><i aria-hidden="true" />ai helpers</span>
+          <h2>ai that takes the busywork, not the decisions</h2>
+          <p>the assistant suggests, a person says yes. it never changes anything on its own. (the answers in these clips are staged on sample data, in the same shape as the real feature.)</p>
+        </div>
+        <WorkspaceAi />
       </section>
 
       <section className="ab-wrap ab-sec ab-tone ws-tone-mist">
@@ -211,7 +220,7 @@ export function WorkspaceShowcase() {
         <div className="ab-head">
           <span className="ws-pill"><i aria-hidden="true" />for everyone · accessibility</span>
           <h2>easy for the intern, quick for the founder</h2>
-          <p>plain words, big targets, keyboard shortcuts for people who like them, and help on every screen for people who don&apos;t.</p>
+          <p>plain words, big targets, three themes, and a phone layout for every screen.</p>
         </div>
         <WorkspaceEveryone />
       </section>
