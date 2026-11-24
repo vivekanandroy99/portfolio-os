@@ -1,13 +1,15 @@
 import Link from "next/link";
 import {
-  ArrowDown, Check, Eye, History, KeyRound, Laptop, LayoutDashboard, MonitorSmartphone, ShieldCheck, Sparkles, X, type LucideIcon,
+  ArrowDown, ArrowUpRight, Check, Contrast, Eye, Hand, History, KeyRound, Keyboard, Laptop, LayoutDashboard, MonitorSmartphone, ShieldCheck, Sparkles, Type, X, type LucideIcon,
 } from "lucide-react";
 import {
   siExpo, siHono, siPostgresql, siReact, siSupabase, siTailwindcss, siTauri, siTypescript, type SimpleIcon,
 } from "simple-icons";
 import {
-  WorkspaceAdminClip, WorkspaceAi, WorkspaceBusiness, WorkspaceEveryone, WorkspacePromo, WorkspaceReviewDemo, WorkspaceRoles, WorkspaceTalk, WorkspaceWork,
+  LoopClip, WorkspaceAdminClip, WorkspaceAi, WorkspaceBusiness, WorkspaceCreate, WorkspaceDay, WorkspacePhones, WorkspaceProjects,
+  WorkspacePromo, WorkspaceReviewDemo, WorkspaceRoles, WorkspaceTalk, WorkspaceTasks,
 } from "./WorkspaceBlocks";
+import { WorkspaceAiDemo } from "./WorkspaceAiDemo";
 import { MoreWork } from "./MoreWork";
 
 /*
@@ -61,6 +63,13 @@ const behind: { icon: LucideIcon; t: string; d: string }[] = [
   { icon: Laptop, t: "devices you can see", d: "a list of everywhere you're signed in, with names you choose and a sign-out button for each." },
 ];
 
+const every: { icon: LucideIcon; t: string; d: string }[] = [
+  { icon: Type, t: "plain words", d: "“ask for time off”, not “submit leave request”. buttons say what they do." },
+  { icon: Hand, t: "big targets", d: "rows and buttons are sized for a finger, and nothing important hides behind a hover." },
+  { icon: Contrast, t: "colour that passes", d: "every text and background pair meets the wcag aa contrast level, in all three themes." },
+  { icon: Keyboard, t: "quick for power users", d: "ctrl k jumps anywhere, and ctrl j opens the assistant from any screen." },
+];
+
 const stack: { n: string; use: string; logo: SimpleIcon; mono?: boolean }[] = [
   { n: "react", use: "every screen, in one shared codebase", logo: siReact },
   { n: "typescript", use: "shared shapes for the app, api and phone", logo: siTypescript },
@@ -83,17 +92,17 @@ export function WorkspaceShowcase() {
       <header className="ab-wrap ws-hero">
         <span className="ws-pill big"><i aria-hidden="true" />office management system</span>
         <h1>
-          a studio&apos;s whole day in one app. <em>tasks, reviews, chat, people and money.</em>
+          a studio&apos;s whole day in one app. <em>tasks, reviews, chat, money, and an ai that does the busywork.</em>
         </h1>
         <div className="ws-hero-row">
           <p className="ab-lede">
-            altcore makes exhibitions, kiosks and 3d experiences. i designed and built the app the team runs on: who&apos;s doing what, what needs a review, what the client owes. it&apos;s calm enough for a new intern and detailed enough for the founder.
+            altcore makes exhibitions, kiosks and 3d experiences. i designed and built the app the team runs on: who&apos;s doing what, what needs a review, what the client owes, and an assistant that turns briefs and calls into tasks. it&apos;s calm enough for a new intern and detailed enough for the founder.
           </p>
           <div className="ab-hero-cta">
-            <a href="#try" className="ab-btn" data-label="try it">
-              try the review loop <ArrowDown aria-hidden="true" />
+            <a href="#ai" className="ab-btn" data-label="try it">
+              try the ai assistant <ArrowDown aria-hidden="true" />
             </a>
-            <a href="#people" className="ab-btn ghost" data-label="explore">see it by role</a>
+            <a href="#sample" className="ab-btn ghost" data-label="open">use the sample app</a>
           </div>
         </div>
         <WorkspacePromo />
@@ -165,29 +174,55 @@ export function WorkspaceShowcase() {
 
       <section id="people" className="ab-wrap ab-sec ab-tone ws-tone-peach">
         <div className="ab-head">
-          <span className="ws-pill"><i aria-hidden="true" />one app, five people</span>
-          <h2>the same app looks different for each job</h2>
-          <p>pick a job. each one lives in a different part of the app, and their menu is built around what they do all day. the screens are from a made-up sample studio.</p>
+          <span className="ws-pill"><i aria-hidden="true" />one app, five jobs</span>
+          <h2>the same app, built around each job</h2>
+          <p>pick a job. each one lives in a different part of the app, and their menu is built around what they do all day. every screen here is from a made-up sample studio.</p>
         </div>
         <WorkspaceRoles />
       </section>
 
       <section className="ab-wrap ab-sec ab-tone ws-tone-mist">
         <div className="ab-head">
-          <span className="ws-pill"><i aria-hidden="true" />getting work done</span>
-          <h2>from today&apos;s plan to “approved”</h2>
+          <span className="ws-pill"><i aria-hidden="true" />the day</span>
+          <h2>a working day, from check in to the last call</h2>
           <p>keep scrolling. every clip is the real app, recorded in the browser.</p>
         </div>
-        <WorkspaceWork />
+        <WorkspaceDay />
+      </section>
+
+      <section className="ab-wrap ab-sec ab-tone ws-tone-sky">
+        <div className="ab-head">
+          <span className="ws-pill"><i aria-hidden="true" />tasks and reviews</span>
+          <h2>from today&apos;s plan to “approved”</h2>
+          <p>the heart of the app: work gets done, checked and signed off in one place, round by round.</p>
+        </div>
+        <WorkspaceTasks />
       </section>
 
       <section id="try" className="ab-wrap ab-sec ab-tone ws-tone-mint">
         <div className="ab-head">
-          <span className="ws-pill ok"><i aria-hidden="true" />try it</span>
+          <span className="ws-pill ok"><i aria-hidden="true" />try it · reviews</span>
           <h2>be the designer, then the boss</h2>
-          <p>tick the steps and send it. then switch seats: ask for a change or approve it. this is the loop at the heart of the app.</p>
+          <p>tick the steps and send it. then switch seats: ask for a change or approve it. this is the loop every task goes through.</p>
         </div>
         <WorkspaceReviewDemo />
+      </section>
+
+      <section className="ab-wrap ab-sec ab-tone ws-tone-peach">
+        <div className="ab-head">
+          <span className="ws-pill"><i aria-hidden="true" />projects</span>
+          <h2>a project, from the first brief to show day</h2>
+          <p>altcore builds exhibitions and launches, so a project here runs all the way to the event itself.</p>
+        </div>
+        <WorkspaceProjects />
+      </section>
+
+      <section className="ab-wrap ab-sec ab-tone ws-tone-mist">
+        <div className="ab-head">
+          <span className="ws-pill"><i aria-hidden="true" />making things</span>
+          <h2>boards, notebooks and files, next to the job</h2>
+        </div>
+        <WorkspaceCreate />
       </section>
 
       <section className="ab-wrap ab-sec ab-tone ws-tone-sky">
@@ -198,11 +233,17 @@ export function WorkspaceShowcase() {
         <WorkspaceTalk />
       </section>
 
-      <section className="ab-wrap ab-sec ab-tone ws-tone-lilac">
+      <section id="ai" className="ab-wrap ab-sec ab-tone ws-tone-lilac">
         <div className="ab-head">
-          <span className="ws-pill"><i aria-hidden="true" />ai helpers</span>
-          <h2>ai that takes the busywork, not the decisions</h2>
-          <p>the assistant suggests, a person says yes. it never changes anything on its own. (the answers in these clips are staged on sample data, in the same shape as the real feature.)</p>
+          <span className="ws-pill"><i aria-hidden="true" />try it · ai assistant</span>
+          <h2>an assistant that takes the busywork, not the decisions</h2>
+          <p>it knows which screen you&apos;re on, so “brief me” on home and “make tasks from this” on a project both just work. pick something to ask. it suggests, and a person always says yes before anything changes.</p>
+        </div>
+        <WorkspaceAiDemo />
+        <p className="ws-ai-note">the answers here are written from the sample studio&apos;s data, in the same shape as the real assistant&apos;s.</p>
+        <div className="ab-head ws-ai-more">
+          <h3>and in the app</h3>
+          <p>the same five jobs, recorded in the real app.</p>
         </div>
         <WorkspaceAi />
       </section>
@@ -218,11 +259,27 @@ export function WorkspaceShowcase() {
 
       <section className="ab-wrap ab-sec ab-tone ws-tone-peach">
         <div className="ab-head">
-          <span className="ws-pill"><i aria-hidden="true" />for everyone · accessibility</span>
-          <h2>easy for the intern, quick for the founder</h2>
-          <p>plain words, big targets, three themes, and a phone layout for every screen.</p>
+          <span className="ws-pill"><i aria-hidden="true" />on every screen · accessibility</span>
+          <h2>in your pocket, and easy for everyone</h2>
+          <p>the same app on a phone: the menu moves to the bottom, cards stack, and everything stays in reach of a thumb. it also runs on tablets and as a windows and mac app.</p>
         </div>
-        <WorkspaceEveryone />
+        <WorkspacePhones />
+        <div className="ws-every">
+          <LoopClip
+            id="settings-look"
+            label="settings: switching between light, dark and high contrast"
+            caption="light, dark and high contrast. every screen works in all three, from one set of design tokens."
+          />
+          <ul>
+            {every.map((b) => (
+              <li key={b.t}>
+                <span className="ab-ico"><b.icon aria-hidden="true" /></span>
+                <b>{b.t}</b>
+                <small>{b.d}</small>
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
 
       <section className="ab-wrap ab-sec ab-tone ws-tone-ink">
@@ -260,6 +317,32 @@ export function WorkspaceShowcase() {
             </li>
           ))}
         </ul>
+      </section>
+
+      <section id="sample" className="ab-wrap ab-sec">
+        <div className="ws-tryit">
+          <div>
+            <span className="ws-pill"><i aria-hidden="true" />the prototype</span>
+            <h2>use the app yourself</h2>
+            <p>open the sample version and click around. it&apos;s a made-up studio with practice data, so you can&apos;t break anything.</p>
+            <ul>
+              <li><Check aria-hidden="true" />sample data only. it isn&apos;t connected to any real company or account</li>
+              <li><Check aria-hidden="true" />everything you change stays in your own browser</li>
+              <li><Check aria-hidden="true" />the ai answers need a server, so in the sample they stay switched off</li>
+            </ul>
+          </div>
+          <div className="ws-tryit-go">
+            <a href="/altcore-demo/" target="_blank" rel="noopener" data-label="open">
+              <span>open the sample app<small>pick who to be: founder, designer, sales and more</small></span>
+              <ArrowUpRight aria-hidden="true" />
+            </a>
+            <a href="/altcore-demo/flows" target="_blank" rel="noopener" className="alt" data-label="open">
+              <span>take a guided tour<small>a step-by-step walk through one job</small></span>
+              <ArrowUpRight aria-hidden="true" />
+            </a>
+            <p>works best on a laptop or desktop, and works on a phone too.</p>
+          </div>
+        </div>
       </section>
 
       <div className="ab-wrap">

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content"
+    />
+    <meta name="theme-color" content="#EAF3F7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121316" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/altcore-demo/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/altcore-demo/apple-touch-icon.png" />
+    <link rel="manifest" href="/altcore-demo/manifest.webmanifest" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Altcore" />
+    <title>Altcore</title>
+    <script>
+      // Pick the theme before first paint. "system" follows the device, or the person can choose.
+      (function () {
+        var root = document.documentElement;
+        var dark = window.matchMedia("(prefers-color-scheme: dark)");
+        var hc = window.matchMedia("(prefers-contrast: more)");
+        function apply() {
+          var t = "system";
+          try {
+            t = localStorage.getItem("altcore:theme") || "system";
+          } catch (e) {}
+          root.classList.toggle("dark", t === "dark" || (t === "system" && dark.matches));
+          root.classList.toggle("hc", t === "hc" || (t === "system" && hc.matches));
+          var b = "mist";
+          try {
+            b = localStorage.getItem("altcore:bubbles") || "mist";
+          } catch (e) {}
+          root.classList.toggle("bubble-stone", b === "stone");
+          var calm = false;
+          try {
+            calm = localStorage.getItem("altcore:motion") === "reduce";
+          } catch (e) {}
+          root.classList.toggle("reduce-motion", calm);
+        }
+        window.__applyTheme = apply;
+        // Phones: fit the app to the part of the screen the keyboard leaves free, and stop
+        // Safari from sliding the whole page up when a field is tapped.
+        var vv = window.visualViewport;
+        if (vv) {
+          var fit = function () {
+            var kb = window.innerHeight - vv.height > 120;
+            root.style.setProperty("--app-h", vv.height + "px");
+            // How much of the bottom the keyboard covers, so sheets can sit above it.
+            root.style.setProperty(
+              "--kb-h",
+              Math.max(0, window.innerHeight - vv.height - vv.offsetTop) + "px",
+            );
+            root.classList.toggle("kb-open", kb);
+            // Only inside the app, and only while typing: the app frame never scrolls as a
+            // whole, so a slide-up there is Safari's doing. Pages like sign-in scroll normally.
+            if (kb && location.pathname.indexOf("/app") === 0 && window.scrollY !== 0)
+              window.scrollTo(0, 0);
+          };
+          vv.addEventListener("resize", fit);
+          fit();
+        }
+        apply();
+        dark.addEventListener("change", apply);
+        hc.addEventListener("change", apply);
+      })();
+    </script>
+    <script type="module" crossorigin src="/altcore-demo/assets/index-ChEVgD44.js"></script>
+    <link rel="modulepreload" crossorigin href="/altcore-demo/assets/rolldown-runtime-COiEfhsA.js">
+    <link rel="modulepreload" crossorigin href="/altcore-demo/assets/react-KO5eBjZ3.js">
+    <link rel="modulepreload" crossorigin href="/altcore-demo/assets/icons-DVp2bbQD.js">
+    <link rel="modulepreload" crossorigin href="/altcore-demo/assets/files-Iy_3r177.js">
+    <link rel="modulepreload" crossorigin href="/altcore-demo/assets/ui-DKOlXlTZ.js">
+    <link rel="stylesheet" crossorigin href="/altcore-demo/assets/index-EA6zYUEe.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

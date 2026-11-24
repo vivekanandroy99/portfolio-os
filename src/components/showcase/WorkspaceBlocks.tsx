@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
-  Bell, Building2, Calculator, CalendarPlus, Check, CheckCheck, Contact, Eye, FileUp, Handshake, Home, KanbanSquare, LayoutDashboard,
-  MessageCircleQuestion, MessagesSquare, Package, Palette, Pause, Play, Rocket, RotateCcw, Search, Send, Smartphone,
+  AudioLines, Bell, BellRing, Building2, Calculator, CalendarPlus, Check, CheckCheck, Contact, Eye, FileUp, FlaskConical,
+  FolderOpen, FolderPlus, Handshake, HandHelping, Home, KanbanSquare, LayoutDashboard, Layers, ListTodo, Megaphone,
+  MessageCircleQuestion, MessagesSquare, NotebookPen, Package, Pause, Play, Rocket, RotateCcw, Search, Send,
   Sparkles, SquareCheck, StickyNote, Video, Wand2, type LucideIcon,
 } from "lucide-react";
 import { ScrollStory, type Story } from "./AltbotBlocks";
@@ -33,13 +34,46 @@ function story(steps: Step[], what: string): Story[] {
   }));
 }
 
-/* ---------- getting work done ---------- */
+/* ---------- the day ---------- */
 
-const WORK: Step[] = [
+const DAY: Step[] = [
   {
-    id: "day-check-in", icon: Home, title: "the day starts on home",
-    lead: "check in, read the announcements, see today's plan and what's waiting for your review. one screen, no digging.",
-    note: "your work hours count up from check-in, and a break is one tap away.",
+    id: "day-check-in", icon: Home, title: "check in, and the day is on one screen",
+    lead: "tap check in and your work hours start counting. home shows the announcements, what you finished, how long you've worked, what's next and the inbox.",
+    note: "a break is one tap too, so nobody fills in a timesheet at the end of the week.",
+  },
+  {
+    id: "day-plan-standup", icon: ListTodo, title: "the plan is the stand-up",
+    lead: "type what you'll do today, and tag a teammate with @ if you're doing it together. the team sees everyone's plan on home, so there's no stand-up form to fill in.",
+    note: "anything added after the morning gets a small “added later” mark, which keeps plans honest without anyone policing them.",
+  },
+  {
+    id: "day-announcement", icon: Megaphone, title: "announcements people actually read",
+    lead: "leads post a note for everyone, or only for chosen teams. people tap “got it”, and the poster sees how many have read it.",
+    note: "only the count shows, never a list of who hasn't read it. it's a notice board, not a test.",
+  },
+  {
+    id: "day-meeting-reminder", icon: BellRing, title: "a meeting reminder with one join button",
+    lead: "a few minutes before a call, a card slides in with the meeting name and a single join button. the top bar shows it too.",
+  },
+];
+
+export function WorkspaceDay() {
+  return <ScrollStory items={story(DAY, "altcore")} shape="wide" label="a day in the app" topic="the day" looks={false} />;
+}
+
+/* ---------- tasks and reviews ---------- */
+
+const TASKS: Step[] = [
+  {
+    id: "tasks-today-and-board", icon: KanbanSquare, title: "today, my tasks, and the team board",
+    lead: "three views of the same tasks: what's on today, everything that's mine, and the whole team's board from to-do to done.",
+    note: "on smaller screens the board scrolls sideways instead of squashing the columns.",
+  },
+  {
+    id: "tasks-new-and-ask", icon: HandHelping, title: "add a task, or ask someone for help",
+    lead: "new task takes a title, a project and a date. “ask a teammate” sends a request instead, which they can accept or turn down.",
+    note: "an accepted request becomes a task on their list straight away.",
   },
   {
     id: "tasks-task-page", icon: SquareCheck, title: "a task holds everything about it",
@@ -51,24 +85,55 @@ const WORK: Step[] = [
     lead: "work waiting for review, purchases to approve and gear requests sit in one list, each with its own button.",
     note: "approve, decline or ask for changes without leaving the inbox.",
   },
+];
+
+export function WorkspaceTasks() {
+  return <ScrollStory items={story(TASKS, "altcore")} shape="wide" label="tasks and reviews" topic="tasks and reviews" looks={false} />;
+}
+
+/* ---------- projects ---------- */
+
+const PROJECTS: Step[] = [
   {
-    id: "projects-tour", icon: KanbanSquare, title: "a project from brief to show day",
+    id: "projects-new", icon: FolderPlus, title: "start a project in a minute",
+    lead: "pick a cover, give it a name and a client, and choose the team. the assistant suggests a working style (phases, sprints or a simple board), or you can decide later.",
+  },
+  {
+    id: "projects-tour", icon: Layers, title: "a project from brief to show day",
     lead: "progress, open tasks, the deadline and the people up top. then the brief, design options, decks, specs, phases and checklists, one tab each.",
     note: "a phase can't close while something is still needed from the client.",
   },
   {
     id: "projects-show-desk", icon: Rocket, title: "a desk for the event day",
     lead: "on show day the project turns into a run sheet: opening checks, who's on shift, hired kit and a log of what happened.",
-  },
-  {
-    id: "create-board", icon: StickyNote, title: "boards and notebooks for the thinking",
-    lead: "boards with stickies, shapes and links for early ideas, and notebooks for writing things down properly.",
-    note: "both link to a project, so the early thinking isn't lost once the job starts.",
+    note: "made for exhibitions and launches, where the hardest day is the last one.",
   },
 ];
 
-export function WorkspaceWork() {
-  return <ScrollStory items={story(WORK, "altcore")} shape="wide" label="getting work done, step by step" topic="getting work done" looks={false} />;
+export function WorkspaceProjects() {
+  return <ScrollStory items={story(PROJECTS, "altcore")} shape="wide" label="projects" topic="projects" looks={false} />;
+}
+
+/* ---------- making things ---------- */
+
+const CREATE: Step[] = [
+  {
+    id: "create-board", icon: StickyNote, title: "boards for the messy early thinking",
+    lead: "stickies, shapes, arrows and links on an open canvas, for moodboards, visitor journeys and workshop walls.",
+  },
+  {
+    id: "create-notebook", icon: NotebookPen, title: "notebooks for writing it down properly",
+    lead: "pages with headings, lists, to-dos and pictures. a to-do in a notebook can become a real task with one tap.",
+    note: "boards and notebooks both link to a project, so the thinking isn't lost once the job starts.",
+  },
+  {
+    id: "files-documents-drive", icon: FolderOpen, title: "every file, wherever it lives",
+    lead: "uploaded documents, the company's google drive and the studio's own storage box, all in one files space.",
+  },
+];
+
+export function WorkspaceCreate() {
+  return <ScrollStory items={story(CREATE, "altcore")} shape="wide" label="making things" topic="making things" looks={false} />;
 }
 
 /* ---------- talking and planning ---------- */
@@ -77,7 +142,11 @@ const TALK: Step[] = [
   {
     id: "chat-messages", icon: MessagesSquare, title: "chat for every team and project",
     lead: "team chats, project chats and small groups, with pictures, files, reactions and voice notes.",
-    note: "a long thread or a voice note can be summed up in a few lines.",
+    note: "every project gets its own chat, so client talk doesn't get lost in a general group.",
+  },
+  {
+    id: "chat-voice-note-summary", icon: AudioLines, title: "voice notes you don't have to play",
+    lead: "a voice note shows its words underneath, and a one-line summary on top. read it in a meeting, play it later.",
   },
   {
     id: "chat-video-call-ai-notes", icon: Video, title: "calls that take their own notes",
@@ -85,7 +154,7 @@ const TALK: Step[] = [
   },
   {
     id: "calendar-views-and-repeat", icon: CalendarPlus, title: "a calendar that knows the work",
-    lead: "day, week and month views, events that repeat, and a call link added in one tap.",
+    lead: "day, week and month views, events that repeat like in google calendar, and a call link added in one tap.",
     note: "meetings, focus time, time off and deadlines each have their own colour.",
   },
   {
@@ -103,16 +172,16 @@ export function WorkspaceTalk() {
 const AI: Step[] = [
   {
     id: "ai-assistant-jobs", icon: Sparkles, title: "small jobs, done for you",
-    lead: "ask the assistant for a morning brief, a list of tasks from a note, or a message to the team. you check it, then it's done.",
+    lead: "ask the assistant for a morning brief, a list of tasks from a note, or a message to the team. it knows which screen you're on.",
     note: "it always shows what it's about to do before anything changes.",
   },
   {
     id: "ai-assistant-file", icon: FileUp, title: "drop a file, get a plan",
-    lead: "drop a client brief on the assistant and it suggests the tasks and dates inside it. keep the ones you want.",
+    lead: "drop a client's run of show on the assistant and it pulls out the tasks, dates and contacts inside it. keep the ones you want.",
   },
   {
     id: "ai-ask-anything", icon: MessageCircleQuestion, title: "ask about the work",
-    lead: "“which project is at risk?” gets a straight answer with links to the tasks behind it.",
+    lead: "“which project is at risk and why?” gets a straight answer, with the reason and the next step.",
   },
   {
     id: "ai-fix-writing", icon: Wand2, title: "fix writing in any box",
@@ -121,12 +190,12 @@ const AI: Step[] = [
   },
   {
     id: "ai-workspace-setup", icon: Building2, title: "set up a company by describing it",
-    lead: "an admin writes what the company does, and the assistant suggests teams, spaces and project types to start from.",
+    lead: "an admin writes what the company does, and the assistant fills in the teams, phases and checklists. nothing is saved until they check it.",
   },
 ];
 
 export function WorkspaceAi() {
-  return <ScrollStory items={story(AI, "altcore")} shape="wide" label="ai for the busywork" topic="ai helpers" looks={false} />;
+  return <ScrollStory items={story(AI, "altcore")} shape="wide" label="ai helpers in the app" topic="ai helpers" looks={false} />;
 }
 
 /* ---------- the business side ---------- */
@@ -146,6 +215,10 @@ const BIZ: Step[] = [
     lead: "approve a request, then find a free item in the inventory and hand it to the person who asked.",
   },
   {
+    id: "ops-rnd-vendors", icon: FlaskConical, title: "r&d and the people you buy from",
+    lead: "an r&d board for experiments the studio wants to try, and a vendor list with ratings, contacts and what each one is good for.",
+  },
+  {
     id: "team-people-hrms", icon: Contact, title: "people, teams and time off",
     lead: "search people by name, skill or software. a profile shows what they're on. time off is asked for and answered in the same app.",
   },
@@ -155,27 +228,73 @@ export function WorkspaceBusiness() {
   return <ScrollStory items={story(BIZ, "altcore")} shape="wide" label="the business side" topic="the business side" looks={false} />;
 }
 
-/* ---------- for everyone ---------- */
+/* ---------- on the phone: clips in a phone frame ---------- */
 
-const ALL: Step[] = [
-  {
-    id: "phone-day-check-in", icon: Smartphone, title: "the same app on a phone", portrait: true,
-    lead: "the menu moves to the bottom, cards stack, and everything stays in reach of a thumb.",
-    note: "the same screens also run on tablets and as a desktop app.",
-  },
-  {
-    id: "phone-chat-messages", icon: MessagesSquare, title: "chat that feels native", portrait: true,
-    lead: "the message box sits above the keyboard, and long chats stay light to scroll.",
-  },
-  {
-    id: "settings-look", icon: Palette, title: "light, dark or high contrast",
-    lead: "every screen works in all three themes, plus a calmer motion switch for people who get dizzy.",
-    note: "all from one set of design tokens, so no screen can be forgotten.",
-  },
+const PHONES: { id: string; t: string; d: string }[] = [
+  { id: "phone-day-check-in", t: "check in", d: "home, built for a thumb" },
+  { id: "phone-ai-assistant-jobs", t: "ask the assistant", d: "a brief on the go" },
+  { id: "phone-tasks-task-page", t: "a task", d: "steps and files" },
+  { id: "phone-inbox-approve", t: "approve", d: "the inbox, one tap each" },
+  { id: "phone-chat-messages", t: "chat", d: "groups and voice notes" },
 ];
 
-export function WorkspaceEveryone() {
-  return <ScrollStory items={story(ALL, "altcore")} shape="wide" label="made for everyone in the company" topic="for everyone" looks={false} />;
+function PhoneClip({ id, t, d }: { id: string; t: string; d: string }) {
+  const v = useRef<HTMLVideoElement | null>(null);
+  useEffect(() => {
+    const el = v.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) el.play().catch(() => {});
+      else el.pause();
+    }, { threshold: 0.4 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <figure className="ws-phone">
+      <div className="ws-iphone">
+        <i className="btn a" aria-hidden="true" /><i className="btn b" aria-hidden="true" /><i className="btn c" aria-hidden="true" /><i className="btn d" aria-hidden="true" />
+        <div className="scr">
+          <span className="bar" aria-hidden="true"><b>9:41</b><i /></span>
+          <video ref={v} src={`${BASE}/clips/${id}.mp4`} poster={`${BASE}/clips/${id}.jpg`} muted loop playsInline preload="none" aria-label={`on a phone: ${t}, ${d}`} />
+          <span className="island" aria-hidden="true" />
+        </div>
+      </div>
+      <figcaption><b>{t}</b>{d}</figcaption>
+    </figure>
+  );
+}
+
+export function WorkspacePhones() {
+  return (
+    <div className="ws-phones" role="list" aria-label="the app on a phone">
+      {PHONES.map((p) => (
+        <div role="listitem" key={p.id}><PhoneClip {...p} /></div>
+      ))}
+    </div>
+  );
+}
+
+/* ---------- a looping clip that plays only on screen ---------- */
+
+export function LoopClip({ id, label, caption }: { id: string; label: string; caption: string }) {
+  const v = useRef<HTMLVideoElement | null>(null);
+  useEffect(() => {
+    const el = v.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) el.play().catch(() => {});
+      else el.pause();
+    }, { threshold: 0.3 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <figure className="ws-admin">
+      <video ref={v} src={`${BASE}/clips/${id}.mp4`} poster={`${BASE}/clips/${id}.jpg`} muted loop playsInline preload="none" aria-label={label} />
+      <figcaption>{caption}</figcaption>
+    </figure>
+  );
 }
 
 /* ---------- one app, five people ---------- */
@@ -439,21 +558,11 @@ export function WorkspacePromo() {
 /* ---------- behind the scenes: the admin clip ---------- */
 
 export function WorkspaceAdminClip() {
-  const v = useRef<HTMLVideoElement | null>(null);
-  useEffect(() => {
-    const el = v.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) el.play().catch(() => {});
-      else el.pause();
-    }, { threshold: 0.3 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
   return (
-    <figure className="ws-admin">
-      <video ref={v} src={`${BASE}/clips/admin-tour.mp4`} poster={`${BASE}/clips/admin-tour.jpg`} muted loop playsInline preload="none" aria-label="admin: people and teams, who sees what, and connected apps" />
-      <figcaption>the admin screen: people and teams, who sees which spaces, and the apps the company connects, like drive and calendar.</figcaption>
-    </figure>
+    <LoopClip
+      id="admin-tour"
+      label="admin: people and teams, who sees what, and connected apps"
+      caption="the admin screen: people and teams, who sees which spaces, and the apps the company connects, like drive and calendar."
+    />
   );
 }

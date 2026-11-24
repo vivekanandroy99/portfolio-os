@@ -1,0 +1,1 @@
+import{Jt as e,On as t}from"./index-ChEVgD44.js";async function n(n){let r=t().settings;if(!r.features.ai||r.aiUsed>=r.aiMonthlyLimit)return null;try{let t=await fetch(`/api/ai`,{method:`POST`,headers:{"content-type":`application/json`},body:JSON.stringify(n)});if(!t.ok)return null;let r=await t.json();return r.result?(e(),r.result):null}catch{return null}}export{n as t};
