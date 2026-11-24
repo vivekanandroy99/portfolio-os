@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
-  Bell, Calculator, CalendarPlus, Check, CheckCheck, Contact, Eye, Handshake, Home, Inbox, KanbanSquare, LayoutDashboard,
-  LifeBuoy, MessagesSquare, Package, Palette, Pause, Play, RotateCcw, Search, Send, SlidersHorizontal, Smartphone,
-  Sparkles, SquareCheck, StickyNote, type LucideIcon,
+  Bell, Building2, Calculator, CalendarPlus, Check, CheckCheck, Contact, Eye, FileUp, Handshake, Home, KanbanSquare, LayoutDashboard,
+  MessageCircleQuestion, MessagesSquare, Package, Palette, Pause, Play, Rocket, RotateCcw, Search, Send, Smartphone,
+  Sparkles, SquareCheck, StickyNote, Video, Wand2, type LucideIcon,
 } from "lucide-react";
 import { ScrollStory, type Story } from "./AltbotBlocks";
 
@@ -37,30 +37,33 @@ function story(steps: Step[], what: string): Story[] {
 
 const WORK: Step[] = [
   {
-    id: "home-day", icon: Home, title: "the day starts on home",
-    lead: "check in, see today's plan, tick things off and add what else you'll do. it works like a quick stand-up, without the meeting.",
-    note: "nobody has to approve your own to-dos. the home page is about your day, not the company's.",
+    id: "day-check-in", icon: Home, title: "the day starts on home",
+    lead: "check in, read the announcements, see today's plan and what's waiting for your review. one screen, no digging.",
+    note: "your work hours count up from check-in, and a break is one tap away.",
   },
   {
-    id: "task-review", icon: SquareCheck, title: "finish a task, send it for review",
-    lead: "a task has steps, files and a reviewer. tick the last step and press send for review.",
-    note: "the reviewer is set on the task itself, so nobody has to remember who checks what.",
-    look: "the yellow note: waiting for aman to review.",
+    id: "tasks-task-page", icon: SquareCheck, title: "a task holds everything about it",
+    lead: "steps to tick, files and pictures, comments, and every review round, all on the task itself.",
+    note: "the reviewer is set on the task, so nobody has to remember who checks what.",
   },
   {
-    id: "inbox-review", icon: Eye, title: "reviews come in rounds",
-    lead: "the reviewer opens it from their inbox, sees every earlier round and its notes, then approves or asks for changes.",
-    note: "round 1, round 2, round 3: the whole back and forth stays on the task, not in someone's chat history.",
+    id: "inbox-approve", icon: Eye, title: "one inbox for every yes or no",
+    lead: "work waiting for review, purchases to approve and gear requests sit in one list, each with its own button.",
+    note: "approve, decline or ask for changes without leaving the inbox.",
   },
   {
-    id: "project", icon: KanbanSquare, title: "projects that run the way you work",
-    lead: "each project shows progress, open tasks, the deadline and the people on it. phases come from presets like ladder, sprints or kanban.",
+    id: "projects-tour", icon: KanbanSquare, title: "a project from brief to show day",
+    lead: "progress, open tasks, the deadline and the people up top. then the brief, design options, decks, specs, phases and checklists, one tab each.",
     note: "a phase can't close while something is still needed from the client.",
   },
   {
-    id: "ideas", icon: StickyNote, title: "ideas live next to the work",
-    lead: "notebooks for writing, moodboards for pictures and stickies. an idea card opens its own board.",
-    note: "both can be linked to a project, so the early thinking doesn't get lost once the job starts.",
+    id: "projects-show-desk", icon: Rocket, title: "a desk for the event day",
+    lead: "on show day the project turns into a run sheet: opening checks, who's on shift, hired kit and a log of what happened.",
+  },
+  {
+    id: "create-board", icon: StickyNote, title: "boards and notebooks for the thinking",
+    lead: "boards with stickies, shapes and links for early ideas, and notebooks for writing things down properly.",
+    note: "both link to a project, so the early thinking isn't lost once the job starts.",
   },
 ];
 
@@ -72,23 +75,22 @@ export function WorkspaceWork() {
 
 const TALK: Step[] = [
   {
-    id: "chat", icon: MessagesSquare, title: "chat for every team and project",
+    id: "chat-messages", icon: MessagesSquare, title: "chat for every team and project",
     lead: "team chats, project chats and small groups, with pictures, files, reactions and voice notes.",
-    note: "a voice note can be turned into a transcript, a summary and tasks.",
+    note: "a long thread or a voice note can be summed up in a few lines.",
   },
   {
-    id: "calendar", icon: CalendarPlus, title: "drag to book time",
-    lead: "drag across an empty slot, name it, add people and make a meet link in one tap.",
-    note: "meetings, focus time, time off and deadlines each have their own colour, and can be hidden.",
+    id: "chat-video-call-ai-notes", icon: Video, title: "calls that take their own notes",
+    lead: "start a video call from any chat. turn on notes, and when the call ends a summary with action points lands back in the chat.",
   },
   {
-    id: "search", icon: Search, title: "one search for everything",
-    lead: "ctrl k finds tasks, projects, chats and boards from anywhere. arrow keys, enter, you're there.",
+    id: "calendar-views-and-repeat", icon: CalendarPlus, title: "a calendar that knows the work",
+    lead: "day, week and month views, events that repeat, and a call link added in one tap.",
+    note: "meetings, focus time, time off and deadlines each have their own colour.",
   },
   {
-    id: "ai", icon: Sparkles, title: "an assistant that knows the screen",
-    lead: "ask what needs your attention, who is on what, or for a tour. it answers from the workspace and links you there.",
-    note: "admins set a monthly limit on ai requests for the whole company.",
+    id: "search-ctrl-k", icon: Search, title: "one search for everything",
+    lead: "ctrl k finds tasks, projects, people, chats and boards from anywhere. arrow keys, enter, you're there.",
   },
 ];
 
@@ -96,31 +98,56 @@ export function WorkspaceTalk() {
   return <ScrollStory items={story(TALK, "altcore")} shape="wide" label="talking and planning" topic="talking and planning" looks={false} />;
 }
 
+/* ---------- ai that helps with the busywork ---------- */
+
+const AI: Step[] = [
+  {
+    id: "ai-assistant-jobs", icon: Sparkles, title: "small jobs, done for you",
+    lead: "ask the assistant for a morning brief, a list of tasks from a note, or a message to the team. you check it, then it's done.",
+    note: "it always shows what it's about to do before anything changes.",
+  },
+  {
+    id: "ai-assistant-file", icon: FileUp, title: "drop a file, get a plan",
+    lead: "drop a client brief on the assistant and it suggests the tasks and dates inside it. keep the ones you want.",
+  },
+  {
+    id: "ai-ask-anything", icon: MessageCircleQuestion, title: "ask about the work",
+    lead: "“which project is at risk?” gets a straight answer with links to the tasks behind it.",
+  },
+  {
+    id: "ai-fix-writing", icon: Wand2, title: "fix writing in any box",
+    lead: "every text box has a fix writing button. it tidies spelling and tone, and you choose whether to keep it.",
+    note: "handy for people who don't write in their first language.",
+  },
+  {
+    id: "ai-workspace-setup", icon: Building2, title: "set up a company by describing it",
+    lead: "an admin writes what the company does, and the assistant suggests teams, spaces and project types to start from.",
+  },
+];
+
+export function WorkspaceAi() {
+  return <ScrollStory items={story(AI, "altcore")} shape="wide" label="ai for the busywork" topic="ai helpers" looks={false} />;
+}
+
 /* ---------- the business side ---------- */
 
 const BIZ: Step[] = [
   {
-    id: "sales", icon: Handshake, title: "a sales pipeline you drag",
-    lead: "deals move from new lead to won by dragging. each one has its value, next step, contact and quotes.",
-    note: "call, whatsapp or email the client straight from the deal.",
+    id: "sales-pipeline-deal", icon: Handshake, title: "sales numbers and a pipeline",
+    lead: "open pipeline, what's likely to close and the win rate up top. deals move by stage, each with its value, next step and contact.",
   },
   {
-    id: "estimate", icon: Calculator, title: "estimates that do the sums",
-    lead: "slide the margin and the client price, tax and profit update at once. split the bill into payment steps.",
-    note: "vendor prices sit side by side and the lowest is marked. using one saves it to the rate card.",
+    id: "sales-estimate-boq", icon: Calculator, title: "estimates that do the sums",
+    lead: "a bill of quantities with every line, the margin and the tax, then a payment plan split into steps.",
+    note: "the client price updates the moment a line changes.",
   },
   {
-    id: "inventory", icon: Package, title: "know who has the camera",
-    lead: "everything the company owns, who has it and what's free. ask for an item in two taps.",
+    id: "ops-requests-inventory", icon: Package, title: "know who has the camera",
+    lead: "approve a request, then find a free item in the inventory and hand it to the person who asked.",
   },
   {
-    id: "gear-requests", icon: Inbox, title: "one inbox for every yes or no",
-    lead: "requests from teammates, purchases and time off all wait in the same inbox, each with one button.",
-    note: "accepting a request turns it into a task straight away.",
-  },
-  {
-    id: "people", icon: Contact, title: "find people by what they can do",
-    lead: "search by name, skill or software. a profile shows what they're on, their projects and their gear.",
+    id: "team-people-hrms", icon: Contact, title: "people, teams and time off",
+    lead: "search people by name, skill or software. a profile shows what they're on. time off is asked for and answered in the same app.",
   },
 ];
 
@@ -132,28 +159,18 @@ export function WorkspaceBusiness() {
 
 const ALL: Step[] = [
   {
-    id: "phone-home", icon: Smartphone, title: "the same app on a phone", portrait: true,
+    id: "phone-day-check-in", icon: Smartphone, title: "the same app on a phone", portrait: true,
     lead: "the menu moves to the bottom, cards stack, and everything stays in reach of a thumb.",
-    note: "it installs to the home screen and sends alerts like any app.",
+    note: "the same screens also run on tablets and as a desktop app.",
   },
   {
-    id: "phone-chat", icon: MessagesSquare, title: "chat that feels native", portrait: true,
+    id: "phone-chat-messages", icon: MessagesSquare, title: "chat that feels native", portrait: true,
     lead: "the message box sits above the keyboard, and long chats stay light to scroll.",
   },
   {
-    id: "guides", icon: LifeBuoy, title: "help built in",
-    lead: "pointer tours walk you through a screen, short videos show a flow, and slideshows explain a process.",
-    note: "a new joiner's first tour starts by itself during sign-up.",
-  },
-  {
-    id: "look", icon: Palette, title: "light, dark or high contrast",
-    lead: "every screen works in all three themes. there's also a calmer motion switch for people who get dizzy.",
+    id: "settings-look", icon: Palette, title: "light, dark or high contrast",
+    lead: "every screen works in all three themes, plus a calmer motion switch for people who get dizzy.",
     note: "all from one set of design tokens, so no screen can be forgotten.",
-  },
-  {
-    id: "layout", icon: SlidersHorizontal, title: "team leads tidy the screen",
-    lead: "a team leader can reorder or hide home cards and menu items for their whole team.",
-    note: "hiding only tidies. anything hidden still opens from search and links.",
   },
 ];
 
@@ -163,30 +180,30 @@ export function WorkspaceEveryone() {
 
 /* ---------- one app, five people ---------- */
 
-const ROLES: { id: string; role: string; who: string; sees: string[]; menu: string }[] = [
+const ROLES: { id: string; role: string; who: string; screen: string; sees: string[]; menu: string }[] = [
   {
-    id: "MH", role: "founder", who: "sees the whole company",
-    sees: ["who is working and on what, right now", "projects at risk, before they're late", "decisions waiting for a yes", "switches for every feature"],
+    id: "founder", role: "founder", who: "sees the whole company", screen: "home",
+    sees: ["who is working and on what, right now", "announcements and today's plan", "work waiting for their review", "the inbox of things to approve"],
     menu: "everything, plus admin",
   },
   {
-    id: "BH", role: "project manager", who: "keeps jobs on track",
-    sees: ["each project's progress, people and deadline", "the team's tasks on a list or a board", "boards and notebooks for the job", "client reviews on the calendar"],
+    id: "pm", role: "project manager", who: "keeps jobs on track", screen: "a project",
+    sees: ["each project's progress, people and deadline", "what's next, and what's late", "the timeline from brief to show day", "what the client still owes"],
     menu: "projects, sales and estimates up front",
   },
   {
-    id: "MN", role: "3d artist", who: "makes the work",
-    sees: ["today's plan and nothing else", "steps and files for each task", "work sent for review", "gear that's free to borrow"],
+    id: "maker", role: "designer", who: "makes the work", screen: "tasks",
+    sees: ["today's tasks and nothing else", "steps and files for each task", "what's in review", "the team board when they need it"],
     menu: "a short menu, no sales or money screens",
   },
   {
-    id: "IP", role: "sales manager", who: "brings work in",
-    sees: ["follow-ups due today", "the deals pipeline", "requests sent to the studio", "client calls"],
+    id: "sales", role: "sales manager", who: "brings work in", screen: "sales",
+    sees: ["the open pipeline in rupees", "what's likely to close", "won this quarter and the win rate", "follow-ups due this week"],
     menu: "sales and estimates up front",
   },
   {
-    id: "SB", role: "operations", who: "keeps the office running",
-    sees: ["everything the company owns", "gear and leave requests", "people and their skills", "the admin activity log"],
+    id: "ops", role: "operations", who: "keeps the office running", screen: "inventory",
+    sees: ["everything the company owns", "who has what, and what's free", "gear and purchase requests", "vendors and the r&d board"],
     menu: "inventory, requests and admin",
   },
 ];
@@ -220,7 +237,7 @@ export function WorkspaceRoles() {
             <img
               key={x.id}
               src={`${BASE}/roles/${x.id}.webp`}
-              alt={i === cur ? `the home page as the ${x.role} sees it` : ""}
+              alt={i === cur ? `${x.screen}, the screen the ${x.role} lives in` : ""}
               aria-hidden={i !== cur}
               className={i === cur ? "on" : ""}
               loading={i === 0 ? "eager" : "lazy"}
@@ -230,7 +247,7 @@ export function WorkspaceRoles() {
         </figure>
         <div className="ws-roles-copy">
           <span className="ws-pill"><i aria-hidden="true" />signed in as the {r.role}</span>
-          <h3>what they see first</h3>
+          <h3>{r.screen}: what they see first</h3>
           <ul>
             {r.sees.map((s) => (
               <li key={s}><Check aria-hidden="true" />{s}</li>
@@ -408,7 +425,7 @@ export function WorkspacePromo() {
         loop
         playsInline
         preload="metadata"
-        aria-label="a lap around the app: home, projects, chat, calendar, sales, inventory and people"
+        aria-label="a lap around the app: home, a project, a video call, the assistant, sales, calendar and a board"
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
       />
@@ -435,8 +452,8 @@ export function WorkspaceAdminClip() {
   }, []);
   return (
     <figure className="ws-admin">
-      <video ref={v} src={`${BASE}/clips/admin.mp4`} poster={`${BASE}/clips/admin.jpg`} muted loop playsInline preload="none" aria-label="admin: turning sales and inventory off for the whole company, then the activity log" />
-      <figcaption>switching sales and inventory off for everyone. the menu changes at once, and the activity log records who did it.</figcaption>
+      <video ref={v} src={`${BASE}/clips/admin-tour.mp4`} poster={`${BASE}/clips/admin-tour.jpg`} muted loop playsInline preload="none" aria-label="admin: people and teams, who sees what, and connected apps" />
+      <figcaption>the admin screen: people and teams, who sees which spaces, and the apps the company connects, like drive and calendar.</figcaption>
     </figure>
   );
 }
